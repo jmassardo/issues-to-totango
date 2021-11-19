@@ -1,0 +1,21 @@
+name: 'Issues to Totangoo'
+description: 'Creates a Totango touchpoint when an issue is opened'
+inputs:
+  ACCOUNT_ID:
+    description: 'Customer account id'
+    required: true
+  APP_TOKEN:
+    description: 'Totango API Token Key'
+    required: true
+  ACTIVITY_TYPE:
+    description: 'Type from the `Success Flow` section'
+    required: true
+  TOUCHPOINT_REASON:
+    description: 'The id value of the touchpoint reason.'
+    required: true
+outputs:
+  touchpoint_id:
+    description: 'The time we greeted you'
+runs:
+  using: 'node12'
+  main: 'index.js'
