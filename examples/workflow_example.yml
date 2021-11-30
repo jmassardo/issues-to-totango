@@ -1,0 +1,18 @@
+name: totango
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  process-issue:
+    # Prevent action from trying to parse issues that don't have the right label
+    if: contains(github.event.issue.labels.*.name, 'new-topic')
+    runs-on: ubuntu-latest
+    steps:
+    - uses: jmassardo/issues-to-totango@main
+      with:
+        ACCOUNT_ID: ${{ secrets.ACCOUNT_ID }}
+        APP_TOKEN: ${{ secrets.APP_TOKEN }}
+        ACTIVITY_TYPE: ${{ secrets.ACTIVITY_TYPE }}
+        TOUCHPOINT_REASON: ${{ secrets.TOUCHPOINT_REASON }}
