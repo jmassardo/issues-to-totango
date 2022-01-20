@@ -23,7 +23,7 @@ try {
 
   if (github.context.eventName == "issues") {
 
-    if (event_action == "created") {
+    if (event_action == "opened") {
 
       var subject = "New Issue: " + issue["title"];
       var body = `${issue["user"]["login"]} created a  new issue. ${issue["body"]}. More info here: ${issue["html_url"]}`
