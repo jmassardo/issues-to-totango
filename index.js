@@ -30,7 +30,7 @@ try {
 
     } else if (event_action == "closed") {
 
-      var subject = "Issue #: " + issue["title"] + "was closed";
+      var subject = "Issue #: " + issue["title"] + " was closed";
       var body = `${issue["user"]["login"]} closed an issue. ${issue["body"]}. More info here: ${issue["html_url"]}`
 
     }
