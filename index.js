@@ -13,9 +13,21 @@ try {
   const issue = github.context.payload.issue;
   console.log(`Issue num is: ${issue["number"]}`);
 
-  //Build payload body
-  var body = `${issue["user"]["login"]} created a  new issue. ${issue["body"]}. More info here: ${issue["html_url"]}`
+  const comment = github.context.payload.comment;
+  console.log(`eventName is: ${github.context.eventName}`);
 
+  //Build payload body
+
+  if (github.context.eventName == "issues") {
+    var subject = issue["title"];
+    var body = `${issue["user"]["login"]} created a  new issue. ${issue["body"]}. More info here: ${issue["html_url"]}`
+  } else if (github.context.eventName == "issue_comment") {
+    var subject = "New comment on issue: " + issue["number"];
+    var body = `${comment["user"]["login"]} commented on issue #${issue["number"]}. ${comment["body"]}. More info here: ${issue["html_url"]}`
+  } else {
+    core.setFailed("Unsupported event type. Please use the  `issues` or `issue_comment` event type.");
+  }
+  
   // Build the POST Request
   var request = require("request"); 
 
@@ -27,7 +39,7 @@ try {
       account_id: ACCOUNT_ID,
       content: body,
       activity_type_id: ACTIVITY_TYPE,
-      subject: issue["title"],
+      subject: subject,
       touchpointType: TOUCHPOINT_REASON,
     }
   }, (error, response, body) => {
