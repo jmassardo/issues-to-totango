@@ -2,12 +2,13 @@ name: totango
 
 on:
   issues:
-    types: [opened]
+    types: [opened, closed]
+  issue_comment:
 
 jobs:
   process-issue:
     # Prevent action from trying to parse issues that don't have the right label
-    if: contains(github.event.issue.labels.*.name, 'new-topic')
+    if: contains(github.event.issue.labels.*.name, 'totango-sync')
     runs-on: ubuntu-latest
     steps:
     - uses: jmassardo/issues-to-totango@main

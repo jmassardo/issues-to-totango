@@ -4,8 +4,13 @@ This action takes new issues from GitHub and sends them to Totango.
 
 ## Limitations and known issues
 
-* This action only handles a single use case: When user creates a new issue, contents of that issue are logged as a new touchpoint based on the customer id provided in the workflow. Feature requests are welcome. Please log an issue in this repo for new requests.
+* This action only handles three use cases: 
+  * When user creates a new issue, contents of that issue are logged as a new touchpoint based on the customer id provided in the workflow.
+  * Similarly, issue comments are also logged as new touchpoints
+  * Touchpoints are also created when issues are closed.
 * [Totango's API](https://support.totango.com/hc/en-us/articles/115000597266-Touchpoints-API) does not support markup of any kind so all formatting gets stripped.
+
+Feature requests are welcome. Please log an issue in this repo for new requests.
 
 ## Inputs
 

@@ -1,6 +1,6 @@
 {
   "name": "issues-to-totango",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "This action creates a Totango touchpoint when a new issue is created",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "url": "git+https://github.com/jmassardo/issues-to-totango.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "James Massardo",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/jmassardo/issues-to-totango/issues"
@@ -21,5 +21,9 @@
     "@actions/core": "^1.6.0",
     "@actions/github": "^5.0.0",
     "request": "^2.88.2"
-  }
+  },
+  "directories": {
+    "example": "examples"
+  },
+  "devDependencies": {}
 }
