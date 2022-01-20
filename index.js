@@ -13,8 +13,42 @@ try {
   const issue = github.context.payload.issue;
   console.log(`Issue num is: ${issue["number"]}`);
 
+  const comment = github.context.payload.comment;
+  console.log(`eventName is: ${github.context.eventName}`);
+
+  const event_action = github.context.payload.action;
+  console.log(`Event Action is: ${event_action}`);
+
   //Build payload body
-  var body = `${issue["user"]["login"]} created a  new issue. ${issue["body"]}. More info here: ${issue["html_url"]}`
+
+  if (github.context.eventName == "issues") {
+
+    if (event_action == "opened") {
+
+      var subject = "New Issue: " + issue["title"];
+      var body = `${issue["user"]["login"]} created a  new issue. ${issue["body"]}. More info here: ${issue["html_url"]}`
+
+    } else if (event_action == "closed") {
+
+      var subject = "Issue #: " + issue["title"] + " was closed";
+      var body = `${issue["user"]["login"]} closed an issue. ${issue["body"]}. More info here: ${issue["html_url"]}`
+
+    }
+
+  } else if (github.context.eventName == "issue_comment") {
+
+    var subject = "New comment on issue: " + issue["number"];
+    var body = `${comment["user"]["login"]} commented on issue #${issue["number"]}. ${comment["body"]}. More info here: ${issue["html_url"]}`
+  
+  } else {
+
+    core.setFailed("Unsupported event type. Please use the  `issues` or `issue_comment` event type.");
+
+  }
+  
+  // output the payload to the console so the user can see it
+  console.log(`Touchpoint subject is: ${subject}`);
+  console.log(`Touchpoint body is: ${body}`);
 
   // Build the POST Request
   var request = require("request"); 
@@ -27,7 +61,7 @@ try {
       account_id: ACCOUNT_ID,
       content: body,
       activity_type_id: ACTIVITY_TYPE,
-      subject: issue["title"],
+      subject: subject,
       touchpointType: TOUCHPOINT_REASON,
     }
   }, (error, response, body) => {
