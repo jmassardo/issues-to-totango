@@ -64,10 +64,9 @@ try {
       activity_type_id: ACTIVITY_TYPE,
       subject: subject,
       touchpointType: TOUCHPOINT_TYPE,
-      touchpoint_reasons: {"id": TOUCHPOINT_REASON },
+      touchpoint_reasons: { TOUCHPOINT_REASON },
     }
   }, (error, response, body) => {
-    // handle success / failure ... 
     // Output a message to the console and an Action output
     touchpoint_id = (JSON.parse(response.body))["note"]["id"]
     console.log(`Successfully created touchpoint: ${touchpoint_id}`);
