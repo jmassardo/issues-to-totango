@@ -62,7 +62,7 @@ try {
       content: body,
       activity_type_id: ACTIVITY_TYPE,
       subject: subject,
-      touchpointType: TOUCHPOINT_REASON,
+      touchpoint_reasons: TOUCHPOINT_REASON,
     }
   }, (error, response, body) => {
     // handle success / failure ... 
