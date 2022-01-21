@@ -10,9 +10,6 @@ try {
   const TOUCHPOINT_REASON = core.getInput('TOUCHPOINT_REASON');
   const TOUCHPOINT_TYPE = core.getInput('TOUCHPOINT_TYPE');
 
-  let TOUCHPOINT_REASON_LIST = []
-  TOUCHPOINT_REASON_LIST.push(TOUCHPOINT_REASON)
-
   // Fetch the payload from the event
   const issue = github.context.payload.issue;
   console.log(`Issue num is: ${issue["number"]}`);
@@ -67,7 +64,7 @@ try {
       activity_type_id: ACTIVITY_TYPE,
       subject: subject,
       touchpointType: TOUCHPOINT_TYPE,
-      touchpoint_reasons: TOUCHPOINT_REASON_LIST,
+      touchpoint_reasons: {id: TOUCHPOINT_REASON },
     }
   }, (error, response, body) => {
     // handle success / failure ... 
