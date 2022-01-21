@@ -8,6 +8,9 @@ try {
   const APP_TOKEN = core.getInput('APP_TOKEN');
   const ACTIVITY_TYPE = core.getInput('ACTIVITY_TYPE');
   const TOUCHPOINT_REASON = core.getInput('TOUCHPOINT_REASON');
+  const TOUCHPOINT_TYPE = core.getInput('TOUCHPOINT_TYPE');
+
+  let TOUCHPOINT_REASON_LIST = [TOUCHPOINT_REASON]
 
   // Fetch the payload from the event
   const issue = github.context.payload.issue;
@@ -62,7 +65,8 @@ try {
       content: body,
       activity_type_id: ACTIVITY_TYPE,
       subject: subject,
-      touchpoint_reasons: TOUCHPOINT_REASON,
+      touchpointType: TOUCHPOINT_TYPE,
+      touchpoint_reasons: TOUCHPOINT_REASON_LIST,
     }
   }, (error, response, body) => {
     // handle success / failure ... 
