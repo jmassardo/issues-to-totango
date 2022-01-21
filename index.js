@@ -64,7 +64,7 @@ try {
       activity_type_id: ACTIVITY_TYPE,
       subject: subject,
       touchpointType: TOUCHPOINT_TYPE,
-      touchpoint_reasons: { TOUCHPOINT_REASON },
+      touchpoint_reasons: [ TOUCHPOINT_REASON ],
     }
   }, (error, response, body) => {
     // Output a message to the console and an Action output
