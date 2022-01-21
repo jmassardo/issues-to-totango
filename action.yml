@@ -10,12 +10,15 @@ inputs:
   ACTIVITY_TYPE:
     description: 'Type from the `Success Flow` section'
     required: true
+  TOUCHPOINT_TYPE:
+    description: 'The id value of the touchpoint type.'
+    required: true
   TOUCHPOINT_REASON:
     description: 'The id value of the touchpoint reason.'
     required: true
 outputs:
   touchpoint_id:
-    description: 'The time we greeted you'
+    description: 'The id of the newly created touchpoint'
 runs:
   using: 'node12'
   main: 'index.js'

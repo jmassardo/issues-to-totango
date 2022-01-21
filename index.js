@@ -64,7 +64,7 @@ try {
       activity_type_id: ACTIVITY_TYPE,
       subject: subject,
       touchpointType: TOUCHPOINT_TYPE,
-      touchpoint_reasons: {id: TOUCHPOINT_REASON },
+      touchpoint_reasons: {"id": TOUCHPOINT_REASON },
     }
   }, (error, response, body) => {
     // handle success / failure ... 
