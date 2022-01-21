@@ -10,7 +10,8 @@ try {
   const TOUCHPOINT_REASON = core.getInput('TOUCHPOINT_REASON');
   const TOUCHPOINT_TYPE = core.getInput('TOUCHPOINT_TYPE');
 
-  let TOUCHPOINT_REASON_LIST = [TOUCHPOINT_REASON]
+  let TOUCHPOINT_REASON_LIST = []
+  TOUCHPOINT_REASON_LIST.push(TOUCHPOINT_REASON)
 
   // Fetch the payload from the event
   const issue = github.context.payload.issue;
