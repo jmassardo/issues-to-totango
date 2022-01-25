@@ -31,7 +31,12 @@ Feature requests are welcome. Please log an issue in this repo for new requests.
 ### `TOUCHPOINT_TAGS`
 
 **Required** The GUID of the Touchpoint Reason.
-> This value is difficult to find. You may need to `GET` the Touchpoint Reason from the API. Fetch `https://api.totango.com/api/v2/events/?account_id=abcxyz0123456789` then look at `response.properties.touchpoint_tags`.
+> Fetch `https://api.totango.com/api/v3/touchpoint-tags/` to see the parings
+
+### `TOUCHPOINT_TYPE`
+
+**Required** The GUID of the Touchpoint Type.
+> Fetch `https://api.totango.com/api/v3/touchpoint-types/` to see the pairings.
 
 ## Outputs
 
