@@ -67,6 +67,8 @@ try {
       touchpoint_tags: [ "]8c91d24d-09aa-4d3e-a3c4-b3782803c33b" ],
     }
   }, (error, response, body) => {
+    console.log(`Touchpoint response is: ${response.body}`);
+    console.log(`Touchpoint error is: ${error}`);
     // Output a message to the console and an Action output
     touchpoint_id = (JSON.parse(response.body))["note"]["id"]
     console.log(`Successfully created touchpoint: ${touchpoint_id}`);
