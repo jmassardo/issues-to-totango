@@ -7,7 +7,7 @@ try {
   const ACCOUNT_ID = core.getInput('ACCOUNT_ID');
   const APP_TOKEN = core.getInput('APP_TOKEN');
   const ACTIVITY_TYPE = core.getInput('ACTIVITY_TYPE');
-  const TOUCHPOINT_REASON = core.getInput('TOUCHPOINT_REASON');
+  const TOUCHPOINT_TAGS = core.getInput('TOUCHPOINT_TAGS');
   const TOUCHPOINT_TYPE = core.getInput('TOUCHPOINT_TYPE');
 
   // Fetch the payload from the event
@@ -64,15 +64,9 @@ try {
       activity_type_id: ACTIVITY_TYPE,
       subject: subject,
       touchpointType: TOUCHPOINT_TYPE,
-      touchpoint_tags: [ "8c91d24d-09aa-4d3e-a3c4-b3782803c33b" ],
+      touchpoint_tags: [ TOUCHPOINT_TAGS ],
     }
   }, (error, response, body) => {
-    console.log(`Touchpoint response is: ${response.body}`);
-    console.log(`Touchpoint response status is: ${response.statusCode}`);
-    console.log(`Touchpoint response status message is: ${response.statusMessage}`);
-    console.log(`Touchpoint response headers are: ${response.headers}`);
-    console.log(`Touchpoint response request is: ${response.request}`);
-    console.log(`Touchpoint error is: ${error}`);
     // Output a message to the console and an Action output
     touchpoint_id = (JSON.parse(response.body))["note"]["id"]
     console.log(`Successfully created touchpoint: ${touchpoint_id}`);
