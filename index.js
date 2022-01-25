@@ -64,7 +64,7 @@ try {
       activity_type_id: ACTIVITY_TYPE,
       subject: subject,
       touchpointType: TOUCHPOINT_TYPE,
-      touchpoint_reasons: { "id": "8c91d24d-09aa-4d3e-a3c4-b3782803c33b" },
+      touchpoint_tags: [ "]8c91d24d-09aa-4d3e-a3c4-b3782803c33b" ],
     }
   }, (error, response, body) => {
     // Output a message to the console and an Action output
