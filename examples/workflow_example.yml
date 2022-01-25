@@ -16,4 +16,5 @@ jobs:
         ACCOUNT_ID: ${{ secrets.ACCOUNT_ID }}
         APP_TOKEN: ${{ secrets.APP_TOKEN }}
         ACTIVITY_TYPE: ${{ secrets.ACTIVITY_TYPE }}
-        TOUCHPOINT_REASON: ${{ secrets.TOUCHPOINT_REASON }}
+        TOUCHPOINT_TAGS: ${{ secrets.TOUCHPOINT_TAGS }}
+        TOUCHPOINT_TYPE: ${{ secrets.TOUCHPOINT_TYPE }}

@@ -7,7 +7,8 @@ try {
   const ACCOUNT_ID = core.getInput('ACCOUNT_ID');
   const APP_TOKEN = core.getInput('APP_TOKEN');
   const ACTIVITY_TYPE = core.getInput('ACTIVITY_TYPE');
-  const TOUCHPOINT_REASON = core.getInput('TOUCHPOINT_REASON');
+  const TOUCHPOINT_TAGS = core.getInput('TOUCHPOINT_TAGS');
+  const TOUCHPOINT_TYPE = core.getInput('TOUCHPOINT_TYPE');
 
   // Fetch the payload from the event
   const issue = github.context.payload.issue;
@@ -62,10 +63,10 @@ try {
       content: body,
       activity_type_id: ACTIVITY_TYPE,
       subject: subject,
-      touchpointType: TOUCHPOINT_REASON,
+      touchpointType: TOUCHPOINT_TYPE,
+      touchpoint_tags: [ TOUCHPOINT_TAGS ],
     }
   }, (error, response, body) => {
-    // handle success / failure ... 
     // Output a message to the console and an Action output
     touchpoint_id = (JSON.parse(response.body))["note"]["id"]
     console.log(`Successfully created touchpoint: ${touchpoint_id}`);
