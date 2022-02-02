@@ -26,17 +26,18 @@ Feature requests are welcome. Please log an issue in this repo for new requests.
 
 ### `ACTIVITY_TYPE`
 
-**Required** This is the desired activity type from the Success Flow section.
+**Required** This is ID of the desired activity type from the Success Flow section.
+> Fetch `https://api.totango.com/api/v3/activity-types/` to see the parings. Use the `activity_type_id` value.
 
 ### `TOUCHPOINT_TAGS`
 
 **Required** The GUID of the Touchpoint Reason.
-> Fetch `https://api.totango.com/api/v3/touchpoint-tags/` to see the parings
+> Fetch `https://api.totango.com/api/v3/touchpoint-tags/` to see the parings. Use the `ID` value.
 
 ### `TOUCHPOINT_TYPE`
 
 **Required** The GUID of the Touchpoint Type.
-> Fetch `https://api.totango.com/api/v3/touchpoint-types/` to see the pairings.
+> Fetch `https://api.totango.com/api/v3/touchpoint-types/` to see the pairings. Use the `ID` value.
 
 ## Outputs
 
