@@ -3,7 +3,6 @@
 *.env
 *.sqlite
 local*
-package-lock.json
 
 # Created by https://www.toptal.com/developers/gitignore/api/node,macos,windows,visualstudiocode,yarn
 # Edit at https://www.toptal.com/developers/gitignore?templates=node,macos,windows,visualstudiocode,yarn
@@ -82,7 +81,7 @@ bower_components
 build/Release
 
 # Dependency directories
-node_modules/
+# node_modules/
 jspm_packages/
 
 # Snowpack dependency directory (https://snowpack.dev/)
