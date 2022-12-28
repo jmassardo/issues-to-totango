@@ -56,3 +56,31 @@ with:
   TOUCHPOINT_TAGS: "e53621bc-f66a-49f0-a886-537b5c64df22"
   TOUCHPOINT_TYPE: "asdff3e5-cd3d-af42-ax3c-adsf2342c324"
 ```
+## How To Create a New Task
+The tasks API doesn't seem to be documented anywhere. To figure out what is sent to the API, use the Totango test account and Developer Tools while creating/editing a task.
+### NodeJs Example
+``` javascript
+var request = require('request');
+var options = {
+  'method': 'POST',
+  'url': 'https://api.totango.com/api/v3/tasks',
+  'headers': {
+    'app-token': APP_TOKEN,
+    'Content-Type': 'application/x-www-form-urlencoded'
+  },
+  form: {
+    'account_id': ACCOUNT_ID,
+    'description': '',
+    'assignee': TOTANGO_EMAIL,
+    'priority': '2',
+    'activity_type_id': ACTIVITY_TYPE,
+    'due_date': '2023-1-4',
+    'title': 'test',
+    'status': 'open'
+  }
+};
+request(options, function (error, response) {
+  if (error) throw new Error(error);
+  console.log(response.body);
+});
+```
