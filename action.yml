@@ -20,5 +20,5 @@ outputs:
   touchpoint_id:
     description: 'The id of the newly created touchpoint'
 runs:
-  using: 'node18'
+  using: 'node12'
   main: 'index.js'
