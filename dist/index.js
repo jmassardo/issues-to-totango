@@ -42461,6 +42461,7 @@ try {
   const ACTIVITY_TYPE = core.getInput('ACTIVITY_TYPE');
   const TOUCHPOINT_TAGS = core.getInput('TOUCHPOINT_TAGS');
   const TOUCHPOINT_TYPE = core.getInput('TOUCHPOINT_TYPE');
+  const TOTANGO_USER_NAME = core.getInput('TOTANGO_USER_NAME');
 
   // Fetch the payload from the event
   const issue = github.context.payload.issue;
@@ -42524,6 +42525,7 @@ try {
       },
       form: {
         account_id: ACCOUNT_ID,
+        assignee: TOTANGO_USER_NAME,
         description: body,
         activity_type_id: ACTIVITY_TYPE,
         priority: 2,
@@ -42537,6 +42539,7 @@ try {
       console.log(`Successfully created touchpoint: ${touchpoint_id}`);
       core.setOutput('touchpoint_id', touchpoint_id); */
       console.log(response.statusCode);
+      console.log(response.statusMessage);
     });
   } else {
     request.post(TOTANGO_API_URL, {
