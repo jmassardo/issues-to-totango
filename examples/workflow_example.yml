@@ -18,3 +18,4 @@ jobs:
         ACTIVITY_TYPE: ${{ secrets.ACTIVITY_TYPE }}
         TOUCHPOINT_TAGS: ${{ secrets.TOUCHPOINT_TAGS }}
         TOUCHPOINT_TYPE: ${{ secrets.TOUCHPOINT_TYPE }}
+        TOTANGO_USER_NAME: ${{ secrets.TOTANGO_USER_NAME }}
