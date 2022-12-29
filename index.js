@@ -20,7 +20,7 @@ try {
   const event_action = github.context.payload.action;
   console.log(`Event Action is: ${event_action}`);
 
-  const task_flag = false
+  var task_flag = false
   
   // Build payload body
 
