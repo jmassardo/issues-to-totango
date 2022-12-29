@@ -40,7 +40,7 @@ try {
 
       var subject = 'Issue #: ' + issue['title'] + ' was labeled';
       var body = `${issue['user']['login']} labeled an issue. ${issue['body']}. More info here: ${issue['html_url']}`;
-      const label = github.context.payload.label
+      var label = github.context.payload.label
       if (label['name'] === 'task') {
         task_flag = true
       }
