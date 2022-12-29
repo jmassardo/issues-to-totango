@@ -27,5 +27,6 @@
   },
   "directories": {
     "example": "examples"
-  }
+  },
+  "devDependencies": {}
 }
