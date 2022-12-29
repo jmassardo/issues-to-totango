@@ -85,6 +85,7 @@ try {
       console.log(`Successfully created touchpoint: ${touchpoint_id}`);
       core.setOutput('touchpoint_id', touchpoint_id); */
       console.log(response.statusCode);
+      console.log(response.statusMessage);
     });
   } else {
     request.post(TOTANGO_API_URL, {
