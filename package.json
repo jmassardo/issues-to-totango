@@ -23,10 +23,10 @@
     "cspell": "^6.17.0",
     "eslint": "^8.30.0",
     "eslint-config-strongloop": "^2.1.0",
+    "octokit": "^2.0.10",
     "request": "^2.88.2"
   },
   "directories": {
     "example": "examples"
-  },
-  "devDependencies": {}
+  }
 }
