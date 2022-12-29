@@ -21,4 +21,4 @@ outputs:
     description: 'The id of the newly created touchpoint'
 runs:
   using: 'node16'
-  main: 'index.js'
+  main: 'dist/index.js'
