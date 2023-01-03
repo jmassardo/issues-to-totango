@@ -42454,6 +42454,12 @@ const core = __nccwpck_require__(9935);
 const github = __nccwpck_require__(2835);
 
 try {
+  // Constants
+  const DEFAULT_PRIORITY = 2 //Indicates "Normal" priority for tasks;
+  const DEFAULT_TASK_ACTIVITY = 'support';
+  //where 12096e5 is the magic number for 14 days in milliseconds and the format is YYYY-MM-DD 
+  const DEFAULT_DUE_DATE = new Date(Date.now() + 12096e5).toISOString().substring(0, 10);
+
   // Fetch variables from the actions inputs
   const TOTANGO_API_URL = 'https://api.totango.com/api/v3/touchpoints/';
   const ACCOUNT_ID = core.getInput('ACCOUNT_ID');
@@ -42472,17 +42478,20 @@ try {
 
   const event_action = github.context.payload.action;
   console.log(`Event Action is: ${event_action}`);
-
-  var task_flag = false
   
   // Build payload body
-
   if (github.context.eventName === 'issues') {
 
     if (event_action === 'opened') {
 
       var subject = 'New Issue: ' + issue['title'];
       var body = `${issue['user']['login']} created a  new issue. ${issue['body']}. More info here: ${issue['html_url']}`;
+
+      // output the payload to the console so the user can see it
+      console.log(`Touchpoint subject is: ${subject}`);
+      console.log(`Touchpoint body is: ${body}`);
+
+      create_touchpoint(subject, body)
 
     } else if (event_action === 'closed') {
 
@@ -42493,9 +42502,10 @@ try {
 
       var subject = 'Issue #: ' + issue['title'] + ' was labeled';
       var body = `${issue['user']['login']} labeled an issue. ${issue['body']}. More info here: ${issue['html_url']}`;
-      var label = github.context.payload.label
+      var label = github.context.payload.label;
+
       if (label['name'] === 'task') {
-        task_flag = true
+        create_task(subject, body, label);
       }
 
     }
@@ -42510,38 +42520,14 @@ try {
     core.setFailed('Unsupported event type. Please use the  `issues` or `issue_comment` event type.');
 
   }
+} catch (error) {
+  core.setFailed(error.message);
+}
 
-  // output the payload to the console so the user can see it
-  console.log(`Touchpoint subject is: ${subject}`);
-  console.log(`Touchpoint body is: ${body}`);
+function create_touchpoint(subject, body) {
+    // Build the POST Request
+    var request = __nccwpck_require__(8698);
 
-  // Build the POST Request
-  var request = __nccwpck_require__(8698);
-
-  if (task_flag === true) {
-    request.post('https://api.totango.com/api/v3/tasks', {
-      headers: {
-        'app-token': APP_TOKEN,
-      },
-      form: {
-        account_id: ACCOUNT_ID,
-        assignee: TOTANGO_USER_NAME,
-        description: body,
-        activity_type_id: ACTIVITY_TYPE,
-        priority: 2,
-        title: subject,
-        status: 'open',
-        due_date: '2023-1-4',
-      },
-    }, (error, response, body) => {
-      // Output a message to the console and an Action output
-/*       touchpoint_id = (JSON.parse(response.body))['note']['id'];
-      console.log(`Successfully created touchpoint: ${touchpoint_id}`);
-      core.setOutput('touchpoint_id', touchpoint_id); */
-      console.log(response.statusCode);
-      console.log(response.statusMessage);
-    });
-  } else {
     request.post(TOTANGO_API_URL, {
       headers: {
         'app-token': APP_TOKEN,
@@ -42563,8 +42549,30 @@ try {
     });
 }
 
-} catch (error) {
-  core.setFailed(error.message);
+function create_task(subject, body, label) {
+  var request = __nccwpck_require__(8698);
+  request.post('https://api.totango.com/api/v3/tasks', {
+      headers: {
+        'app-token': APP_TOKEN,
+      },
+      form: {
+        account_id: ACCOUNT_ID,
+        assignee: TOTANGO_USER_NAME, //TODO : get assignee from issue. If no assignee, get CSA/CSM from totango account and add
+        description: body,
+        activity_type_id: DEFAULT_TASK_ACTIVITY, 
+        priority: DEFAULT_PRIORITY,
+        title: subject,
+        status: 'open',
+        due_date: DEFAULT_DUE_DATE,
+      },
+    }, (error, response, body) => {
+      // Output a message to the console and an Action output
+      task_id = (JSON.parse(response.body))['id'];
+      console.log(`Successfully created task: ${task_id}`);
+      core.setOutput('task_id', task_id);
+      console.log(response.statusCode);
+      console.log(body);
+    });
 }
 
 })();
