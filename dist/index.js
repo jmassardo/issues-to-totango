@@ -42520,9 +42520,6 @@ try {
     core.setFailed('Unsupported event type. Please use the  `issues` or `issue_comment` event type.');
 
   }
-} catch (error) {
-  core.setFailed(error.message);
-}
 
 function create_touchpoint(subject, body) {
     // Build the POST Request
@@ -42573,6 +42570,9 @@ function create_task(subject, body) {
       console.log(response.statusCode);
       console.log(body);
     });
+}
+} catch (error) {
+  core.setFailed(error.message);
 }
 
 })();
