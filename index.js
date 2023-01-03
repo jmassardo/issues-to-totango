@@ -9,6 +9,7 @@ try {
   const ACTIVITY_TYPE = core.getInput('ACTIVITY_TYPE');
   const TOUCHPOINT_TAGS = core.getInput('TOUCHPOINT_TAGS');
   const TOUCHPOINT_TYPE = core.getInput('TOUCHPOINT_TYPE');
+  const TOTANGO_USER_NAME = core.getInput('TOTANGO_USER_NAME');
 
   // Fetch the payload from the event
   const issue = github.context.payload.issue;
@@ -20,6 +21,8 @@ try {
   const event_action = github.context.payload.action;
   console.log(`Event Action is: ${event_action}`);
 
+  var task_flag = false
+  
   // Build payload body
 
   if (github.context.eventName === 'issues') {
@@ -33,6 +36,15 @@ try {
 
       var subject = 'Issue #: ' + issue['title'] + ' was closed';
       var body = `${issue['user']['login']} closed an issue. ${issue['body']}. More info here: ${issue['html_url']}`;
+
+    } else if (event_action === 'labeled') {
+
+      var subject = 'Issue #: ' + issue['title'] + ' was labeled';
+      var body = `${issue['user']['login']} labeled an issue. ${issue['body']}. More info here: ${issue['html_url']}`;
+      var label = github.context.payload.label
+      if (label['name'] === 'task') {
+        task_flag = true
+      }
 
     }
 
@@ -54,25 +66,50 @@ try {
   // Build the POST Request
   var request = require('request');
 
-  request.post(TOTANGO_API_URL, {
-    headers: {
-      'app-token': APP_TOKEN,
-    },
-    form: {
-      account_id: ACCOUNT_ID,
-      content: body,
-      activity_type_id: ACTIVITY_TYPE,
-      subject: subject,
-      touchpointType: TOUCHPOINT_TYPE,
-      touchpoint_tags: [ TOUCHPOINT_TAGS ],
-    },
-  }, (error, response, body) => {
-    // Output a message to the console and an Action output
-    touchpoint_id = (JSON.parse(response.body))['note']['id'];
-    console.log(`Successfully created touchpoint: ${touchpoint_id}`);
-    core.setOutput('touchpoint_id', touchpoint_id);
-    console.log(response.statusCode);
-  });
+  if (task_flag === true) {
+    request.post('https://api.totango.com/api/v3/tasks', {
+      headers: {
+        'app-token': APP_TOKEN,
+      },
+      form: {
+        account_id: ACCOUNT_ID,
+        assignee: TOTANGO_USER_NAME,
+        description: body,
+        activity_type_id: ACTIVITY_TYPE,
+        priority: 2,
+        title: subject,
+        status: 'open',
+        due_date: '2023-1-4',
+      },
+    }, (error, response, body) => {
+      // Output a message to the console and an Action output
+/*       touchpoint_id = (JSON.parse(response.body))['note']['id'];
+      console.log(`Successfully created touchpoint: ${touchpoint_id}`);
+      core.setOutput('touchpoint_id', touchpoint_id); */
+      console.log(response.statusCode);
+      console.log(response.statusMessage);
+    });
+  } else {
+    request.post(TOTANGO_API_URL, {
+      headers: {
+        'app-token': APP_TOKEN,
+      },
+      form: {
+        account_id: ACCOUNT_ID,
+        content: body,
+        activity_type_id: ACTIVITY_TYPE,
+        subject: subject,
+        touchpointType: TOUCHPOINT_TYPE,
+        touchpoint_tags: [ TOUCHPOINT_TAGS ],
+      },
+    }, (error, response, body) => {
+      // Output a message to the console and an Action output
+      touchpoint_id = (JSON.parse(response.body))['note']['id'];
+      console.log(`Successfully created touchpoint: ${touchpoint_id}`);
+      core.setOutput('touchpoint_id', touchpoint_id);
+      console.log(response.statusCode);
+    });
+}
 
 } catch (error) {
   core.setFailed(error.message);
