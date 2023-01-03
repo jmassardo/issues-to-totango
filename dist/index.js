@@ -42459,9 +42459,10 @@ try {
   const DEFAULT_TASK_ACTIVITY = 'support';
   //where 12096e5 is the magic number for 14 days in milliseconds and the format is YYYY-MM-DD 
   const DEFAULT_DUE_DATE = new Date(Date.now() + 12096e5).toISOString().substring(0, 10);
+  const TOTANGO_TOUCHPOINTS_URL = 'https://api.totango.com/api/v3/touchpoints/';
+  const TOTANGO_TASK_URL = 'https://api.totango.com/api/v3/tasks'
 
   // Fetch variables from the actions inputs
-  const TOTANGO_API_URL = 'https://api.totango.com/api/v3/touchpoints/';
   const ACCOUNT_ID = core.getInput('ACCOUNT_ID');
   const APP_TOKEN = core.getInput('APP_TOKEN');
   const ACTIVITY_TYPE = core.getInput('ACTIVITY_TYPE');
@@ -42504,6 +42505,11 @@ try {
       var body = `${issue['user']['login']} labeled an issue. ${issue['body']}. More info here: ${issue['html_url']}`;
       var label = github.context.payload.label;
 
+      
+      let regex = /### Description\\n\\([A-Za-z0-9]+( [A-Za-z0-9]+)+)\\n\\n|### Priority\\n\\n[0-9]+\s\([a-zA-Z]+\)\\n\\n|### Due Date\\n\\n([0-9]+(\/[0-9]+)+)/g;
+      array= body.match(regex);
+      console.log(array)
+
       if (label['name'] === 'task') {
         create_task(subject, body);
       }
@@ -42525,7 +42531,7 @@ function create_touchpoint(subject, body) {
     // Build the POST Request
     var request = __nccwpck_require__(8698);
 
-    request.post(TOTANGO_API_URL, {
+    request.post(TOTANGO_TOUCHPOINTS_URL, {
       headers: {
         'app-token': APP_TOKEN,
       },
@@ -42548,7 +42554,7 @@ function create_touchpoint(subject, body) {
 
 function create_task(subject, body) {
   var request = __nccwpck_require__(8698);
-  request.post('https://api.totango.com/api/v3/tasks', {
+  request.post(TOTANGO_TASK_URL, {
       headers: {
         'app-token': APP_TOKEN,
       },
@@ -42568,7 +42574,6 @@ function create_task(subject, body) {
       console.log(`Successfully created task: ${task_id}`);
       core.setOutput('task_id', task_id);
       console.log(response.statusCode);
-      console.log(body);
     });
 }
 } catch (error) {
