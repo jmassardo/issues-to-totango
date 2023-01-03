@@ -53,7 +53,7 @@ try {
       var label = github.context.payload.label;
 
       if (label['name'] === 'task') {
-        create_task(subject, body, label);
+        create_task(subject, body);
       }
 
     }
@@ -97,7 +97,7 @@ function create_touchpoint(subject, body) {
     });
 }
 
-function create_task(subject, body, label) {
+function create_task(subject, body) {
   var request = require('request');
   request.post('https://api.totango.com/api/v3/tasks', {
       headers: {
