@@ -1,6 +1,7 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 
+
 try {
   // Constants
   const DEFAULT_PRIORITY = 2 //Indicates "Normal" priority for tasks;
@@ -53,15 +54,28 @@ try {
       var body = `${issue['user']['login']} labeled an issue. ${issue['body']}. More info here: ${issue['html_url']}`;
       var label = github.context.payload.label;
 
-      
-      let regex = /### Description\\n\\([A-Za-z0-9]+( [A-Za-z0-9]+)+)\\n\\n|### Priority\\n\\n[0-9]+\s\([a-zA-Z]+\)\\n\\n|### Due Date\\n\\n([0-9]+(\/[0-9]+)+)/g;
-      array= body.match(regex);
-      console.log(array)
+      var regex = /### Description\n\n(.*)|### Priority\n\n[1-3]|### Due Date\n\n([0-9]+(-[0-9]+)+)/g
+      //let body = "### Description\n\nstuff stuff stuff\n\n### Priority\n\n1 (Low)\n\n### Due Date\n\n2024-01-01"
+      var temp_array = body.match(regex);
+      console.log(array);
+      var body_array = [];
 
-      if (label['name'] === 'task') {
-        create_task(subject, body);
+      if (temp_array.length != 3) { //regex should match 3 params w/ current issue form
+        for (match of temp_array) {
+          piece = match.split("\n\n");
+          body_array.push(piece[1]);
+        }
+        console.log(body_array);
       }
-
+      else { //set up default values
+        body_array[0] = body;
+        body_array[1] = DEFAULT_PRIORITY;
+        body_array[2] = DEFAULT_DUE_DATE;
+      }
+      
+      if (label['name'] === 'task') {
+        create_task(subject, body_array);
+      }
     }
 
   } else if (github.context.eventName === 'issue_comment') {
@@ -100,7 +114,7 @@ function create_touchpoint(subject, body) {
     });
 }
 
-function create_task(subject, body) {
+function create_task(subject, body_array) {
   var request = require('request');
   request.post(TOTANGO_TASK_URL, {
       headers: {
@@ -109,12 +123,12 @@ function create_task(subject, body) {
       form: {
         account_id: ACCOUNT_ID,
         assignee: TOTANGO_USER_NAME, //TODO : get assignee from issue. If no assignee, get CSA/CSM from totango account and add
-        description: body,
+        description: body_array[0],
         activity_type_id: DEFAULT_TASK_ACTIVITY, 
-        priority: DEFAULT_PRIORITY,
+        priority: body_array[1],
         title: subject,
         status: 'open',
-        due_date: DEFAULT_DUE_DATE,
+        due_date: body_array[2],
       },
     }, (error, response, body) => {
       // Output a message to the console and an Action output
