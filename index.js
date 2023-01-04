@@ -48,12 +48,11 @@ try {
       var body = `${issue['user']['login']} closed an issue. ${issue['body']}. More info here: ${issue['html_url']}`;
 
     } else if (event_action === 'labeled') {
-
+      //Will start multiple jobs if multiple labels are applied
       var subject = 'Issue #: ' + issue['title'] + ' was labeled';
       var body = `${issue['user']['login']} labeled an issue. ${issue['body']}. More info here: ${issue['html_url']}`;
-      var label = github.context.payload.label;
-      console.log(label)
-
+      var label = github.context.payload.label; 
+      
       if (label['name'] === 'task') {
         var regex = /### Description\n\n(.*)|### Priority\n\n[1-3]|### Due Date\n\n([0-9]+(-[0-9]+)+)/g
         //Example of what a matching body should look like in request from Issue Form
@@ -74,6 +73,9 @@ try {
         }
 
         create_task(subject, body_array);
+      }
+      else if (label['name'] === 'High Priority') {
+        //will need to wait to figure out how we're doing IDs, to retrieve the totango task and update priority
       } 
     }
 
