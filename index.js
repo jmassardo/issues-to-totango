@@ -52,28 +52,29 @@ try {
       var subject = 'Issue #: ' + issue['title'] + ' was labeled';
       var body = `${issue['user']['login']} labeled an issue. ${issue['body']}. More info here: ${issue['html_url']}`;
       var label = github.context.payload.label;
+      console.log(label)
 
-      var regex = /### Description\n\n(.*)|### Priority\n\n[1-3]|### Due Date\n\n([0-9]+(-[0-9]+)+)/g
-      //Example of what a matching body should look like in request from Issue Form
-      //var body = "### Description\n\nstuff stuff stuff\n\n### Priority\n\n1 (Low)\n\n### Due Date\n\n2024-01-01"
-      var temp_array = body.match(regex);
-      var body_array = [];
-
-      if (temp_array.length == 3) { //regex should match 3 params w/ current issue form
-        for (match of temp_array) {
-          piece = match.split("\n\n");
-          body_array.push(piece[1]);
-        }
-      }
-      else { //set up default values
-        body_array[0] = body;
-        body_array[1] = DEFAULT_PRIORITY;
-        body_array[2] = DEFAULT_DUE_DATE;
-      }
-      
       if (label['name'] === 'task') {
+        var regex = /### Description\n\n(.*)|### Priority\n\n[1-3]|### Due Date\n\n([0-9]+(-[0-9]+)+)/g
+        //Example of what a matching body should look like in request from Issue Form
+        //var body = "### Description\n\nstuff stuff stuff\n\n### Priority\n\n1 (Low)\n\n### Due Date\n\n2024-01-01"
+        var temp_array = body.match(regex);
+        var body_array = [];
+
+        if (temp_array.length == 3) { //regex should match 3 params w/ current issue form
+          for (match of temp_array) {
+            piece = match.split("\n\n");
+            body_array.push(piece[1]);
+          }
+        }
+        else { //set up default values
+          body_array[0] = body;
+          body_array[1] = DEFAULT_PRIORITY;
+          body_array[2] = DEFAULT_DUE_DATE;
+        }
+
         create_task(subject, body_array);
-      }
+      } 
     }
 
   } else if (github.context.eventName === 'issue_comment') {
