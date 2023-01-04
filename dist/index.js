@@ -42453,7 +42453,6 @@ var __webpack_exports__ = {};
 const core = __nccwpck_require__(9935);
 const github = __nccwpck_require__(2835);
 
-
 try {
   // Constants
   const DEFAULT_PRIORITY = 2 //Indicates "Normal" priority for tasks;
@@ -42512,7 +42511,7 @@ try {
       console.log(temp_array);
       var body_array = [];
 
-      if (temp_array.length != 3) { //regex should match 3 params w/ current issue form
+      if (temp_array.length == 3) { //regex should match 3 params w/ current issue form
         for (match of temp_array) {
           piece = match.split("\n\n");
           body_array.push(piece[1]);
