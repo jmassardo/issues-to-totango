@@ -16,8 +16,7 @@ try {
   const ACTIVITY_TYPE = core.getInput('ACTIVITY_TYPE');
   const TOUCHPOINT_TAGS = core.getInput('TOUCHPOINT_TAGS');
   const TOUCHPOINT_TYPE = core.getInput('TOUCHPOINT_TYPE');
-  const TOTANGO_USER_NAME = core.getInput('TOTANGO_USER_NAME');
-  const TOTANGO_TASK_ASSIGNEES = core.getInput('TOTANGO_TASK_ASSIGNEE') //comma separated list of assignees. up to 10
+  const TASK_ASSIGNEE = core.getInput('TASK_ASSIGNEE');
   const GITHUB_TOKEN = core.getInput('repo-token');
   const octokit = github.getOctokit(GITHUB_TOKEN);
   // Fetch the payload from the event
@@ -131,8 +130,6 @@ function create_touchpoint(subject, body) {
 }
 
 function create_task(subject, body_array) {
-  console.log('Adding Assignees to issue')
-  github.issue.addAssignees({TOTANGO_TASK_ASSIGNEES})
   var request = require('request');
   request.post(TOTANGO_TASK_URL, {
       headers: {
@@ -140,7 +137,7 @@ function create_task(subject, body_array) {
       },
       form: {
         account_id: ACCOUNT_ID,
-        assignee: TOTANGO_USER_NAME, //TODO : get assignee from issue. If no assignee, get CSA/CSM from totango account and add
+        assignee: TASK_ASSIGNEE, //TODO : get assignee from issue. If no assignee, get CSA/CSM from totango account and add
         description: body_array[0],
         activity_type_id: DEFAULT_TASK_ACTIVITY,
         priority: body_array[1],
