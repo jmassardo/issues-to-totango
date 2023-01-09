@@ -18,6 +18,9 @@ inputs:
     required: true
   TOTANGO_USER_NAME:
     description: 'The email value used for testing - will be changed later after testing'
+  repo-token:
+    description: 'GitHub Repo Token for auth'
+    required: true
 outputs:
   touchpoint_id:
     description: 'The id of the newly created touchpoint'

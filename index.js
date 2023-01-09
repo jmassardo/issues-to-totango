@@ -17,7 +17,8 @@ try {
   const TOUCHPOINT_TAGS = core.getInput('TOUCHPOINT_TAGS');
   const TOUCHPOINT_TYPE = core.getInput('TOUCHPOINT_TYPE');
   const TOTANGO_USER_NAME = core.getInput('TOTANGO_USER_NAME');
-
+  const GITHUB_TOKEN = core.getInput('repo-token');
+  const octokit = github.getOctokit(GITHUB_TOKEN);
   // Fetch the payload from the event
   const issue = github.context.payload.issue;
   console.log(`Issue num is: ${issue['number']}`);
@@ -87,6 +88,18 @@ try {
 
   }
 
+
+// Comment on github issue with touchpoint id
+function comment_gh_issue(touchpoint_id) {
+  octokit.rest.issues.createComment({
+    owner: github.context.repo.owner,
+    repo: github.context.repo.repo,
+    issue_number: issue['number'],
+    body: `ID: ${touchpoint_id}`,
+  });
+}
+
+
 function create_touchpoint(subject, body) {
     // Build the POST Request
     var request = require('request');
@@ -107,9 +120,13 @@ function create_touchpoint(subject, body) {
       // Output a message to the console and an Action output
       touchpoint_id = (JSON.parse(response.body))['note']['id'];
       console.log(`Successfully created touchpoint: ${touchpoint_id}`);
+      // Touchpoint id to github issue comment using function
+      console.log(`Commenting on github issue`);
+      comment_gh_issue(touchpoint_id);
       core.setOutput('touchpoint_id', touchpoint_id);
       console.log(response.statusCode);
     });
+
 }
 
 function create_task(subject, body_array) {
@@ -133,8 +150,12 @@ function create_task(subject, body_array) {
       task_id = (JSON.parse(response.body))['id'];
       console.log(`Successfully created task: ${task_id}`);
       core.setOutput('task_id', task_id);
+      console.log(`Commenting on github task`);
+      comment_gh_issue(task_id);
       console.log(response.statusCode);
     });
+  comment_gh_issue(task_id);
+
 }
 } catch (error) {
   core.setFailed(error.message);
