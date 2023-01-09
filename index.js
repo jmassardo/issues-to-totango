@@ -108,6 +108,13 @@ function create_touchpoint(subject, body) {
       touchpoint_id = (JSON.parse(response.body))['note']['id'];
       console.log(`Successfully created touchpoint: ${touchpoint_id}`);
       core.setOutput('touchpoint_id', touchpoint_id);
+      // Add a comment to the github issue with the touchpoint id
+      github.issues.createComment({
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+        issue_number: issue['number'],
+        body: `Totango Touchpoint ID: ${touchpoint_id}`,
+      });
       console.log(response.statusCode);
     });
 }
