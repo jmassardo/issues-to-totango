@@ -110,6 +110,7 @@ function create_touchpoint(subject, body) {
       core.setOutput('touchpoint_id', touchpoint_id);
       console.log(response.statusCode);
       // Touchpoind id to github issue comment using function
+      console.log("Commenting on github issue");
       comment_gh_issue(touchpoint_id);
     });
 
