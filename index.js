@@ -121,7 +121,7 @@ function create_touchpoint(subject, body) {
       touchpoint_id = (JSON.parse(response.body))['note']['id'];
       console.log(`Successfully created touchpoint: ${touchpoint_id}`);
       // Touchpoint id to github issue comment using function
-      console.log("Commenting on github issue");
+      console.log(`Commenting on github issue`);
       comment_gh_issue(touchpoint_id);
       core.setOutput('touchpoint_id', touchpoint_id);
       console.log(response.statusCode);
