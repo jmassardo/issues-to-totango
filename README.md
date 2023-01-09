@@ -55,7 +55,9 @@ with:
   ACTIVITY_TYPE: "adoption"
   TOUCHPOINT_TAGS: "e53621bc-f66a-49f0-a886-537b5c64df22"
   TOUCHPOINT_TYPE: "asdff3e5-cd3d-af42-ax3c-adsf2342c324"
+  TOTANGO_USER_NAME: "totango_user_email@email.com"
 ```
+## Building Code
 ## How To Create a New Task
 The tasks API doesn't seem to be documented anywhere. To figure out what is sent to the API, use the Totango test account and Developer Tools while creating/editing a task.
 ### NodeJs Example
