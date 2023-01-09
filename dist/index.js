@@ -42470,6 +42470,7 @@ try {
   const TOUCHPOINT_TYPE = core.getInput('TOUCHPOINT_TYPE');
   const TOTANGO_USER_NAME = core.getInput('TOTANGO_USER_NAME');
   const GITHUB_TOKEN = core.getInput('repo-token');
+  const octokit = github.getOctokit(GITHUB_TOKEN);
   // Fetch the payload from the event
   const issue = github.context.payload.issue;
   console.log(`Issue num is: ${issue['number']}`);
@@ -42542,8 +42543,7 @@ try {
 
 // Comment on github issue with touchpoint id
 function comment_gh_issue(touchpoint_id) {
-  const octokit = github.getOctokit(GITHUB_TOKEN);
-  const createComment = octokit.issues.createComment({
+  octokit.rest.issues.createComment({
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
     issue_number: issue['number'],
