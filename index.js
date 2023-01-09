@@ -17,7 +17,7 @@ try {
   const TOUCHPOINT_TAGS = core.getInput('TOUCHPOINT_TAGS');
   const TOUCHPOINT_TYPE = core.getInput('TOUCHPOINT_TYPE');
   const TOTANGO_USER_NAME = core.getInput('TOTANGO_USER_NAME');
-
+  const GITHUB_TOKEN = core.getInput('GITHUB_TOKEN');
   // Fetch the payload from the event
   const issue = github.context.payload.issue;
   console.log(`Issue num is: ${issue['number']}`);
