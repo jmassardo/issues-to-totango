@@ -87,6 +87,19 @@ try {
 
   }
 
+
+// Comment on github issue with touchpoint id
+function comment_gh_issue(touchpoint_id) {
+  const octokit = github.getOctokit(GITHUB_TOKEN);
+  const createComment = octokit.issues.createComment({
+    owner: github.context.repo.owner,
+    repo: github.context.repo.repo,
+    issue_number: issue['number'],
+    body: `ID: ${touchpoint_id}`,
+  });
+}
+
+
 function create_touchpoint(subject, body) {
     // Build the POST Request
     var request = require('request');
@@ -145,14 +158,3 @@ function create_task(subject, body_array) {
 } catch (error) {
   core.setFailed(error.message);
 }
-
-// Add a function to comment on the issue with the task id
-function comment_gh_issue(task_id) {
-  github.issue.createComment({
-    owner: github.context.repo.owner,
-    repo: github.context.repo.repo,
-    issue_number: issue['number'],
-    body: `ID: ${task_id}`,
-  });
-}
-
