@@ -42602,6 +42602,8 @@ function create_task(subject, body_array) {
       task_id = (JSON.parse(response.body))['id'];
       console.log(`Successfully created task: ${task_id}`);
       core.setOutput('task_id', task_id);
+      console.log(`Commenting on github task`);
+      comment_gh_issue(task_id);
       console.log(response.statusCode);
     });
   comment_gh_issue(task_id);
