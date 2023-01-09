@@ -108,16 +108,10 @@ function create_touchpoint(subject, body) {
       touchpoint_id = (JSON.parse(response.body))['note']['id'];
       console.log(`Successfully created touchpoint: ${touchpoint_id}`);
       core.setOutput('touchpoint_id', touchpoint_id);
-      // Add a comment to the github issue with the touchpoint id
-      const gh_result = github.issues.createComment({
-        owner: github.context.repo.owner,
-        repo: github.context.repo.repo,
-        issue_number: issue['number'],
-        body: `Totango Touchpoint ID: ${touchpoint_id}`,
-      });
-      console.log(gh_result)
       console.log(response.statusCode);
     });
+    comment_gh_issue(task_id);
+
 }
 
 function create_task(subject, body_array) {
@@ -143,7 +137,19 @@ function create_task(subject, body_array) {
       core.setOutput('task_id', task_id);
       console.log(response.statusCode);
     });
+  comment_gh_issue(task_id);
+
 }
 } catch (error) {
   core.setFailed(error.message);
+}
+
+function comment_gh_issue(interaction_id) {
+  const gh_result = github.issues.createComment({
+    owner: github.context.repo.owner,
+    repo: github.context.repo.repo,
+    issue_number: issue['number'],
+    body: `ID: ${interaction_id}`,
+  });
+  console.log(gh_result)
 }
