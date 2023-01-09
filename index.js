@@ -109,8 +109,9 @@ function create_touchpoint(subject, body) {
       console.log(`Successfully created touchpoint: ${touchpoint_id}`);
       core.setOutput('touchpoint_id', touchpoint_id);
       console.log(response.statusCode);
+      // Touchpoind id to github issue comment using function
+      comment_gh_issue(touchpoint_id);
     });
-    comment_gh_issue(task_id);
 
 }
 
@@ -144,12 +145,13 @@ function create_task(subject, body_array) {
   core.setFailed(error.message);
 }
 
-function comment_gh_issue(interaction_id) {
-  const gh_result = github.issues.createComment({
-    owner: github.context.repo.owner,
-    repo: github.context.repo.repo,
+// Add a function to comment on the issue with the task id
+function comment_gh_issue(task_id) {
+  const octokit = github.getOctokit(TOKEN);
+  octokit.issues.createComment({
+    owner: OWNER,
+    repo: REPO,
     issue_number: issue['number'],
-    body: `ID: ${interaction_id}`,
+    body: `ID: ${task_id}`,
   });
-  console.log(gh_result)
 }
