@@ -16,7 +16,7 @@ inputs:
   TOUCHPOINT_TAGS:
     description: 'The id value of the touchpoint reason.'
     required: true
-  TOTANGO_USER_NAME:
+  TASK_ASSIGNEE:
     description: 'The email value used for testing - will be changed later after testing'
   repo-token:
     description: 'GitHub Repo Token for auth'
