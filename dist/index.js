@@ -42457,7 +42457,7 @@ try {
   // Constants
   const DEFAULT_PRIORITY = 2 //Indicates "Normal" priority for tasks;
   const DEFAULT_TASK_ACTIVITY = 'support';
-  //where 12096e5 is the magic number for 14 days in milliseconds and the format is YYYY-MM-DD 
+  //where 12096e5 is the magic number for 14 days in milliseconds and the format is YYYY-MM-DD
   const DEFAULT_DUE_DATE = new Date(Date.now() + 12096e5).toISOString().substring(0, 10);
   const TOTANGO_TOUCHPOINTS_URL = 'https://api.totango.com/api/v3/touchpoints/';
   const TOTANGO_TASK_URL = 'https://api.totango.com/api/v3/tasks'
@@ -42468,7 +42468,7 @@ try {
   const ACTIVITY_TYPE = core.getInput('ACTIVITY_TYPE');
   const TOUCHPOINT_TAGS = core.getInput('TOUCHPOINT_TAGS');
   const TOUCHPOINT_TYPE = core.getInput('TOUCHPOINT_TYPE');
-  const TOTANGO_USER_NAME = core.getInput('TOTANGO_USER_NAME');
+  const TASK_ASSIGNEE = core.getInput('TASK_ASSIGNEE');
   const GITHUB_TOKEN = core.getInput('repo-token');
   const octokit = github.getOctokit(GITHUB_TOKEN);
   // Fetch the payload from the event
@@ -42480,7 +42480,7 @@ try {
 
   const event_action = github.context.payload.action;
   console.log(`Event Action is: ${event_action}`);
-  
+
   // Build payload body
   if (github.context.eventName === 'issues') {
 
@@ -42523,7 +42523,7 @@ try {
         body_array[1] = DEFAULT_PRIORITY;
         body_array[2] = DEFAULT_DUE_DATE;
       }
-      
+
       if (label['name'] === 'task') {
         create_task(subject, body_array);
       }
@@ -42589,9 +42589,9 @@ function create_task(subject, body_array) {
       },
       form: {
         account_id: ACCOUNT_ID,
-        assignee: TOTANGO_USER_NAME, //TODO : get assignee from issue. If no assignee, get CSA/CSM from totango account and add
+        assignee: TASK_ASSIGNEE, //TODO : get assignee from issue. If no assignee, get CSA/CSM from totango account and add
         description: body_array[0],
-        activity_type_id: DEFAULT_TASK_ACTIVITY, 
+        activity_type_id: DEFAULT_TASK_ACTIVITY,
         priority: body_array[1],
         title: subject,
         status: 'open',
@@ -42612,6 +42612,7 @@ function create_task(subject, body_array) {
 } catch (error) {
   core.setFailed(error.message);
 }
+
 })();
 
 module.exports = __webpack_exports__;
