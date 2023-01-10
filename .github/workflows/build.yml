@@ -28,4 +28,6 @@ jobs:
           git add -A
           git commit -s -m "Built dist/index.js"
           git push
+        else
+          echo "No uncommitted changes after build."
         fi
