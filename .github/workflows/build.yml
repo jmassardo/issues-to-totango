@@ -1,0 +1,22 @@
+yaml
+name: Build Action
+on: [push, pull-request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '16.x'
+    - name: Install Dependencies
+      run: npm install
+    - name: Install ncc
+      run: npm i -g @vercel/ncc
+    - name: Build
+      run: ncc build index.js --license licenses.txt
+    - name: Clean Up
+      run: rm -rf node_modules
