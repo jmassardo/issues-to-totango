@@ -127,7 +127,11 @@ try {
         touchpointType: TOUCHPOINT_TYPE,
         touchpoint_tags: [ TOUCHPOINT_TAGS ],
       },
-    }, (_error, response, _body) => {
+    }, (error, response, _body) => {
+      if (response.statusCode !== 201) {
+        console.log(error);
+        core.setFailed(`Failed to create touchpoint: ${response.statusCode}`);
+      }
       // Output a message to the console and an Action output
       let touchpoint_id = (JSON.parse(response.body))['note']['id'];
       console.log(`Successfully created touchpoint: ${touchpoint_id}`);
@@ -156,7 +160,11 @@ try {
         status: 'open',
         due_date: body_array[2],
       },
-    }, (_error, response, _body) => {
+    }, (error, response, _body) => {
+      if (response.statusCode !== 201) {
+        console.log(error);
+        core.setFailed(`Failed to create task: ${response.statusCode}`);
+      }
       // Output a message to the console and an Action output
       let task_id = (JSON.parse(response.body))['id'];
       console.log(`Successfully created task: ${task_id}`);
