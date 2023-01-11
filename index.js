@@ -154,7 +154,6 @@ function create_task(subject, body_array) {
       comment_gh_issue(task_id);
       console.log(response.statusCode);
     });
-  comment_gh_issue(task_id);
 
 }
 } catch (error) {
