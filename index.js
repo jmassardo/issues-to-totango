@@ -180,6 +180,7 @@ try {
 
   // Function to convert markdown to text for cleaner visibility in Totango
   function format_body(eventPayload, link, state, issue_number) {
+    console.log('Formatting body...');
     const user = eventPayload['user']['login'];
     const body = eventPayload['body'];
 
