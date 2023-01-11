@@ -2,6 +2,8 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 const showdown = require('showdown');
+const request = require('request');
+
 const converter = new showdown.Converter({
   ghMentions: true,
   strikethrough: true,
@@ -114,7 +116,7 @@ try {
 
   function create_touchpoint(subject, body) {
     // Build the POST Request
-    let request = require('request');
+    console.log('Creating touchpoint...');
     request.post(TOTANGO_TOUCHPOINTS_URL, {
       headers: {
         'app-token': APP_TOKEN,
@@ -145,7 +147,7 @@ try {
   }
 
   function create_task(subject, body_array) {
-    let request = require('request');
+    console.log('Creating touchpoint...');
     request.post(TOTANGO_TASK_URL, {
       headers: {
         'app-token': APP_TOKEN,
