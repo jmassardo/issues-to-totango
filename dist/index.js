@@ -47667,7 +47667,7 @@ try {
     if (event_action === 'opened') {
 
       subject = 'New Issue: ' + issue['title'];
-      body = format_body(issue['user']['login'], issue['body'], issue['html_url'], 'opened');
+      body = format_body(issue, issue['html_url'], 'opened');
 
       // output the payload to the console so the user can see it
       console.log(`Touchpoint subject is: ${subject}`);
@@ -47678,12 +47678,12 @@ try {
     } else if (event_action === 'closed') {
 
       subject = 'Issue #: ' + issue['title'] + ' was closed';
-      body = format_body(issue['user']['login'], issue['body'], issue['html_url'], 'closed');
+      body = format_body(issue, issue['html_url'], 'closed');
 
     } else if (event_action === 'labeled') {
 
       subject = 'Issue #: ' + issue['title'] + ' was labeled';
-      body = format_body(issue['user']['login'], issue['body'], issue['html_url'], 'labeled');
+      body = format_body(issue, issue['html_url'], 'labeled');
       let label = github.context.payload.label;
 
       let regex = /### Description\n\n(.*)|### Priority\n\n[1-3]|### Due Date\n\n([0-9]+(-[0-9]+)+)/g;
@@ -47711,7 +47711,7 @@ try {
   } else if (github.context.eventName === 'issue_comment') {
 
     subject = 'New comment on issue: ' + issue['number'];
-    body = format_body(comment['user']['login'], comment['body'], issue['html_url'], 'commented', issue['number']);
+    body = format_body(comment, issue['html_url'], 'commented', issue['number']);
 
   } else {
 
