@@ -23,7 +23,6 @@
     "cspell": "^6.17.0",
     "eslint": "^8.30.0",
     "eslint-config-strongloop": "^2.1.0",
-    "octokit": "^0.10.4",
     "request": "^2.88.2",
     "showdown": "^2.1.0",
     "uuid": "^7.0.0"
