@@ -47746,8 +47746,8 @@ try {
         touchpoint_tags: [ TOUCHPOINT_TAGS ],
       },
     }, (error, response, _body) => {
-      if (response.statusCode !== 201) {
-        console.log(error);
+      if (response.statusCode !== 200) {
+        console.log(`Error Message: ${error}`);
         core.setFailed(`Failed to create touchpoint: ${response.statusCode}`);
       }
       // Output a message to the console and an Action output
@@ -47763,7 +47763,7 @@ try {
   }
 
   function create_task(subject, body_array) {
-    console.log('Creating touchpoint...');
+    console.log('Creating task...');
     request.post(TOTANGO_TASK_URL, {
       headers: {
         'app-token': APP_TOKEN,
@@ -47779,8 +47779,8 @@ try {
         due_date: body_array[2],
       },
     }, (error, response, _body) => {
-      if (response.statusCode !== 201) {
-        console.log(error);
+      if (response.statusCode !== 200) {
+        console.log(`Error Message: ${error}`);
         core.setFailed(`Failed to create task: ${response.statusCode}`);
       }
       // Output a message to the console and an Action output
