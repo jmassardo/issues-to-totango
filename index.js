@@ -191,16 +191,16 @@ try {
         signature = `${user} commented on issue #${issue_number}`;
         break;
       case 'opened':
-        signature = `Created By: ${user}`;
+        signature = `Created By: @${user}`;
         break;
       case 'closed':
-        signature = `Closed By: ${user}`;
+        signature = `Closed By: @${user}`;
         break;
       case 'labeled':
         signature = `${user} labeled an issue #${issue_number}`;
         break;
       default:
-        signature = `Created By: ${user}`;
+        signature = `Created By: @${user}`;
     }
     response = `${body}\n----\n${signature}\nMore info here: ${link}`;
     header = '<div class="html-parser-container">';
