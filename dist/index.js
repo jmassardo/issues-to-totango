@@ -47820,7 +47820,7 @@ try {
     }
     response = `${body}\n----\n${signature}\nMore info here: ${link}`;
     header = '<div class="html-parser-container">';
-    content = converter.makeHtml(response).replace(/(<p)/igm, '<div').replace(/<\/p>/igm, '</div>');
+    content = converter.makeHtml(response).replace(/(<p)/igm, '<div').replace(/<\/p>/igm, '</div><br />');
     footer = '</div>';
     return header + content + footer;
   }
