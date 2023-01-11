@@ -42469,7 +42469,7 @@ try {
   const TOUCHPOINT_TAGS = core.getInput('TOUCHPOINT_TAGS');
   const TOUCHPOINT_TYPE = core.getInput('TOUCHPOINT_TYPE');
   const TASK_ASSIGNEE = core.getInput('TASK_ASSIGNEE');
-  const GITHUB_TOKEN = core.getInput('repo-token');
+  const GITHUB_TOKEN = core.getInput('REPO_TOKEN');
   const octokit = github.getOctokit(GITHUB_TOKEN);
   // Fetch the payload from the event
   const issue = github.context.payload.issue;
