@@ -39,6 +39,10 @@ Feature requests are welcome. Please log an issue in this repo for new requests.
 **Required** The GUID of the Touchpoint Type.
 > Fetch `https://api.totango.com/api/v3/touchpoint-types/` to see the pairings. Use the `ID` value.
 
+### `TASK_ASSIGNEE`
+
+**Required** When a task is created in Totango, this value will be the asignee for the task. Must be the email associated with Totango sign up (Totango user name). This value is also used as the submitter for a touchpoint.
+
 ### `REPO_TOKEN`
 
 **Required** The Auto Generated GitHub Auth token for actions
@@ -61,7 +65,7 @@ with:
   ACTIVITY_TYPE: "adoption"
   TOUCHPOINT_TAGS: "e53621bc-f66a-49f0-a886-537b5c64df22"
   TOUCHPOINT_TYPE: "asdff3e5-cd3d-af42-ax3c-adsf2342c324"
-  TOTANGO_USER_NAME: "totango_user_email@email.com"
+  TASK_ASSIGNEE: "totango_user_email@email.com"
   REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 ## Building Code
