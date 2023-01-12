@@ -18,7 +18,7 @@ inputs:
     required: true
   TASK_ASSIGNEE:
     description: 'The email value used for testing - will be changed later after testing'
-  repo-token:
+  REPO_TOKEN:
     description: 'GitHub Repo Token for auth'
     required: true
 outputs:
