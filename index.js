@@ -100,7 +100,7 @@ function comment_gh_issue(touchpoint_id, type) {
   // parse comments for touchpoint id
   for (const comment of comments.data) {
     if (comment.body.includes(touchpoint_id)) {
-      console.log(`Task/Touchpoint already exists`);
+      console.log(`Task\Touchpoint already exists`);
       return;
     } else {
       octokit.rest.issues.createComment({
@@ -110,7 +110,9 @@ function comment_gh_issue(touchpoint_id, type) {
         body: `${type}: ${touchpoint_id}`,
       });
     }
+  } 
 }
+
 
 
 function create_touchpoint(subject, body) {
@@ -167,8 +169,7 @@ function create_task(subject, body_array) {
       comment_gh_issue(task_id, `task_id`);
       console.log(response.statusCode);
     });
-
-}
+  }
 } catch (error) {
   core.setFailed(error.message);
 }
