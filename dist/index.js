@@ -42542,14 +42542,29 @@ try {
 
 
 // Comment on github issue with touchpoint id
-function comment_gh_issue(touchpoint_id) {
-  octokit.rest.issues.createComment({
+function comment_gh_issue(touchpoint_id, type) {
+  // Check if comment already exists
+  const comments = octokit.rest.issues.listComments({
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
     issue_number: issue['number'],
-    body: `ID: ${touchpoint_id}`,
   });
+  // parse comments for touchpoint id
+  for (const comment of comments.data) {
+    if (comment.body.includes(touchpoint_id)) {
+      console.log(`Task\Touchpoint already exists`);
+      return;
+    } else {
+      octokit.rest.issues.createComment({
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+        issue_number: issue['number'],
+        body: `${type}: ${touchpoint_id}`,
+      });
+    }
+  } 
 }
+
 
 
 function create_touchpoint(subject, body) {
@@ -42574,7 +42589,7 @@ function create_touchpoint(subject, body) {
       console.log(`Successfully created touchpoint: ${touchpoint_id}`);
       // Touchpoint id to github issue comment using function
       console.log(`Commenting on github issue`);
-      comment_gh_issue(touchpoint_id);
+      comment_gh_issue(touchpoint_id, `touchpoint_id`);
       core.setOutput('touchpoint_id', touchpoint_id);
       console.log(response.statusCode);
     });
@@ -42603,12 +42618,10 @@ function create_task(subject, body_array) {
       console.log(`Successfully created task: ${task_id}`);
       core.setOutput('task_id', task_id);
       console.log(`Commenting on github task`);
-      comment_gh_issue(task_id);
+      comment_gh_issue(task_id, `task_id`);
       console.log(response.statusCode);
     });
-  comment_gh_issue(task_id);
-
-}
+  }
 } catch (error) {
   core.setFailed(error.message);
 }
