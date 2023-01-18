@@ -42542,16 +42542,16 @@ try {
 
 
 // Comment on github issue with touchpoint id
-function comment_gh_issue(touchpoint_id, type) {
-  // Check if comment already exists
-  const comments = octokit.rest.issues.listComments({
+async function comment_gh_issue(touchpoint_id, type) {
+  // get comments from github issue
+  const comments = await octokit.rest.issues.listComments({
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
     issue_number: issue['number'],
   });
   // returns comments as an array of objects to console.log
   console.log(comments.data);
-  // parse comments for touchpoint id
+  // parse comments for touchpoint id and if it exists, don't create a new one
   for (const comment of comments.data) {
     if (comment.body.includes(touchpoint_id)) {
       console.log(`Task\Touchpoint already exists`);
