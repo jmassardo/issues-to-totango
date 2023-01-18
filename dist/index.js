@@ -42552,19 +42552,22 @@ async function comment_gh_issue(touchpoint_id, type) {
   // returns comments as an array of objects to console.log
   console.log(comments.data);
   // parse comments for touchpoint id and if it exists, don't create a new one
-  for (const comment of comments.data) {
-    if (comment.body.includes(touchpoint_id)) {
-      console.log(`Task\Touchpoint already exists`);
-      return;
-    } else {
-      octokit.rest.issues.createComment({
-        owner: github.context.repo.owner,
-        repo: github.context.repo.repo,
-        issue_number: issue['number'],
-        body: `${type}: ${touchpoint_id}`,
-      });
+  var comment_exists = false;
+  for (var i = 0; i < comments.data.length; i++) {
+    if (comments.data[i].body.includes(touchpoint_id)) {
+      comment_exists = true;
     }
-  } 
+  }
+  // if comment doesn't exist, create one
+  if (!comment_exists) {
+    const comment = await octokit.rest.issues.createComment({
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      issue_number: issue['number'],
+      body: `${type}: ${touchpoint_id}`,
+    });
+    console.log(comment);
+  }
 }
 
 
