@@ -42556,6 +42556,7 @@ async function comment_gh_issue(touchpoint_id, type) {
   for (var i = 0; i < comments.data.length; i++) {
     if (comments.data[i].body.includes(touchpoint_id)) {
       comment_exists = true;
+      console.log("Comment already exists");
     }
   }
   // if comment doesn't exist, create one
