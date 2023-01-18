@@ -60,7 +60,7 @@ try {
       var temp_array = body.match(regex);
       var body_array = [];
 
-      if (temp_array.length == 3) { //regex should match 3 params w/ current issue form
+      if (temp_array.length == 3) { // regex should match 3 params w/ current issue form
         for (match of temp_array) {
           piece = match.split("\n\n");
           body_array.push(piece[1]);
@@ -89,16 +89,17 @@ try {
   }
 
 
-// Comment on github issue with touchpoint id
-function comment_gh_issue(touchpoint_id) {
-  octokit.rest.issues.createComment({
-    owner: github.context.repo.owner,
-    repo: github.context.repo.repo,
-    issue_number: issue['number'],
-    body: `ID: ${touchpoint_id}`,
-  });
-}
-
+  // Comment on github issue with touchpoint id
+  // eslint-disable-next-line no-inner-declarations
+  function comment_gh_issue(touchpoint_id) {
+    octokit.rest.issues.createComment({
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      issue_number: issue['number'],
+      body: `ID: ${touchpoint_id}`,
+    });
+  }
+  exports.comment_gh_issue = comment_gh_issue;
 
 function create_touchpoint(subject, body) {
     // Build the POST Request
@@ -127,17 +128,17 @@ function create_touchpoint(subject, body) {
       console.log(response.statusCode);
     });
 
-}
+  }
 
-function create_task(subject, body_array) {
-  var request = require('request');
-  request.post(TOTANGO_TASK_URL, {
+  function create_task(subject, body_array) {
+    var request = require('request');
+    request.post(TOTANGO_TASK_URL, {
       headers: {
         'app-token': APP_TOKEN,
       },
       form: {
         account_id: ACCOUNT_ID,
-        assignee: TASK_ASSIGNEE, //TODO : get assignee from issue. If no assignee, get CSA/CSM from totango account and add
+        assignee: TASK_ASSIGNEE, // TODO : get assignee from issue. If no assignee, get CSA/CSM from totango account and add
         description: body_array[0],
         activity_type_id: DEFAULT_TASK_ACTIVITY,
         priority: body_array[1],
@@ -150,13 +151,22 @@ function create_task(subject, body_array) {
       task_id = (JSON.parse(response.body))['id'];
       console.log(`Successfully created task: ${task_id}`);
       core.setOutput('task_id', task_id);
-      console.log(`Commenting on github task`);
+      console.log('Commenting on github task');
       comment_gh_issue(task_id);
       console.log(response.statusCode);
     });
-  comment_gh_issue(task_id);
+    comment_gh_issue(task_id);
 
-}
+  }
+
+  const i2tPrivate = {
+    comment_gh_issue,
+    create_touchpoint,
+    create_task,
+  };
+
+  module.exports = i2tPrivate;
+
 } catch (error) {
   core.setFailed(error.message);
 }

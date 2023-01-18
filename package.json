@@ -4,7 +4,7 @@
   "description": "This action creates a Totango touchpoint when a new issue is created",
   "main": "index.js",
   "scripts": {
-    "test": "eslint --ignore-path .eslintignore . ; cspell *.js *.md"
+    "test": "eslint --ignore-path .eslintignore . ; cspell *.js *.md ; jest --coverage"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
     "cspell": "^6.17.0",
     "eslint": "^8.30.0",
     "eslint-config-strongloop": "^2.1.0",
+    "jest": "^29.3.1",
     "octokit": "^0.10.4",
     "request": "^2.88.2",
     "uuid": "^7.0.0"
