@@ -2,7 +2,7 @@
 /******/ 	var __webpack_modules__ = ({
 
 /***/ 8292:
-/***/ ((module, exports, __nccwpck_require__) => {
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 const core = __nccwpck_require__(8875);
 const github = __nccwpck_require__(2511);
@@ -105,7 +105,6 @@ try {
       body: `ID: ${touchpoint_id}`,
     });
   }
-  exports.comment_gh_issue = comment_gh_issue;
 
 function create_touchpoint(subject, body) {
     // Build the POST Request
