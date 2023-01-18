@@ -98,7 +98,7 @@ async function comment_gh_issue(touchpoint_id, type) {
     issue_number: issue['number'],
   });
   // returns comments as an array of objects to console.log
-  console.log(comments.data);
+//  console.log(comments.data);
   // parse comments for touchpoint id and if it exists, don't create a new one
   var comment_exists = false;
   for (var i = 0; i < comments.data.length; i++) {
@@ -115,7 +115,7 @@ async function comment_gh_issue(touchpoint_id, type) {
       issue_number: issue['number'],
       body: `${type}: ${touchpoint_id}`,
     });
-    console.log(comment);
+  //  console.log(comment);
   }
 }
 
