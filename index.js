@@ -99,7 +99,6 @@ try {
       body: `ID: ${touchpoint_id}`,
     });
   }
-  exports.comment_gh_issue = comment_gh_issue;
 
 function create_touchpoint(subject, body) {
     // Build the POST Request
