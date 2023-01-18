@@ -42549,6 +42549,8 @@ function comment_gh_issue(touchpoint_id, type) {
     repo: github.context.repo.repo,
     issue_number: issue['number'],
   });
+  // returns comments as an array of objects to console.log
+  console.log(comments.data);
   // parse comments for touchpoint id
   for (const comment of comments.data) {
     if (comment.body.includes(touchpoint_id)) {
