@@ -42592,6 +42592,10 @@ function create_touchpoint(subject, body) {
     }, (error, response, body) => {
       // Output a message to the console and an Action output
       touchpoint_id = (JSON.parse(response.body))['note']['id'];
+      if (response.statusCode != 200) {
+        console.log(response.body);
+        throw new Error('Error creating touchpoint');
+      }
       console.log(`Successfully created touchpoint: ${touchpoint_id}`);
       // Touchpoint id to github issue comment using function
       console.log(`Commenting on github issue`);
@@ -42624,9 +42628,8 @@ function create_task(subject, body_array) {
       console.log(response.statusCode);
       // chech response for non 200 status code
       if (response.statusCode != 200) {
-        console.log(`Error creating task`);
         console.log(response.body);
-        return;
+        throw new Error('Error creating task');
       }
       console.log(`Task Id: ${task_id}`);
       core.setOutput('task_id', task_id);
