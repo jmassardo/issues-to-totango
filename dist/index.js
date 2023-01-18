@@ -9,9 +9,9 @@ const github = __nccwpck_require__(2511);
 
 try {
   // Constants
-  const DEFAULT_PRIORITY = 2 //Indicates "Normal" priority for tasks;
+  const DEFAULT_PRIORITY = 2;// Indicates "Normal" priority for tasks;
   const DEFAULT_TASK_ACTIVITY = 'support';
-  //where 12096e5 is the magic number for 14 days in milliseconds and the format is YYYY-MM-DD
+  // where 12096e5 is the magic number for 14 days in milliseconds and the format is YYYY-MM-DD
   const DEFAULT_DUE_DATE = new Date(Date.now() + 12096e5).toISOString().substring(0, 10);
   const TOTANGO_TOUCHPOINTS_URL = 'https://api.totango.com/api/v3/touchpoints/';
   const TOTANGO_TASK_URL = 'https://api.totango.com/api/v3/tasks'
