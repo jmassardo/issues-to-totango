@@ -92,7 +92,7 @@ try {
 // Comment on github issue with touchpoint id
 function comment_gh_issue(touchpoint_id, type) {
   // Check if comment already exists
-  const comments = await octokit.rest.issues.listComments({
+  const comments = octokit.rest.issues.listComments({
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
     issue_number: issue['number'],
