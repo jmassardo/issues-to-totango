@@ -169,11 +169,17 @@ function create_task(subject, body_array) {
     }, (error, response, body) => {
       // Output a message to the console and an Action output
       task_id = (JSON.parse(response.body))['id'];
-      console.log(`Successfully created task: ${task_id}`);
+      console.log(response.statusCode);
+      // chech response for non 200 status code
+      if (response.statusCode != 200) {
+        console.log(`Error creating task`);
+        console.log(response.body);
+        return;
+      }
+      console.log(`Task Id: ${task_id}`);
       core.setOutput('task_id', task_id);
       console.log(`Commenting on github task`);
       comment_gh_issue(task_id, `task_id`);
-      console.log(response.statusCode);
     });
   }
 } catch (error) {
