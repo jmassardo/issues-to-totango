@@ -164,7 +164,9 @@ function create_touchpoint(subject, body) {
     create_task,
   };
 
-  module.exports = i2tPrivate;
+  module.exports = {
+    i2tPrivate,
+  }
 
 } catch (error) {
   core.setFailed(error.message);
