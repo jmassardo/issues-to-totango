@@ -4,6 +4,7 @@
 /***/ 8292:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
+/* eslint-disable no-redeclare */
 const core = __nccwpck_require__(8875);
 const github = __nccwpck_require__(2511);
 
@@ -51,7 +52,9 @@ try {
 
     } else if (event_action === 'closed') {
 
+      // eslint-disable-next-line no-redeclare
       var subject = 'Issue #: ' + issue['title'] + ' was closed';
+      // eslint-disable-next-line no-redeclare
       var body = `${issue['user']['login']} closed an issue. ${issue['body']}. More info here: ${issue['html_url']}`;
 
     } else if (event_action === 'labeled') {
@@ -61,18 +64,18 @@ try {
       var label = github.context.payload.label;
 
       var regex = /### Description\n\n(.*)|### Priority\n\n[1-3]|### Due Date\n\n([0-9]+(-[0-9]+)+)/g
-      //Example of what a matching body should look like in request from Issue Form
-      //var body = "### Description\n\nstuff stuff stuff\n\n### Priority\n\n1 (Low)\n\n### Due Date\n\n2024-01-01"
+      // Example of what a matching body should look like in request from Issue Form
+      // var body = "### Description\n\nstuff stuff stuff\n\n### Priority\n\n1 (Low)\n\n### Due Date\n\n2024-01-01"
       var temp_array = body.match(regex);
       var body_array = [];
 
       if (temp_array.length == 3) { // regex should match 3 params w/ current issue form
         for (match of temp_array) {
-          piece = match.split("\n\n");
+          piece = match.split('\n\n');
           body_array.push(piece[1]);
         }
       }
-      else { //set up default values
+      else { // set up default values
         body_array[0] = body;
         body_array[1] = DEFAULT_PRIORITY;
         body_array[2] = DEFAULT_DUE_DATE;
@@ -127,7 +130,7 @@ function create_touchpoint(subject, body) {
       touchpoint_id = (JSON.parse(response.body))['note']['id'];
       console.log(`Successfully created touchpoint: ${touchpoint_id}`);
       // Touchpoint id to github issue comment using function
-      console.log(`Commenting on github issue`);
+      console.log('Commenting on github issue');
       comment_gh_issue(touchpoint_id);
       core.setOutput('touchpoint_id', touchpoint_id);
       console.log(response.statusCode);
