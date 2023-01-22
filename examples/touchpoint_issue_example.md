@@ -2,7 +2,7 @@
 name: NEW TOPIC
 about: Issue template for collaborating on various topics as needed.
 title: "replace_with_topic_title"
-labels: 'totango-sync'
+labels: 'touchpoint'
 ---
 
 ### Description
