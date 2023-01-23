@@ -67,7 +67,8 @@ try {
     } else if (event_action === 'labeled') {
 
       subject = 'Issue #: ' + issue['title'] + ' was labeled';
-      body = format_body(issue, issue['html_url'], 'labeled');
+      body = `${issue['user']['login']} labeled an issue. ${issue['body']}. More info here: ${issue['html_url']}`;
+      // body = format_body(issue, issue['html_url'], 'labeled');
       let label = github.context.payload.label;
 
       let regex = /### Description\n\n(.*)|### Priority\n\n[1-3]|### Due Date\n\n([0-9]+(-[0-9]+)+)/g;
