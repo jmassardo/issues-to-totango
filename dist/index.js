@@ -739,8 +739,8 @@ class OidcClient {
             const res = yield httpclient
                 .getJson(id_token_url)
                 .catch(error => {
-                throw new Error(`Failed to get ID Token. \n 
-        Error Code : ${error.statusCode}\n 
+                throw new Error(`Failed to get ID Token. \n
+        Error Code : ${error.statusCode}\n
         Error Message: ${error.result.message}`);
             });
             const id_token = (_a = res.result) === null || _a === void 0 ? void 0 : _a.value;
@@ -12174,7 +12174,7 @@ var crypto = __nccwpck_require__(6113)
  * Valid keys.
  */
 
-var keys = 
+var keys =
   [ 'acl'
   , 'location'
   , 'logging'
@@ -12213,7 +12213,7 @@ module.exports.authorization = authorization
  * @param {Object} options
  * @return {String}
  * @api private
- */ 
+ */
 
 function hmacSha1 (options) {
   return crypto.createHmac('sha1', options.secret).update(options.message).digest('base64')
@@ -12222,8 +12222,8 @@ function hmacSha1 (options) {
 module.exports.hmacSha1 = hmacSha1
 
 /**
- * Create a base64 sha1 HMAC for `options`. 
- * 
+ * Create a base64 sha1 HMAC for `options`.
+ *
  * @param {Object} options
  * @return {String}
  * @api private
@@ -12236,10 +12236,10 @@ function sign (options) {
 module.exports.sign = sign
 
 /**
- * Create a base64 sha1 HMAC for `options`. 
+ * Create a base64 sha1 HMAC for `options`.
  *
  * Specifically to be used with S3 presigned URLs
- * 
+ *
  * @param {Object} options
  * @return {String}
  * @api private
@@ -12255,7 +12255,7 @@ module.exports.signQuery= signQuery
  * Return a string for sign() with the given `options`.
  *
  * Spec:
- * 
+ *
  *    <verb>\n
  *    <md5>\n
  *    <content-type>\n
@@ -12271,7 +12271,7 @@ module.exports.signQuery= signQuery
 function stringToSign (options) {
   var headers = options.amazonHeaders || ''
   if (headers) headers += '\n'
-  var r = 
+  var r =
     [ options.verb
     , options.md5
     , options.contentType
@@ -12287,7 +12287,7 @@ module.exports.stringToSign = stringToSign
  * for S3 presigned URLs
  *
  * Spec:
- * 
+ *
  *    <date>\n
  *    <resource>
  *
@@ -14051,11 +14051,11 @@ exports.ECKey = function(curve, key, isPublic)
 //      var y = key.slice(bytes+1);
 //      this.P = new ECPointFp(curve,
 //        curve.fromBigInteger(new BigInteger(x.toString("hex"), 16)),
-//        curve.fromBigInteger(new BigInteger(y.toString("hex"), 16)));      
+//        curve.fromBigInteger(new BigInteger(y.toString("hex"), 16)));
       this.P = curve.decodePointHex(key.toString("hex"));
     }else{
       if(key.length != bytes) return false;
-      priv = new BigInteger(key.toString("hex"), 16);      
+      priv = new BigInteger(key.toString("hex"), 16);
     }
   }else{
     var n1 = n.subtract(BigInteger.ONE);
@@ -14077,7 +14077,7 @@ exports.ECKey = function(curve, key, isPublic)
       if(!key || !key.P) return false;
       var S = key.P.multiply(priv);
       return Buffer.from(unstupid(S.getX().toBigInteger().toString(16),bytes*2),"hex");
-   }     
+   }
   }
 }
 
@@ -14524,7 +14524,7 @@ ECFieldElementFp.prototype.modReduce = function(x)
             {
                 u = u.multiply(this.getR());
             }
-            x = u.add(v); 
+            x = u.add(v);
         }
         while (x.compareTo(q) >= 0)
         {
@@ -15277,8 +15277,8 @@ var util = __nccwpck_require__(3837)
   , net = __nccwpck_require__(1808)
   , tls = __nccwpck_require__(4404)
   , AgentSSL = (__nccwpck_require__(5687).Agent)
-  
-function getConnectionName(host, port) {  
+
+function getConnectionName(host, port) {
   var name = ''
   if (typeof host === 'string') {
     name = host + ':' + port
@@ -15287,7 +15287,7 @@ function getConnectionName(host, port) {
     name = host.host + ':' + host.port + ':' + (host.localAddress ? (host.localAddress + ':') : ':')
   }
   return name
-}    
+}
 
 function ForeverAgent(options) {
   var self = this
@@ -15305,7 +15305,7 @@ function ForeverAgent(options) {
     } else if (self.sockets[name].length < self.minSockets) {
       if (!self.freeSockets[name]) self.freeSockets[name] = []
       self.freeSockets[name].push(socket)
-      
+
       // if an error happens while we don't use the socket anyway, meh, throw the socket away
       var onIdleError = function() {
         socket.destroy()
@@ -15331,7 +15331,7 @@ ForeverAgent.prototype.createConnection = net.createConnection
 ForeverAgent.prototype.addRequestNoreuse = Agent.prototype.addRequest
 ForeverAgent.prototype.addRequest = function(req, host, port) {
   var name = getConnectionName(host, port)
-  
+
   if (typeof host !== 'string') {
     var options = host
     port = options.port
@@ -15360,7 +15360,7 @@ ForeverAgent.prototype.removeSocket = function(s, name, host, port) {
     delete this.sockets[name]
     delete this.requests[name]
   }
-  
+
   if (this.freeSockets[name]) {
     var index = this.freeSockets[name].indexOf(s)
     if (index !== -1) {
@@ -18831,8 +18831,8 @@ var validate = exports._validate = function(/*Any*/instance,/*Object*/schema,/*O
 			if(typeof instance != 'object' || instance instanceof Array){
 				errors.push({property:path,message:"an object is required"});
 			}
-			
-			for(var i in objTypeDef){ 
+
+			for(var i in objTypeDef){
 				if(objTypeDef.hasOwnProperty(i) && i != '__proto__' && i != 'constructor'){
 					var value = instance.hasOwnProperty(i) ? instance[i] : undefined;
 					// skip _not_ specified properties
@@ -21642,7 +21642,7 @@ function compare (a, b) {
 }
 
 function generateBase (httpMethod, base_uri, params) {
-  // adapted from https://dev.twitter.com/docs/auth/oauth and 
+  // adapted from https://dev.twitter.com/docs/auth/oauth and
   // https://dev.twitter.com/docs/auth/creating-signature
 
   // Parameter normalization
@@ -42596,7 +42596,7 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /************************************************************************/
 /******/ 	// The module cache
 /******/ 	var __webpack_module_cache__ = {};
-/******/ 	
+/******/
 /******/ 	// The require function
 /******/ 	function __nccwpck_require__(moduleId) {
 /******/ 		// Check if module is in cache
@@ -42610,7 +42610,7 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 			// no module.loaded needed
 /******/ 			exports: {}
 /******/ 		};
-/******/ 	
+/******/
 /******/ 		// Execute the module function
 /******/ 		var threw = true;
 /******/ 		try {
@@ -42619,23 +42619,178 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 		} finally {
 /******/ 			if(threw) delete __webpack_module_cache__[moduleId];
 /******/ 		}
-/******/ 	
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-/******/ 	
+/******/
 /************************************************************************/
 /******/ 	/* webpack/runtime/compat */
-/******/ 	
+/******/
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
-/******/ 	
+/******/
 /************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __nccwpck_require__(8292);
-/******/ 	module.exports = __webpack_exports__;
-/******/ 	
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+(() => {
+const core = __nccwpck_require__(8875);
+const github = __nccwpck_require__(2511);
+
+try {
+  // Constants
+  const DEFAULT_PRIORITY = 2; // Indicates "Normal" priority for tasks;
+  const DEFAULT_TASK_ACTIVITY = 'support';
+  // where 12096e5 is the magic number for 14 days in milliseconds and the format is YYYY-MM-DD
+  const DEFAULT_DUE_DATE = new Date(Date.now() + 12096e5).toISOString().substring(0, 10);
+  const TOTANGO_TOUCHPOINTS_URL = 'https://api.totango.com/api/v3/touchpoints/';
+  const TOTANGO_TASK_URL = 'https://api.totango.com/api/v3/tasks';
+
+  // Fetch variables from the actions inputs
+  const ACCOUNT_ID = core.getInput('ACCOUNT_ID');
+  const APP_TOKEN = core.getInput('APP_TOKEN');
+  const ACTIVITY_TYPE = core.getInput('ACTIVITY_TYPE');
+  const TOUCHPOINT_TAGS = core.getInput('TOUCHPOINT_TAGS');
+  const TOUCHPOINT_TYPE = core.getInput('TOUCHPOINT_TYPE');
+  const TASK_ASSIGNEE = core.getInput('TASK_ASSIGNEE');
+  const GITHUB_TOKEN = core.getInput('REPO_TOKEN');
+  const octokit = github.getOctokit(GITHUB_TOKEN);
+  // Fetch the payload from the event
+  const issue = github.context.payload.issue;
+  console.log(`Issue num is: ${issue['number']}`);
+
+  const comment = github.context.payload.comment;
+  console.log(`eventName is: ${github.context.eventName}`);
+
+  const event_action = github.context.payload.action;
+  console.log(`Event Action is: ${event_action}`);
+
+  // Build payload body
+  if (github.context.eventName === 'issues') {
+
+    if (event_action === 'closed') {
+
+      var subject = 'Issue #: ' + issue['title'] + ' was closed';
+      var body = `${issue['user']['login']} closed an issue. ${issue['body']}. More info here: ${issue['html_url']}`;
+
+    } else if (event_action === 'labeled') {
+
+      subject = 'Issue #: ' + issue['title'] + ' was labeled';
+      body = `${issue['user']['login']} labeled an issue. ${issue['body']}. More info here: ${issue['html_url']}`;
+      var label = github.context.payload.label;
+
+      if (label['name'] === 'task') {
+        var regex = /### Description\n\n(.*)|### Priority\n\n[1-3]|### Due Date\n\n([0-9]+(-[0-9]+)+)/g;
+        // Example of what a matching body should look like in request from Issue Form
+        // var body = "### Description\n\nstuff stuff stuff\n\n### Priority\n\n1 (Low)\n\n### Due Date\n\n2024-01-01"
+        var temp_array = body.match(regex);
+        var body_array = [];
+
+        if (temp_array.length === 3) { // regex should match 3 params w/ current issue form
+          for (var match of temp_array) {
+            var piece = match.split('\n\n');
+            body_array.push(piece[1]);
+          }
+        } else { // set up default values
+          body_array[0] = body;
+          body_array[1] = DEFAULT_PRIORITY;
+          body_array[2] = DEFAULT_DUE_DATE;
+        }
+
+        create_task(subject, body_array);
+      } else if (label['name'] === 'touchpoint') {
+        // output the payload to the console so the user can see it
+        console.log(`Touchpoint subject is: ${subject}`);
+        console.log(`Touchpoint body is: ${body}`);
+        create_touchpoint(subject, body);
+      }
+    }
+
+  } else if (github.context.eventName === 'issue_comment') {
+
+    subject = 'New comment on issue: ' + issue['number'];
+    body = `${comment['user']['login']} commented on issue #${issue['number']}. ${comment['body']}. More info here: ${issue['html_url']}`;
+
+  } else {
+
+    core.setFailed('Unsupported event type. Please use the  `issues` or `issue_comment` event type.');
+
+  }
+
+
+  // Comment on github issue with touchpoint id
+  function comment_gh_issue(touchpoint_id) {
+    octokit.rest.issues.createComment({
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      issue_number: issue['number'],
+      body: `ID: ${touchpoint_id}`,
+    });
+  }
+
+
+  function create_touchpoint(subject, body) {
+    // Build the POST Request
+    var request = __nccwpck_require__(6357);
+
+    request.post(TOTANGO_TOUCHPOINTS_URL, {
+      headers: {
+        'app-token': APP_TOKEN,
+      },
+      form: {
+        account_id: ACCOUNT_ID,
+        content: body,
+        activity_type_id: ACTIVITY_TYPE,
+        subject: subject,
+        touchpointType: TOUCHPOINT_TYPE,
+        touchpoint_tags: [ TOUCHPOINT_TAGS ],
+      },
+    }, (error, response, body) => {
+      // Output a message to the console and an Action output
+      touchpoint_id = (JSON.parse(response.body))['note']['id'];
+      console.log(`Successfully created touchpoint: ${touchpoint_id}`);
+      // Touchpoint id to github issue comment using function
+      console.log('Commenting on github issue');
+      comment_gh_issue(touchpoint_id);
+      core.setOutput('touchpoint_id', touchpoint_id);
+      console.log(response.statusCode);
+    });
+
+  }
+
+  function create_task(subject, body_array) {
+    var request = __nccwpck_require__(6357);
+    request.post(TOTANGO_TASK_URL, {
+      headers: {
+        'app-token': APP_TOKEN,
+      },
+      form: {
+        account_id: ACCOUNT_ID,
+        assignee: TASK_ASSIGNEE, // TODO : get assignee from issue. If no assignee, get CSA/CSM from totango account and add
+        description: body_array[0],
+        activity_type_id: DEFAULT_TASK_ACTIVITY,
+        priority: body_array[1],
+        title: subject,
+        status: 'open',
+        due_date: body_array[2],
+      },
+    }, (error, response, body) => {
+      // Output a message to the console and an Action output
+      task_id = (JSON.parse(response.body))['id'];
+      console.log(`Successfully created task: ${task_id}`);
+      core.setOutput('task_id', task_id);
+      console.log('Commenting on github task');
+      comment_gh_issue(task_id);
+      console.log(response.statusCode);
+    });
+    comment_gh_issue(task_id);
+
+  }
+} catch (error) {
+  core.setFailed(error.message);
+}
+
+})();
+
+module.exports = __webpack_exports__;
 /******/ })()
 ;
