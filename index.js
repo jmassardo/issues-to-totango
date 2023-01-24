@@ -19,10 +19,13 @@ const converter = new showdown.Converter({
 try {
   // Constants
   const DEFAULT_PRIORITY = 2; // Indicates "Normal" priority for tasks;
+  const DEFAULT_PRIORITY = 2; // Indicates "Normal" priority for tasks;
   const DEFAULT_TASK_ACTIVITY = 'support';
+  // where 12096e5 is the magic number for 14 days in milliseconds and the format is YYYY-MM-DD
   // where 12096e5 is the magic number for 14 days in milliseconds and the format is YYYY-MM-DD
   const DEFAULT_DUE_DATE = new Date(Date.now() + 12096e5).toISOString().substring(0, 10);
   const TOTANGO_TOUCHPOINTS_URL = 'https://api.totango.com/api/v3/touchpoints/';
+  const TOTANGO_TASK_URL = 'https://api.totango.com/api/v3/tasks';
   const TOTANGO_TASK_URL = 'https://api.totango.com/api/v3/tasks';
 
   // Fetch variables from the actions inputs
@@ -48,18 +51,7 @@ try {
   // Build payload body
   if (github.context.eventName === 'issues') {
 
-    if (event_action === 'opened') {
-
-      subject = 'New Issue: ' + issue['title'];
-      body = format_body(issue, issue['html_url'], 'opened');
-
-      // output the payload to the console so the user can see it
-      console.log(`Touchpoint subject is: ${subject}`);
-      console.log(`Touchpoint body is: ${body}`);
-
-      create_touchpoint(subject, body);
-
-    } else if (event_action === 'closed') {
+    if (event_action === 'closed') {
 
       subject = 'Issue #: ' + issue['title'] + ' was closed';
       body = format_body(issue, issue['html_url'], 'closed');
@@ -71,11 +63,12 @@ try {
       // body = format_body(issue, issue['html_url'], 'labeled');
       let label = github.context.payload.label;
 
-      let regex = /### Description\n\n(.*)|### Priority\n\n[1-3]|### Due Date\n\n([0-9]+(-[0-9]+)+)/g;
-      // Example of what a matching body should look like in request from Issue Form
-      // body = "### Description\n\nstuff stuff stuff\n\n### Priority\n\n1 (Low)\n\n### Due Date\n\n2024-01-01"
-      let temp_array = body.match(regex);
-      let body_array = [];
+      if (label['name'] === 'task') {
+        let regex = /### Description\n\n(.*)|### Priority\n\n[1-3]|### Due Date\n\n([0-9]+(-[0-9]+)+)/g;;
+        //  Example of what a matching body should look like in request from Issue Form
+        //  body = "### Description\n\nstuff stuff stuff\n\n### Priority\n\n1 (Low)\n\n### Due Date\n\n2024-01-01"
+        let temp_array = body.match(regex);
+        let body_array = [];
 
       if (temp_array.length === 3) { // regex should match 3 params w/ current issue form
         for (let match of temp_array) {
@@ -88,8 +81,12 @@ try {
         body_array[2] = DEFAULT_DUE_DATE;
       }
 
-      if (label['name'] === 'task') {
         create_task(subject, body_array);
+      } else if (label['name'] === 'touchpoint') {
+        // output the payload to the console so the user can see it
+        console.log(`Touchpoint subject is: ${subject}`);
+        console.log(`Touchpoint body is: ${body}`);
+        create_touchpoint(subject, body);
       }
     }
 
@@ -115,6 +112,7 @@ try {
     });
   }
 
+  function create_touchpoint(subject, body) {
   function create_touchpoint(subject, body) {
     // Build the POST Request
     console.log('Creating touchpoint...');
