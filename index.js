@@ -19,13 +19,10 @@ const converter = new showdown.Converter({
 try {
   // Constants
   const DEFAULT_PRIORITY = 2; // Indicates "Normal" priority for tasks;
-  const DEFAULT_PRIORITY = 2; // Indicates "Normal" priority for tasks;
   const DEFAULT_TASK_ACTIVITY = 'support';
-  // where 12096e5 is the magic number for 14 days in milliseconds and the format is YYYY-MM-DD
   // where 12096e5 is the magic number for 14 days in milliseconds and the format is YYYY-MM-DD
   const DEFAULT_DUE_DATE = new Date(Date.now() + 12096e5).toISOString().substring(0, 10);
   const TOTANGO_TOUCHPOINTS_URL = 'https://api.totango.com/api/v3/touchpoints/';
-  const TOTANGO_TASK_URL = 'https://api.totango.com/api/v3/tasks';
   const TOTANGO_TASK_URL = 'https://api.totango.com/api/v3/tasks';
 
   // Fetch variables from the actions inputs
@@ -113,7 +110,6 @@ try {
   }
 
   function create_touchpoint(subject, body) {
-  function create_touchpoint(subject, body) {
     // Build the POST Request
     console.log('Creating touchpoint...');
     request.post(TOTANGO_TOUCHPOINTS_URL, {
@@ -153,7 +149,7 @@ try {
       },
       form: {
         account_id: ACCOUNT_ID,
-        assignee: TASK_ASSIGNEE, // TODO : get assignee from issue. If no assignee, get CSA/CSM from totango account and add
+        assignee: TASK_ASSIGNEE, 
         description: body_array[0],
         activity_type_id: DEFAULT_TASK_ACTIVITY,
         priority: body_array[1],
