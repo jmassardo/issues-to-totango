@@ -47635,13 +47635,10 @@ const converter = new showdown.Converter({
 try {
   // Constants
   const DEFAULT_PRIORITY = 2; // Indicates "Normal" priority for tasks;
-  const DEFAULT_PRIORITY = 2; // Indicates "Normal" priority for tasks;
   const DEFAULT_TASK_ACTIVITY = 'support';
-  // where 12096e5 is the magic number for 14 days in milliseconds and the format is YYYY-MM-DD
   // where 12096e5 is the magic number for 14 days in milliseconds and the format is YYYY-MM-DD
   const DEFAULT_DUE_DATE = new Date(Date.now() + 12096e5).toISOString().substring(0, 10);
   const TOTANGO_TOUCHPOINTS_URL = 'https://api.totango.com/api/v3/touchpoints/';
-  const TOTANGO_TASK_URL = 'https://api.totango.com/api/v3/tasks';
   const TOTANGO_TASK_URL = 'https://api.totango.com/api/v3/tasks';
 
   // Fetch variables from the actions inputs
@@ -47669,17 +47666,6 @@ try {
 
     if (event_action === 'closed') {
 
-      subject = 'New Issue: ' + issue['title'];
-      body = format_body(issue, issue['html_url'], 'opened');
-
-      // output the payload to the console so the user can see it
-      console.log(`Touchpoint subject is: ${subject}`);
-      console.log(`Touchpoint body is: ${body}`);
-
-      create_touchpoint(subject, body);
-
-    } else if (event_action === 'closed') {
-
       subject = 'Issue #: ' + issue['title'] + ' was closed';
       body = format_body(issue, issue['html_url'], 'closed');
 
@@ -47687,34 +47673,16 @@ try {
 
       subject = 'Issue #: ' + issue['title'] + ' was labeled';
       body = `${issue['user']['login']} labeled an issue. ${issue['body']}. More info here: ${issue['html_url']}`;
-      var label = github.context.payload.label;
-      subject = 'Issue #: ' + issue['title'] + ' was labeled';
-      body = `${issue['user']['login']} labeled an issue. ${issue['body']}. More info here: ${issue['html_url']}`;
       // body = format_body(issue, issue['html_url'], 'labeled');
       let label = github.context.payload.label;
 
       if (label['name'] === 'task') {
-        var regex = /### Description\n\n(.*)|### Priority\n\n[1-3]|### Due Date\n\n([0-9]+(-[0-9]+)+)/g;
-        // Example of what a matching body should look like in request from Issue Form
-        // var body = "### Description\n\nstuff stuff stuff\n\n### Priority\n\n1 (Low)\n\n### Due Date\n\n2024-01-01"
-        var temp_array = body.match(regex);
-        var body_array = [];
-      let regex = /### Description\n\n(.*)|### Priority\n\n[1-3]|### Due Date\n\n([0-9]+(-[0-9]+)+)/g;
-      // Example of what a matching body should look like in request from Issue Form
-      // body = "### Description\n\nstuff stuff stuff\n\n### Priority\n\n1 (Low)\n\n### Due Date\n\n2024-01-01"
-      let temp_array = body.match(regex);
-      let body_array = [];
+        let regex = /### Description\n\n(.*)|### Priority\n\n[1-3]|### Due Date\n\n([0-9]+(-[0-9]+)+)/g;;
+        //  Example of what a matching body should look like in request from Issue Form
+        //  body = "### Description\n\nstuff stuff stuff\n\n### Priority\n\n1 (Low)\n\n### Due Date\n\n2024-01-01"
+        let temp_array = body.match(regex);
+        let body_array = [];
 
-        if (temp_array.length === 3) { // regex should match 3 params w/ current issue form
-          for (var match of temp_array) {
-            var piece = match.split('\n\n');
-            body_array.push(piece[1]);
-          }
-        } else { // set up default values
-          body_array[0] = body;
-          body_array[1] = DEFAULT_PRIORITY;
-          body_array[2] = DEFAULT_DUE_DATE;
-        }
       if (temp_array.length === 3) { // regex should match 3 params w/ current issue form
         for (let match of temp_array) {
           let piece = match.split('\n\n');
@@ -47738,8 +47706,6 @@ try {
   } else if (github.context.eventName === 'issue_comment') {
 
     subject = 'New comment on issue: ' + issue['number'];
-    body = `${comment['user']['login']} commented on issue #${issue['number']}. ${comment['body']}. More info here: ${issue['html_url']}`;
-    subject = 'New comment on issue: ' + issue['number'];
     body = format_body(comment, issue['html_url'], 'commented', issue['number']);
 
   } else {
@@ -47759,7 +47725,6 @@ try {
     });
   }
 
-  function create_touchpoint(subject, body) {
   function create_touchpoint(subject, body) {
     // Build the POST Request
     console.log('Creating touchpoint...');
@@ -47785,18 +47750,13 @@ try {
       console.log(`Successfully created touchpoint: ${touchpoint_id}`);
       // Touchpoint id to github issue comment using function
       console.log('Commenting on github issue');
-      console.log('Commenting on github issue');
       comment_gh_issue(touchpoint_id);
       core.setOutput('touchpoint_id', touchpoint_id);
       console.log(response.statusCode);
     });
 
   }
-  }
 
-  function create_task(subject, body_array) {
-    var request = __nccwpck_require__(6357);
-    request.post(TOTANGO_TASK_URL, {
   function create_task(subject, body_array) {
     console.log('Creating task...');
     request.post(TOTANGO_TASK_URL, {
@@ -47805,8 +47765,7 @@ try {
       },
       form: {
         account_id: ACCOUNT_ID,
-        assignee: TASK_ASSIGNEE, // TODO : get assignee from issue. If no assignee, get CSA/CSM from totango account and add
-        assignee: TASK_ASSIGNEE, // TODO : get assignee from issue. If no assignee, get CSA/CSM from totango account and add
+        assignee: TASK_ASSIGNEE, 
         description: body_array[0],
         activity_type_id: DEFAULT_TASK_ACTIVITY,
         priority: body_array[1],
@@ -47824,15 +47783,12 @@ try {
       console.log(`Successfully created task: ${task_id}`);
       core.setOutput('task_id', task_id);
       console.log('Commenting on github task');
-      console.log('Commenting on github task');
       comment_gh_issue(task_id);
       console.log(response.statusCode);
     });
-    comment_gh_issue(task_id);
     // comment_gh_issue(task_id);
   }
 
-  }
   // Function to convert markdown to text for cleaner visibility in Totango
   function format_body(eventPayload, link, state, issue_number) {
     console.log('Formatting body...');
