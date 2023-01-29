@@ -60,7 +60,7 @@ curl --location --request GET 'https://api.totango.com/api/v3/touchpoint-types/'
 
 ### `TASK_ASSIGNEE`
 
-**Required** When a task is created in Totango, this value will be the asignee for the task. Must be the email associated with Totango sign up (Totango user name). This value is also used as the submitter for a touchpoint.
+**Required** When a task is created in Totango, this value will be the assignee for the task. Must be the email associated with Totango sign up (Totango user name). This value is also used as the submitter for a touchpoint.
 
 ### `REPO_TOKEN`
 
