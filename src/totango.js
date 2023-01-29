@@ -36,11 +36,21 @@ const converter = new showdown.Converter({
 
 // Comment on GitHub issue with id
 async function comment_gh_issue({issue, type, id}) {
-  await octokit.rest.issues.createComment({
-    owner: github.context.repo.owner,
-    repo: github.context.repo.repo,
-    issue_number: issue['number'],
-    body: `${type}_ID: ${id}`,
+  return new Promise((resolve, reject) => {
+    try {
+      octokit.rest.issues.createComment({
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+        issue_number: issue['number'],
+        body: `${type}_ID: ${id}`,
+      });
+
+      console.log(`Commented on issue ${issue['number']} with ${type}_ID: ${id}`);
+      resolve();
+    } catch (error) {
+      console.log(error);
+      reject(error);
+    }
   });
 }
 
@@ -197,6 +207,9 @@ async function closed({ issue }) {
   // let subject = 'Issue #: ' + issue['title'] + ' was closed';
   // let body = format_body(issue, issue['html_url'], 'closed');
   console.log('Issue was closed');
+  return new Promise((resolve, _reject) => {
+    resolve();
+  });
 }
 
 async function commented({ issue, comment }) {
@@ -204,6 +217,9 @@ async function commented({ issue, comment }) {
   // let subject = 'Issue #: ' + issue['title'] + ' was commented on';
   // let body = format_body(comment, issue['html_url'], 'commented', issue['number']);
   console.log('Issue was commented on');
+  return new Promise((resolve, _reject) => {
+    resolve();
+  });
 }
 
 // Exports for testing
