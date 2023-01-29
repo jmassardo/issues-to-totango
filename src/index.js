@@ -4,7 +4,7 @@ const totango = require('./totango.js');
 
 // Define supported event_name and event_action types
 const SUPPORTED_EVENT_TYPES = ['issues', 'issue_comment'];
-const SUPPORTED_EVENT_ACTIONS = ['labeled', 'closed', 'commented'];
+const SUPPORTED_EVENT_ACTIONS = ['labeled', 'closed', 'commented', 'created'];
 
 // Fail if a supported event type is not used
 if (!SUPPORTED_EVENT_TYPES.includes(github.context.eventName)) {
@@ -13,7 +13,7 @@ if (!SUPPORTED_EVENT_TYPES.includes(github.context.eventName)) {
 
 // Fail if a supported event action is not used
 if (!SUPPORTED_EVENT_ACTIONS.includes(github.context.payload.action)) {
-  core.setFailed('Unsupported event action. Please use the `labeled`, `closed`, or `commented` event action.');
+  core.setFailed('Unsupported event action. Please use the `labeled`, `closed`, `created`, or `commented` event action.');
 }
 
 // Update values based on payload data
