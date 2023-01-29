@@ -47398,6 +47398,26 @@ async function comment_gh_issue({issue, type, id}) {
   });
 }
 
+//Add HTML comment to GitHub issue body
+async function add_html_comment({issue, type, id}) {
+  return new Promise((resolve, reject) => {
+    try {
+      octokit.rest.issues.update({
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+        issue_number: issue['number'],
+        body: `${issue['body']}
+<!-- ${type}_ID: ${id} -->`,
+      });
+      console.log(`Updated issue ${issue['number']} with ${type}_ID: ${id}`);
+      resolve();
+    } catch (error) {
+      console.log(error);
+      reject(error);
+    }
+  });
+}
+
 // Function to create a touchpoint in Totango
 async function create_touchpoint(subject, body) {
   console.log('Creating touchpoint...');
@@ -47526,7 +47546,7 @@ async function labeled({ issue, label }) {
 
     console.log('Commenting on github issue for task with id: ' + task_id);
 
-    await comment_gh_issue({
+    await add_html_comment({
       issue: issue,
       type: 'task',
       id: task_id,
@@ -47538,7 +47558,7 @@ async function labeled({ issue, label }) {
     let touchpoint_id = await create_touchpoint(subject, body);
 
     console.log('Commenting on github issue for touchpoint');
-    await comment_gh_issue({
+    await add_html_comment({
       issue: issue,
       type: 'touchpoint',
       id: touchpoint_id,
