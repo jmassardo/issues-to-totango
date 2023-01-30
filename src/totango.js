@@ -34,26 +34,6 @@ const converter = new showdown.Converter({
   simpleLineBreaks: true,
 });
 
-// Comment on GitHub issue with id
-async function comment_gh_issue({issue, type, id}) {
-  return new Promise((resolve, reject) => {
-    try {
-      octokit.rest.issues.createComment({
-        owner: github.context.repo.owner,
-        repo: github.context.repo.repo,
-        issue_number: issue['number'],
-        body: `${type}_ID: ${id}`,
-      });
-
-      console.log(`Commented on issue ${issue['number']} with ${type}_ID: ${id}`);
-      resolve();
-    } catch (error) {
-      console.log(error);
-      reject(error);
-    }
-  });
-}
-
 //Add HTML comment to GitHub issue body
 async function add_html_comment({issue, type, id}) {
   return new Promise((resolve, reject) => {
