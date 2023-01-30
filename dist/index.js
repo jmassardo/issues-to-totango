@@ -47568,7 +47568,7 @@ async function commented({ issue, comment }) {
 
 // Exports for testing
 const totangoPrivate = {
-  comment_gh_issue,
+  add_html_comment,
   create_touchpoint,
   create_task,
   format_body,
