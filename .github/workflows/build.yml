@@ -16,7 +16,7 @@ jobs:
     - name: Install ncc
       run: npm i -g @vercel/ncc
     - name: Build
-      run: ncc build index.js --license licenses.txt
+      run: ncc build src/index.js --license licenses.txt
     - name: Clean Up
       run: rm -rf node_modules
     - name: Commit and push built files
