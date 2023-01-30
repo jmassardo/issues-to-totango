@@ -1,0 +1,46 @@
+name: totango
+
+on:
+  issues:
+    types: [closed, labeled, edited]
+  issue_comment:
+permissions:
+  id-token: write
+  issues: write
+  contents: write
+  statuses: write
+
+jobs:
+  get-task:
+    # Prevent action from trying to parse issues that don't have the right label
+    if: contains(github.event.issue.labels.*.name, 'task') ||
+        contains(github.event.issue.labels.*.name, 'touchpoint')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Main run
+        uses: jmassardo/issues-to-totango@version2.0
+        with:
+          ACCOUNT_ID: ${{ secrets.ACCOUNT_ID }}
+          APP_TOKEN: ${{ secrets.APP_TOKEN }}
+          ACTIVITY_TYPE: ${{ secrets.ACTIVITY_TYPE }}
+          TOUCHPOINT_TAGS: ${{ secrets.TOUCHPOINT_TAGS }}
+          TOUCHPOINT_TYPE: ${{ secrets.TOUCHPOINT_TYPE }}
+          TASK_ASSIGNEE: ${{ secrets.TASK_ASSIGNEE }}
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+  update-priority:
+    # Prevent action from trying to parse issues that don't have the right label
+    if: contains(github.event.issue.labels.*.name, 'High Priority') ||
+        contains(github.event.issue.labels.*.name, 'Medium Priority') || contains(github.event.issue.labels.*.name, 'Low Priority')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Main run
+        uses: jmassardo/issues-to-totango@version2.0
+        with:
+          ACCOUNT_ID: ${{ secrets.ACCOUNT_ID }}
+          APP_TOKEN: ${{ secrets.APP_TOKEN }}
+          ACTIVITY_TYPE: ${{ secrets.ACTIVITY_TYPE }}
+          TOUCHPOINT_TAGS: ${{ secrets.TOUCHPOINT_TAGS }}
+          TOUCHPOINT_TYPE: ${{ secrets.TOUCHPOINT_TYPE }}
+          TASK_ASSIGNEE: ${{ secrets.TASK_ASSIGNEE }}
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
