@@ -40,6 +40,7 @@ describe('comment_gh_issue', () => {
       id: 1,
     });
     expect(comment_gh_issue).toHaveBeenCalled();
+    expect(comment_gh_issue).toHaveBeenCalledWith({ issue: github.context.payload.issue, type: 'task', id: 1, });
   });
 });
 
@@ -49,6 +50,7 @@ describe('create_touchpoint', () => {
     const { create_touchpoint, } = totangoPrivate;
     await create_touchpoint('Test Subject', 'Test Body');
     expect(create_touchpoint).toHaveBeenCalled();
+    expect(create_touchpoint).toHaveBeenCalledWith('Test Subject', 'Test Body');
   });
 });
 
@@ -58,6 +60,7 @@ describe('create_task', () => {
     const { create_task, } = totangoPrivate;
     await create_task('Test Subject', 'Test Body');
     expect(create_task).toHaveBeenCalled();
+    expect(create_task).toHaveBeenCalledWith('Test Subject', 'Test Body');
   });
 });
 
@@ -67,5 +70,6 @@ describe('format_body', () => {
     const { format_body, } = totangoPrivate;
     await format_body(github.context.payload.issue, github.context.payload.issue.html_url, 'closed');
     expect(format_body).toHaveBeenCalled();
+    expect(format_body).toHaveBeenCalledWith(github.context.payload.issue, github.context.payload.issue.html_url, 'closed');
   });
 });
