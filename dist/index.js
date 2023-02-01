@@ -47560,8 +47560,8 @@ async function labeled({ issue, label }) {
     let task_id = await create_task(subject, body_array);
 
     console.log('Commenting on github issue for task with id: ' + task_id);
-    //sleep for 30s
-    await new Promise(r => setTimeout(r, 30000));
+    //sleep for 1s
+    await new Promise(r => setTimeout(r, 1000));
     await add_html_comment({
       issue: issue,
       type: 'task',
