@@ -8,7 +8,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
     - name: Use Node.js
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v3
       with:
         node-version: '16.x'
     - name: Install Dependencies
@@ -17,6 +17,8 @@ jobs:
       run: npm i -g @vercel/ncc
     - name: Build
       run: ncc build src/index.js --license licenses.txt
+    - name: Run tests
+      run: npm test
     - name: Clean Up
       run: rm -rf node_modules
     - name: Commit and push built files
