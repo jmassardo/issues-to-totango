@@ -194,9 +194,9 @@ async function labeled({ issue, label }) {
     let task_id = await create_task(subject, body_array);
 
     console.log('Commenting on github issue for task with id: ' + task_id);
-    //sleep for 1s
+    //sleep for 5s
     //this is a workaround for a race condition with applying both touchpoint and task labels
-    await new Promise(r => setTimeout(r, 1000));
+    await new Promise(r => setTimeout(r, 5000));
     await add_html_comment({
       issue: issue,
       type: 'task',
