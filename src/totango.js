@@ -51,8 +51,7 @@ async function add_html_comment({issue, type, id}) {
           owner: github.context.repo.owner,
           repo: github.context.repo.repo,
           issue_number: issue['number'],
-          body: `${body}
-  <!-- ${type}_ID: ${id} -->`,
+          body: `${body}\n\n<!-- ${type}_ID: ${id} -->`,
         });
         console.log(`Updated issue ${issue['number']} with ${type}_ID: ${id}`);
         resolve();
@@ -63,6 +62,7 @@ async function add_html_comment({issue, type, id}) {
     }
   });
 }
+
 
 // Function to create a touchpoint in Totango
 async function create_touchpoint(subject, body) {
