@@ -11,6 +11,7 @@ jest.mock('../src/totango', () => ({
     create_task: jest.fn(),
     format_body: jest.fn(),
   },
+  labeled: jest.fn(),
 }));
 
 // Mock the github context
@@ -71,5 +72,15 @@ describe('format_body', () => {
     await format_body(github.context.payload.issue, github.context.payload.issue.html_url, 'closed');
     expect(format_body).toHaveBeenCalled();
     expect(format_body).toHaveBeenCalledWith(github.context.payload.issue, github.context.payload.issue.html_url, 'closed');
+  });
+});
+
+// write test for labeled
+describe('labeled', () => {
+  it('should call labeled', async () => {
+    const { labeled, } = require('../src/totango');
+    await labeled({ issue: github.context.payload.issue, });
+    expect(labeled).toHaveBeenCalled();
+    expect(labeled).toHaveBeenCalledWith({ issue: github.context.payload.issue, });
   });
 });
