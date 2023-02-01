@@ -22,18 +22,6 @@ const DEFAULT_DUE_DATE = new Date(Date.now() + 12096e5).toISOString().substring(
 const TOTANGO_TOUCHPOINTS_URL = 'https://api.totango.com/api/v3/touchpoints/';
 const TOTANGO_TASK_URL = 'https://api.totango.com/api/v3/tasks';
 
-const converter = new showdown.Converter({
-  ghMentions: true,
-  strikethrough: true,
-  underline: true,
-  tables: true,
-  literalMidWordUnderscores: true,
-  simplifiedAutoLink: true,
-  excludeTrailingPunctuationFromURLs: true,
-  omitExtraWLInCodeBlocks: true,
-  simpleLineBreaks: true,
-});
-
 //Add HTML comment to GitHub issue body
 async function add_html_comment({issue, type, id}) {
   return new Promise((resolve, reject) => {
@@ -58,34 +46,40 @@ async function add_html_comment({issue, type, id}) {
 async function create_touchpoint(subject, body) {
   console.log('Creating touchpoint...');
   return new Promise((resolve, reject) => {
-    request.post(TOTANGO_TOUCHPOINTS_URL, {
-      headers: {
-        'app-token': APP_TOKEN,
-      },
-      form: {
-        account_id: ACCOUNT_ID,
-        content: body,
-        activity_type_id: ACTIVITY_TYPE,
-        subject: subject,
-        touchpointType: TOUCHPOINT_TYPE,
-        touchpoint_tags: [ TOUCHPOINT_TAGS ],
-      },
-    }, (error, response, _body) => {
-      if (error) {
-        core.setFailed(`Failed to create touchpoint: ${error}`);
-        reject(error);
-      } else if (response.statusCode < 200 || response.statusCode >= 300) {
-        core.setFailed(`Failed to create touchpoint: ${response.statusCode}`);
-      }
-      // Output a message to the console and an Action output
-      let touchpoint_id = (JSON.parse(response.body))['note']['id'];
-      console.log(`Successfully created touchpoint: ${touchpoint_id}`);
-      // Touchpoint id to github issue comment using function
-      console.log('Commenting on github issue');
+    try {
+      request.post(TOTANGO_TOUCHPOINTS_URL, {
+        headers: {
+          'app-token': APP_TOKEN,
+        },
+        form: {
+          account_id: ACCOUNT_ID,
+          content: body,
+          activity_type_id: ACTIVITY_TYPE,
+          subject: subject,
+          touchpointType: TOUCHPOINT_TYPE,
+          touchpoint_tags: [ TOUCHPOINT_TAGS ],
+        },
+      }, (error, response, _body) => {
+        if (error) {
+          core.setFailed(`Failed to create touchpoint: ${error}`);
+          reject(error);
+        } else if (response.statusCode < 200 || response.statusCode >= 300) {
+          core.setFailed(`Failed to create touchpoint: ${response.statusCode}`);
+        }
 
-      core.setOutput('touchpoint_id', touchpoint_id);
-      resolve(touchpoint_id);
-    });
+        // Output a message to the console and an Action output
+        let touchpoint_id = (JSON.parse(response.body))['note']['id'];
+        console.log(`Successfully created touchpoint: ${touchpoint_id}`);
+
+        // Touchpoint id to github issue comment using function
+        console.log('Commenting on github issue');
+        core.setOutput('touchpoint_id', touchpoint_id);
+        resolve(touchpoint_id);
+      });
+    } catch (error) {
+      console.log(error);
+      reject(error);
+    }
   });
 }
 
@@ -93,43 +87,60 @@ async function create_touchpoint(subject, body) {
 async function create_task(subject, body_array) {
   console.log('Creating task...');
   return new Promise((resolve, reject) => {
-    request.post(TOTANGO_TASK_URL, {
-      headers: {
-        'app-token': APP_TOKEN,
-      },
-      form: {
-        account_id: ACCOUNT_ID,
-        assignee: TASK_ASSIGNEE,
-        description: body_array[0],
-        activity_type_id: DEFAULT_TASK_ACTIVITY,
-        priority: body_array[1],
-        title: subject,
-        status: 'open',
-        due_date: body_array[2],
-      },
-    }, (error, response, _body) => {
-      if (error) {
-        core.setFailed(`Failed to create task: ${error}`);
-        reject(error);
-      } else if (response.statusCode < 200 || response.statusCode >= 300) {
-        core.setFailed(`Failed to create task: ${response.statusCode}`);
-      }
+    try {
+      request.post(TOTANGO_TASK_URL, {
+        headers: {
+          'app-token': APP_TOKEN,
+        },
+        form: {
+          account_id: ACCOUNT_ID,
+          assignee: TASK_ASSIGNEE,
+          description: body_array[0],
+          activity_type_id: DEFAULT_TASK_ACTIVITY,
+          priority: body_array[1],
+          title: subject,
+          status: 'open',
+          due_date: body_array[2],
+        },
+      }, (error, response, _body) => {
+        if (error) {
+          core.setFailed(`Failed to create task: ${error}`);
+          reject(error);
+        } else if (response.statusCode < 200 || response.statusCode >= 300) {
+          core.setFailed(`Failed to create task: ${response.statusCode}`);
+        }
 
-      // Output a message to the console and an Action output
-      let task_id = (JSON.parse(response.body))['id'];
+        // Output a message to the console and an Action output
+        let task_id = (JSON.parse(response.body))['id'];
 
-      console.log(`Successfully created task: ${task_id}`);
-      core.setOutput('task_id', task_id);
-      resolve(task_id);
-    });
+        console.log(`Successfully created task: ${task_id}`);
+        core.setOutput('task_id', task_id);
+        resolve(task_id);
+      });
+    } catch (error) {
+      console.log(error);
+      reject(error);
+    }
   });
 }
 
 // Function to convert markdown to text for cleaner visibility in Totango
 function format_body(eventPayload, link, state, issue_number) {
+  let converter = new showdown.Converter({
+    ghMentions: true,
+    strikethrough: true,
+    underline: true,
+    tables: true,
+    literalMidWordUnderscores: true,
+    simplifiedAutoLink: true,
+    excludeTrailingPunctuationFromURLs: true,
+    omitExtraWLInCodeBlocks: true,
+    simpleLineBreaks: true,
+  });
+
   console.log('Formatting body...');
-  const user = eventPayload['user']['login'];
-  const body = eventPayload['body'];
+  let user = eventPayload['user']['login'];
+  let body = eventPayload['body'];
 
   let signature, response, header, content, footer;
 
@@ -149,10 +160,12 @@ function format_body(eventPayload, link, state, issue_number) {
     default:
       signature = `Created By: @${user}`;
   }
+
   response = `${body}\n----\n${signature}\nMore info here: ${link}`;
   header = '<div class="html-parser-container">';
   content = converter.makeHtml(response).replace(/(<p)/igm, '<div').replace(/<\/p>/igm, '</div><br />');
   footer = '</div>';
+
   return header + content + footer;
 }
 
