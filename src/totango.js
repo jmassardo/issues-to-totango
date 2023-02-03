@@ -22,25 +22,47 @@ const DEFAULT_DUE_DATE = new Date(Date.now() + 12096e5).toISOString().substring(
 const TOTANGO_TOUCHPOINTS_URL = 'https://api.totango.com/api/v3/touchpoints/';
 const TOTANGO_TASK_URL = 'https://api.totango.com/api/v3/tasks';
 
-// Comment on GitHub issue with id
-async function comment_gh_issue({issue, type, id}) {
+// Get issue body
+async function get_issue_body({issue}) {
   return new Promise((resolve, reject) => {
     try {
-      octokit.rest.issues.createComment({
+      octokit.rest.issues.get({
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
         issue_number: issue['number'],
-        body: `${type}_ID: ${id}`,
+      }).then((response) => {
+        resolve(response['data']['body']);
       });
-
-      console.log(`Commented on issue ${issue['number']} with ${type}_ID: ${id}`);
-      resolve();
     } catch (error) {
       console.log(error);
       reject(error);
     }
   });
 }
+
+// Add HTML comment to GitHub issue body
+async function add_html_comment({issue, type, id}) {
+  return new Promise((resolve, reject) => {
+    try {
+      // call get_issue_body to get the issue body
+      get_issue_body({issue}).then((body) => {
+
+        octokit.rest.issues.update({
+          owner: github.context.repo.owner,
+          repo: github.context.repo.repo,
+          issue_number: issue['number'],
+          body: `${body}\n\n<!-- ${type}_ID: ${id} -->`,
+        });
+        console.log(`Updated issue ${issue['number']} with ${type}_ID: ${id}`);
+        resolve();
+      });
+    } catch (error) {
+      console.log(error);
+      reject(error);
+    }
+  });
+}
+
 
 // Function to create a touchpoint in Totango
 async function create_touchpoint(subject, body) {
@@ -194,8 +216,9 @@ async function labeled({ issue, label }) {
     let task_id = await create_task(subject, body_array);
 
     console.log('Commenting on github issue for task with id: ' + task_id);
-
-    await comment_gh_issue({
+    // sleep for 1s
+    await new Promise(r => setTimeout(r, 1000));
+    await add_html_comment({
       issue: issue,
       type: 'task',
       id: task_id,
@@ -207,7 +230,7 @@ async function labeled({ issue, label }) {
     let touchpoint_id = await create_touchpoint(subject, body);
 
     console.log('Commenting on github issue for touchpoint');
-    await comment_gh_issue({
+    await add_html_comment({
       issue: issue,
       type: 'touchpoint',
       id: touchpoint_id,
@@ -237,10 +260,11 @@ async function commented({ issue, comment }) {
 
 // Exports for testing
 const totangoPrivate = {
-  comment_gh_issue,
+  add_html_comment,
   create_touchpoint,
   create_task,
   format_body,
+  get_issue_body,
 };
 
 module.exports = {
