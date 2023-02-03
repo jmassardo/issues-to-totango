@@ -6,7 +6,7 @@ const github = require('@actions/github');
 // Mock the totangoPrivate functions
 jest.mock('../src/totango', () => ({
   totangoPrivate: {
-    comment_gh_issue: jest.fn(),
+    add_html_comment: jest.fn(),
     create_touchpoint: jest.fn(),
     create_task: jest.fn(),
     format_body: jest.fn(),
@@ -31,17 +31,13 @@ jest.mock('@actions/github', () => ({
   },
 }));
 
-// write test for comment_gh_issue
-describe('comment_gh_issue', () => {
-  it('should call comment_gh_issue', async () => {
-    const { comment_gh_issue, } = totangoPrivate;
-    await comment_gh_issue({
-      issue: github.context.payload.issue,
-      type: 'task',
-      id: 1,
-    });
-    expect(comment_gh_issue).toHaveBeenCalled();
-    expect(comment_gh_issue).toHaveBeenCalledWith({ issue: github.context.payload.issue, type: 'task', id: 1, });
+// write test for add_html_comment
+describe('add_html_comment', () => {
+  it('should call add_html_comment', async () => {
+    const { add_html_comment, } = totangoPrivate;
+    await add_html_comment('Test Comment');
+    expect(add_html_comment).toHaveBeenCalled();
+    expect(add_html_comment).toHaveBeenCalledWith('Test Comment');
   });
 });
 
