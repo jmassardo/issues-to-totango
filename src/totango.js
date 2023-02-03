@@ -22,7 +22,7 @@ const DEFAULT_DUE_DATE = new Date(Date.now() + 12096e5).toISOString().substring(
 const TOTANGO_TOUCHPOINTS_URL = 'https://api.totango.com/api/v3/touchpoints/';
 const TOTANGO_TASK_URL = 'https://api.totango.com/api/v3/tasks';
 
-//Get issue body
+// Get issue body
 async function get_issue_body({issue}) {
   return new Promise((resolve, reject) => {
     try {
@@ -40,11 +40,11 @@ async function get_issue_body({issue}) {
   });
 }
 
-//Add HTML comment to GitHub issue body
+// Add HTML comment to GitHub issue body
 async function add_html_comment({issue, type, id}) {
   return new Promise((resolve, reject) => {
     try {
-      //call get_issue_body to get the issue body
+      // call get_issue_body to get the issue body
       get_issue_body({issue}).then((body) => {
 
         octokit.rest.issues.update({
@@ -216,7 +216,7 @@ async function labeled({ issue, label }) {
     let task_id = await create_task(subject, body_array);
 
     console.log('Commenting on github issue for task with id: ' + task_id);
-    //sleep for 1s
+    // sleep for 1s
     await new Promise(r => setTimeout(r, 1000));
     await add_html_comment({
       issue: issue,
