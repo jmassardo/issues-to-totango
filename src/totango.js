@@ -40,6 +40,58 @@ async function get_issue_body({issue}) {
   });
 }
 
+// Function to fetch the details of a Totango Task by ID
+async function get_task_by_id({id}) {
+  return new Promise((resolve, reject) => {
+    try {
+      console.log(`Getting task by id: ${id}`);
+      request.get(`${TOTANGO_TASK_URL}?id=${id}`, {
+        headers: {
+          'app-token': APP_TOKEN,
+        },
+      }, (error, response, _body) => {
+        if (error) {
+          core.setFailed(`Failed to get task by id: ${error}`);
+          reject(error);
+        } else if (response.statusCode < 200 || response.statusCode >= 300) {
+          core.setFailed(`Failed to get task by id: ${response.statusCode}`);
+        }
+
+        let task = JSON.parse(response.body);
+
+        task = task[0];
+
+        console.log(`Successfully retrieved task: ${task['id']}`);
+        resolve(task);
+      });
+    } catch (error) {
+      console.log(error);
+      reject(error);
+    }
+  });
+}
+
+// Function to determine if an issue has a Totango Task ID
+async function issue_has_task_id({issue}) {
+  try {
+    // call get_issue_body to get the issue body
+    let body = await get_issue_body({issue: issue});
+
+    // Use regex to find the Totango Task ID
+    let task_id = body.match(/<!-- task_ID: (\d+) -->/);
+    if (task_id) {
+      console.log(`Found task_id: ${task_id[1]}`);
+      return task_id[1];
+    } else {
+      console.log('No task_id found');
+      return false;
+    }
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
 // Add HTML comment to GitHub issue body
 async function add_html_comment({issue, type, id}) {
   return new Promise((resolve, reject) => {
@@ -62,7 +114,6 @@ async function add_html_comment({issue, type, id}) {
     }
   });
 }
-
 
 // Function to create a touchpoint in Totango
 async function create_touchpoint(subject, body) {
@@ -137,6 +188,39 @@ async function create_task(subject, body_array) {
 
         console.log(`Successfully created task: ${task_id}`);
         core.setOutput('task_id', task_id);
+        resolve(task_id);
+      });
+    } catch (error) {
+      console.log(error);
+      reject(error);
+    }
+  });
+}
+
+// Function to close a task in Totango
+async function close_task(task_id) {
+  console.log('Closing task...');
+  return new Promise((resolve, reject) => {
+    try {
+      request.put(`${TOTANGO_TASK_URL}`, {
+        headers: {
+          'app-token': APP_TOKEN,
+        },
+        form: {
+          id: task_id,
+          status: 'closed',
+        },
+      }, (error, response, _body) => {
+        if (error) {
+          core.setFailed(`Failed to close task: ${error}`);
+          reject(error);
+        } else if (response.statusCode < 200 || response.statusCode >= 300) {
+          core.setFailed(`Failed to close task: ${response.statusCode}`);
+          reject(`Failed to close task: ${response.statusCode}`);
+        }
+
+        // Output a message to the console and an Action output
+        console.log(`Successfully closed task: ${task_id}`);
         resolve(task_id);
       });
     } catch (error) {
@@ -239,13 +323,16 @@ async function labeled({ issue, label }) {
 }
 
 async function closed({ issue }) {
-  // This function is not currently performing any actions
-  // let subject = 'Issue #: ' + issue['title'] + ' was closed';
-  // let body = format_body(issue, issue['html_url'], 'closed');
   console.log('Issue was closed');
-  return new Promise((resolve, _reject) => {
-    resolve();
-  });
+  // Check to see if the issue has a task associated with it
+  // If it does, and the task is not already closed, close the task
+  let task_id = await issue_has_task_id({issue: issue});
+  console.log(`Task id before task status is: ${task_id}`);
+  let task_status = await get_task_by_id({id: task_id}).then((task) => { return task['status']; });
+
+  if (task_id && task_status !== 'closed') {
+    await close_task(task_id);
+  }
 }
 
 async function commented({ issue, comment }) {
@@ -261,8 +348,11 @@ async function commented({ issue, comment }) {
 // Exports for testing
 const totangoPrivate = {
   add_html_comment,
+  get_task_by_id,
+  issue_has_task_id,
   create_touchpoint,
   create_task,
+  close_task,
   format_body,
   get_issue_body,
 };
