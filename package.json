@@ -29,7 +29,6 @@
     "example": "examples"
   },
   "devDependencies": {
-    "chai": "^4.3.7",
     "cspell": "^6.22.0",
     "eslint": "^8.33.0",
     "eslint-config-strongloop": "^2.1.0",
