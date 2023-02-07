@@ -31,18 +31,22 @@ These need to all be set up as secrets in the GitHub Repo where the action will 
 > Fetch `https://api.totango.com/api/v3/activity-types/` to see the parings. Use the `activity_type_id` value.
 
 Example curl request:
-```
+
+```sh
 curl --location --request GET 'https://api.totango.com/api/v3/activity-types/' \
 --header 'app-token: TOTANGO_TOKEN'
 ```
 
 ### `TOUCHPOINT_TAGS`
 
-**Required** The GUID of the Touchpoint Reason.
+**Required** The GUID of the Touchpoint Reason
+Supports `string` or a list of comma-separated `string` values.
+
 > Fetch `https://api.totango.com/api/v3/touchpoint-tags/` to see the parings. Use the `ID` value.
 
 Example curl request:
-```
+
+```sh
 curl --location --request GET 'https://api.totango.com/api/v3/touchpoint-tags/' \
 --header 'app-token: TOTANGO_TOKEN'
 ```
@@ -53,7 +57,8 @@ curl --location --request GET 'https://api.totango.com/api/v3/touchpoint-tags/' 
 > Fetch `https://api.totango.com/api/v3/touchpoint-types/` to see the pairings. Use the `ID` value.
 
 Example curl request:
-```
+
+```sh
 curl --location --request GET 'https://api.totango.com/api/v3/touchpoint-types/' \
 --header 'app-token: TOTANGO_TOKEN'
 ```
@@ -78,9 +83,13 @@ The id that Totango returns to you when you create a new touchpoint or task.
 See example workflow file at examples/workflow_example.yml
 
 ## Building Code
+
 ## How To Create a New Task
+
 The tasks API doesn't seem to be documented anywhere. To figure out what is sent to the API, use the Totango test account and Developer Tools while creating/editing a task.
+
 ### NodeJs Example
+
 ``` javascript
 var request = require('request');
 var options = {

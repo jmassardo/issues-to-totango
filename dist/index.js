@@ -47357,9 +47357,6 @@ const TOUCHPOINT_TYPE = core.getInput('TOUCHPOINT_TYPE');
 const TASK_ASSIGNEE = core.getInput('TASK_ASSIGNEE');
 const GITHUB_TOKEN = core.getInput('REPO_TOKEN');
 
-// Create an authenticated GitHub client
-const octokit = github.getOctokit(GITHUB_TOKEN);
-
 // TODO: add support for using GitHub Action Variables in the below constants with documentation
 const DEFAULT_PRIORITY = 2; // Indicates "Normal" priority for tasks;
 const DEFAULT_TASK_ACTIVITY = 'support';
@@ -47368,10 +47365,23 @@ const DEFAULT_DUE_DATE = new Date(Date.now() + 12096e5).toISOString().substring(
 const TOTANGO_TOUCHPOINTS_URL = 'https://api.totango.com/api/v3/touchpoints/';
 const TOTANGO_TASK_URL = 'https://api.totango.com/api/v3/tasks';
 
+// Function to parse a string of comma separated values into an array
+function parse_to_array(string) {
+  try {
+    return string.split(',').map((tag) => tag.trim());
+  } catch (error) {
+    console.log(error);
+    core.setFailed(`Failed to parse string to array: ${error}`);
+  }
+}
+
 // Get issue body
 async function get_issue_body({issue}) {
   return new Promise((resolve, reject) => {
     try {
+      // Create an authenticated GitHub client
+      let octokit = github.getOctokit(GITHUB_TOKEN);
+
       octokit.rest.issues.get({
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
@@ -47442,6 +47452,9 @@ async function issue_has_task_id({issue}) {
 async function add_html_comment({issue, type, id}) {
   return new Promise((resolve, reject) => {
     try {
+      // Create an authenticated GitHub client
+      let octokit = github.getOctokit(GITHUB_TOKEN);
+
       // call get_issue_body to get the issue body
       get_issue_body({issue}).then((body) => {
 
@@ -47476,7 +47489,7 @@ async function create_touchpoint(subject, body) {
           activity_type_id: ACTIVITY_TYPE,
           subject: subject,
           touchpointType: TOUCHPOINT_TYPE,
-          touchpoint_tags: [ TOUCHPOINT_TAGS ],
+          touchpoint_tags: parse_to_array(TOUCHPOINT_TAGS),
         },
       }, (error, response, _body) => {
         if (error) {
@@ -47681,7 +47694,7 @@ async function closed({ issue }) {
   }
 }
 
-async function commented({ issue, comment }) {
+async function commented({ _issue, _comment }) {
   // This function is not currently performing any actions
   // let subject = 'Issue #: ' + issue['title'] + ' was commented on';
   // let body = format_body(comment, issue['html_url'], 'commented', issue['number']);
@@ -47693,6 +47706,7 @@ async function commented({ issue, comment }) {
 
 // Exports for testing
 const totangoPrivate = {
+  parse_to_array,
   add_html_comment,
   get_task_by_id,
   issue_has_task_id,

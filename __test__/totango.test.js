@@ -80,3 +80,14 @@ describe('labeled', () => {
     expect(labeled).toHaveBeenCalledWith({ issue: github.context.payload.issue, });
   });
 });
+
+// Test parse_to_array function from src/totango.js
+// Expect that when passed a string or a comma separated list of strings,
+//   it will return an array of strings
+describe('parse_to_array', () => {
+  it('should return an array of strings', () => {
+    let { parse_to_array, } = jest.requireActual('../src/totango').totangoPrivate;
+    expect(parse_to_array('Test String')).toEqual(['Test String']);
+    expect(parse_to_array('Test String, Test String 2')).toEqual(['Test String', 'Test String 2']);
+  });
+});
