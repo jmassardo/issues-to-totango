@@ -47439,7 +47439,7 @@ async function issue_has_task_id({issue, type}) {
       console.log(`Found ${type}_id: ${task_id[1]}`);
       return task_id[1];
     } else {
-      console.log('No ${type}_id found');
+      console.log(`No ${type}_id found`);
       return false;
     }
   } catch (error) {
