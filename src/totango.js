@@ -82,18 +82,18 @@ async function get_task_by_id({id}) {
 }
 
 // Function to determine if an issue has a Totango Task ID
-async function issue_has_task_id({issue}) {
+async function issue_has_task_id({issue, type}) {
   try {
     // call get_issue_body to get the issue body
     let body = await get_issue_body({issue: issue});
 
     // Use regex to find the Totango Task ID
-    let task_id = body.match(/<!-- task_ID: (\d+) -->/);
+    let task_id = body.match(/<!-- ${type}_ID: (\d+) -->/);
     if (task_id) {
-      console.log(`Found task_id: ${task_id[1]}`);
+      console.log(`Found ${type}_id: ${task_id[1]}`);
       return task_id[1];
     } else {
-      console.log('No task_id found');
+      console.log('No ${type}_id found');
       return false;
     }
   } catch (error) {
@@ -291,7 +291,11 @@ function format_body(eventPayload, link, state, issue_number) {
 async function labeled({ issue, label }) {
   let subject = 'Issue #: ' + issue['title'] + ' was labeled';
   let body = `${issue['user']['login']} labeled an issue. ${issue['body']}. More info here: ${issue['html_url']}`;
-
+  // check if issue already has a task or touchpoint associated with it
+  if (await issue_has_task_id(issue), 'task') {
+      console.log('Issue already has task id');
+      return;
+  }
   if (label['name'] === 'task') {
     let regex = /### Description\n\n(.*)|### Priority\n\n[1-3]|### Due Date\n\n([0-9]+(-[0-9]+)+)/g;
     //  Example of what a matching body should look like in request from Issue Form
@@ -339,7 +343,7 @@ async function closed({ issue }) {
   console.log('Issue was closed');
   // Check to see if the issue has a task associated with it
   // If it does, and the task is not already closed, close the task
-  let task_id = await issue_has_task_id({issue: issue});
+  let task_id = await issue_has_task_id({issue: issue}, 'task');
   console.log(`Task id before task status is: ${task_id}`);
   let task_status = await get_task_by_id({id: task_id}).then((task) => { return task['status']; });
 
