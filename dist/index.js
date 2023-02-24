@@ -47434,7 +47434,7 @@ async function issue_has_task_id({issue, type}) {
     let body = await get_issue_body({issue: issue});
 
     // Use regex to find the Totango Task ID
-    let task_id = body.match(/<!-- ${type}_ID: (\d+) -->/);
+    let task_id = body.match(`/<!-- ${type}_ID: (\d+) -->/`);
     if (task_id) {
       console.log(`Found ${type}_id: ${task_id[1]}`);
       return task_id[1];
