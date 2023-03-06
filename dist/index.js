@@ -47427,25 +47427,31 @@ async function get_task_by_id({id}) {
   });
 }
 
-// Function to determine if an issue has a Totango Task ID
+// Function to determine if an issue has a Totango Task or Touchpoint ID
 async function issue_has_task_id({issue, type}) {
-  try {
-    // call get_issue_body to get the issue body
-    let body = await get_issue_body({issue: issue});
-
-    // Use regex to find the Totango Task ID
-    let task_id = body.match(`/<!-- ${type}_ID: (\d+) -->/`);
-    if (task_id) {
-      console.log(`Found ${type}_id: ${task_id[1]}`);
-      return task_id[1];
-    } else {
-      console.log(`No ${type}_id found`);
-      return false;
+  return new Promise((resolve, reject) => {
+    try {
+      // Create an authenticated GitHub client
+      let octokit = github.getOctokit(GITHUB_TOKEN);
+      
+      octokit.rest.issues.get({
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+        issue_number: issue['number'],
+      }).then((response) => {
+        let body = response['data']['body'];
+        let id = body.match(new RegExp(`<!-- ${type}_ID: (.*?) -->`));
+        if (id) {
+          resolve(id[1]);
+        } else {
+          resolve(false);
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      reject(error);
     }
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
+  });
 }
 
 // Add HTML comment to GitHub issue body
@@ -47655,7 +47661,7 @@ async function labeled({ issue, label }) {
       body_array[2] = DEFAULT_DUE_DATE;
     }
     // check if task is already created for this issue
-    let check_task_id = issue_has_task_id({issue: issue}, 'task');
+    let check_task_id = await issue_has_task_id({issue: issue}, 'task');
     if (check_task_id) {
       console.log('Task already exists for this issue.');
       return;
@@ -47673,11 +47679,13 @@ async function labeled({ issue, label }) {
     // output the payload to the console so the user can see it
     console.log(`Touchpoint subject is: ${subject}`);
     console.log(`Touchpoint body is: ${body}`);
-    let check_task_id = issue_has_task_id({issue: issue}, 'touchpoint');
-    if (check_task_id) {
+    // check if touchpoint is already created for this issue (shouldn't be)
+    let check_touchpoint_id = await issue_has_task_id({issue: issue}, 'touchpoint');
+    if (check_touchpoint_id) {
       console.log('Touchpoint already exists for this issue.');
       return;
     }
+
     let touchpoint_id = await create_touchpoint(subject, body);
 
     console.log('Commenting on github issue for touchpoint');
