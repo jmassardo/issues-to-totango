@@ -292,6 +292,7 @@ async function labeled({ issue, label }) {
   let subject = 'Issue #: ' + issue['title'] + ' was labeled';
   let body = `${issue['user']['login']} labeled an issue. ${issue['body']}. More info here: ${issue['html_url']}`;
   // check if issue already has a task or touchpoint associated with it
+  console.log(label['name'])
   if (await issue_has_task_id({issue: issue}, label['name'])) {
       console.log('Issue already has task id');
       return;
