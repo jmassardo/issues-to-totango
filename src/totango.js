@@ -314,12 +314,13 @@ async function labeled({ issue, label }) {
       body_array[1] = DEFAULT_PRIORITY;
       body_array[2] = DEFAULT_DUE_DATE;
     }
-    // check if task is already created for this issue
-    let check_task_id = await issue_has_task_id({issue: issue}, 'task');
+    // check if task is already created for this issue (shouldn't be)
+    let check_task_id = await issue_has_task_id({issue: issue}, 'task').then((id) => { return id; });
     if (check_task_id) {
       console.log('Task already exists for this issue.');
       return;
     }
+    // create task
     let task_id = await create_task(subject, body_array);
     console.log('Commenting on github issue for task with id: ' + task_id);
     // sleep for 1s
@@ -334,7 +335,7 @@ async function labeled({ issue, label }) {
     console.log(`Touchpoint subject is: ${subject}`);
     console.log(`Touchpoint body is: ${body}`);
     // check if touchpoint is already created for this issue (shouldn't be)
-    let check_touchpoint_id = await issue_has_task_id({issue: issue}, 'touchpoint');
+    let check_touchpoint_id = await issue_has_task_id({issue: issue}, 'touchpoint').then((id) => { return id; });
     if (check_touchpoint_id) {
       console.log('Touchpoint already exists for this issue.');
       return;
@@ -355,7 +356,7 @@ async function closed({ issue }) {
   console.log('Issue was closed');
   // Check to see if the issue has a task associated with it
   // If it does, and the task is not already closed, close the task
-  let task_id = await issue_has_task_id({issue: issue}, 'task');
+  let task_id = await issue_has_task_id({issue: issue}, 'task').then((id) => { return id; })
   console.log(`Task id before task status is: ${task_id}`);
   let task_status = await get_task_by_id({id: task_id}).then((task) => { return task['status']; });
 
