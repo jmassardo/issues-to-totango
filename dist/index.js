@@ -47655,7 +47655,7 @@ async function labeled({ issue, label }) {
       body_array[2] = DEFAULT_DUE_DATE;
     }
     // check if task is already created for this issue
-    let check_task_id = await issue_has_task_id({issue: issue}, 'task');
+    let check_task_id = issue_has_task_id({issue: issue}, 'task');
     if (check_task_id) {
       console.log('Task already exists for this issue.');
       return;
@@ -47673,7 +47673,7 @@ async function labeled({ issue, label }) {
     // output the payload to the console so the user can see it
     console.log(`Touchpoint subject is: ${subject}`);
     console.log(`Touchpoint body is: ${body}`);
-    let check_task_id = await issue_has_task_id({issue: issue}, 'touchpoint');
+    let check_task_id = issue_has_task_id({issue: issue}, 'touchpoint');
     if (check_task_id) {
       console.log('Touchpoint already exists for this issue.');
       return;
