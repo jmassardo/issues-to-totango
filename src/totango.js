@@ -291,12 +291,6 @@ function format_body(eventPayload, link, state, issue_number) {
 async function labeled({ issue, label }) {
   let subject = 'Issue #: ' + issue['title'] + ' was labeled';
   let body = `${issue['user']['login']} labeled an issue. ${issue['body']}. More info here: ${issue['html_url']}`;
-  // check if issue already has a task or touchpoint associated with it
-  console.log(label['name']);
-  if (await issue_has_task_id({issue: issue}, label['name'])) {
-      console.log('Issue already has task id');
-      return;
-  }
   if (label['name'] === 'task') {
     let regex = /### Description\n\n(.*)|### Priority\n\n[1-3]|### Due Date\n\n([0-9]+(-[0-9]+)+)/g;
     //  Example of what a matching body should look like in request from Issue Form
@@ -314,9 +308,13 @@ async function labeled({ issue, label }) {
       body_array[1] = DEFAULT_PRIORITY;
       body_array[2] = DEFAULT_DUE_DATE;
     }
-
+    // check if task is already created for this issue
+    let check_task_id = await issue_has_task_id({issue: issue}, 'task');
+    if (check_task_id) {
+      console.log('Task already exists for this issue.');
+      return;
+    }
     let task_id = await create_task(subject, body_array);
-
     console.log('Commenting on github issue for task with id: ' + task_id);
     // sleep for 1s
     await new Promise(r => setTimeout(r, 1000));
@@ -329,6 +327,11 @@ async function labeled({ issue, label }) {
     // output the payload to the console so the user can see it
     console.log(`Touchpoint subject is: ${subject}`);
     console.log(`Touchpoint body is: ${body}`);
+    let check_task_id = await issue_has_task_id({issue: issue}, 'touchpoint');
+    if (check_task_id) {
+      console.log('Touchpoint already exists for this issue.');
+      return;
+    }
     let touchpoint_id = await create_touchpoint(subject, body);
 
     console.log('Commenting on github issue for touchpoint');
