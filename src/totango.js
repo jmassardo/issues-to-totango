@@ -336,6 +336,7 @@ async function labeled({ issue, label }) {
     console.log(`Touchpoint body is: ${body}`);
     // check if touchpoint is already created for this issue (shouldn't be)
     let check_touchpoint_id = await issue_has_task_id({issue: issue}, 'touchpoint').then((id) => { return id; });
+    console.log(check_touchpoint_id)
     if (check_touchpoint_id) {
       console.log('Touchpoint already exists for this issue.');
       return;
