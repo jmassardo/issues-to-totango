@@ -82,7 +82,7 @@ async function get_task_by_id({id}) {
 }
 
 // Function to determine if an issue has a Totango Task or Touchpoint ID
-async function issue_has_task_id({issue, type}) {
+async function issue_has_totango_id({issue, type}) {
   return new Promise((resolve, reject) => {
     try {
       // Create an authenticated GitHub client
@@ -315,9 +315,9 @@ async function labeled({ issue, label }) {
       body_array[2] = DEFAULT_DUE_DATE;
     }
     // check if task is already created for this issue (shouldn't be)
-    let check_totango_id = await issue_has_task_id({issue: issue}, 'task').then((id) => { return id; });
-    if (check_totango_id) {
-      console.log(`Task already exists for this issue ${check_totango_id}`);
+    let check_task_id = await issue_has_totango_id({issue: issue}, 'task').then((id) => { return id; });
+    if (check_task_id) {
+      console.log(`Task already exists for this issue ${check_task_id}`);
       return;
     }
     // create task
@@ -335,10 +335,10 @@ async function labeled({ issue, label }) {
     console.log(`Touchpoint subject is: ${subject}`);
     console.log(`Touchpoint body is: ${body}`);
     // check if touchpoint is already created for this issue (shouldn't be)
-    let check_touchpoint_id = await issue_has_task_id({issue: issue}, 'touchpoint').then((id) => { return id; });
+    let check_touchpoint_id = await issue_has_totango_id({issue: issue}, 'touchpoint').then((id) => { return id; });
     console.log(check_touchpoint_id)
     if (check_touchpoint_id) {
-      console.log(`Touchpoint already exists for this issue ${check_totango_id}`);
+      console.log(`Touchpoint already exists for this issue ${check_touchpoint_id}`);
       return;
     }
 
@@ -357,7 +357,7 @@ async function closed({ issue }) {
   console.log('Issue was closed');
   // Check to see if the issue has a task associated with it
   // If it does, and the task is not already closed, close the task
-  let task_id = await issue_has_task_id({issue: issue}, 'task').then((id) => { return id; })
+  let task_id = await issue_has_totango_id({issue: issue}, 'task').then((id) => { return id; })
   console.log(`Task id before task status is: ${task_id}`);
   let task_status = await get_task_by_id({id: task_id}).then((task) => { return task['status']; });
 
@@ -381,7 +381,7 @@ const totangoPrivate = {
   parse_to_array,
   add_html_comment,
   get_task_by_id,
-  issue_has_task_id,
+  issue_has_totango_id,
   create_touchpoint,
   create_task,
   close_task,
