@@ -83,17 +83,13 @@ async function get_task_by_id({id}) {
 
 // Function to determine if an issue has a Totango Task or Touchpoint ID from the issue body text
 function issue_has_totango_id({body}) {
-    try {
-      let id = body.match(/<!-- (task_id|touchpoint_id): (.*?) -->/);
-      if (id) {
-        id[0];
-      } else {
-        false;
-      }
-    } catch (error) {
-      console.log(error);
-      core.setFailed(`Failed to determine if issue has Totango ID: ${error}`);
-}
+  let regex = /<!-- (task|touchpoint)_id: (\d+) -->/g;
+  let matches = body.match(regex);
+  if (matches) {
+    return true;
+  } else {
+    return false;
+  }
 };
 
 // Add HTML comment to GitHub issue body
@@ -324,7 +320,7 @@ async function labeled({ issue, label }) {
     console.log(`Touchpoint body is: ${body}`);
     // check if touchpoint is already created for this issue (shouldn't be)
     let check_touchpoint_id = issue_has_totango_id({body});
-    console.log(check_touchpoint_id)
+    console.log(`Touchpoint id is: ${check_touchpoint_id}`)
     if (check_touchpoint_id) {
       console.log(`Touchpoint already exists for this issue ${check_touchpoint_id}`);
       return;
