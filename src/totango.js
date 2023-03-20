@@ -81,26 +81,16 @@ async function get_task_by_id({id}) {
   });
 }
 
-// Function to determine if an issue has a Totango Task or Touchpoint ID
-async function issue_has_totango_id({issue, type}) {
+// Function to determine if an issue has a Totango Task or Touchpoint ID from the issue body text
+function issue_has_totango_id({body}) {
   return new Promise((resolve, reject) => {
     try {
-      // Create an authenticated GitHub client
-      let octokit = github.getOctokit(GITHUB_TOKEN);
-      
-      octokit.rest.issues.get({
-        owner: github.context.repo.owner,
-        repo: github.context.repo.repo,
-        issue_number: issue['number'],
-      }).then((response) => {
-        let body = response['data']['body'];
-        let id = body.match(new RegExp(`<!-- ${type}_ID: (.*?) -->`));
-        if (id) {
-          resolve(id[0]);
-        } else {
-          resolve(false);
-        }
-      });
+      let id = body.match(/<!-- (task_id|touchpoint_id): (.*?) -->/);
+      if (id) {
+        resolve(id[0]);
+      } else {
+        resolve(false);
+      }
     } catch (error) {
       console.log(error);
       reject(error);
@@ -315,7 +305,7 @@ async function labeled({ issue, label }) {
       body_array[2] = DEFAULT_DUE_DATE;
     }
     // check if task is already created for this issue (shouldn't be)
-    let check_task_id = await issue_has_totango_id({issue: issue}, 'task').then((id) => { return id; });
+    let check_task_id = issue_has_totango_id({body}).then((id) => { return id; });
     if (check_task_id) {
       console.log(`Task already exists for this issue ${check_task_id}`);
       return;
@@ -335,7 +325,7 @@ async function labeled({ issue, label }) {
     console.log(`Touchpoint subject is: ${subject}`);
     console.log(`Touchpoint body is: ${body}`);
     // check if touchpoint is already created for this issue (shouldn't be)
-    let check_touchpoint_id = await issue_has_totango_id({issue: issue}, 'touchpoint').then((id) => { return id; });
+    let check_touchpoint_id = issue_has_totango_id({body}).then((id) => { return id; });
     console.log(check_touchpoint_id)
     if (check_touchpoint_id) {
       console.log(`Touchpoint already exists for this issue ${check_touchpoint_id}`);
