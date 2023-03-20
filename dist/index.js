@@ -47432,15 +47432,15 @@ function issue_has_totango_id({body}) {
     try {
       let id = body.match(/<!-- (task_id|touchpoint_id): (.*?) -->/);
       if (id) {
-        resolve(id[0]);
+        id[0];
       } else {
-        resolve(false);
+        false;
       }
     } catch (error) {
       console.log(error);
-      reject(error);
-    };
+      core.setFailed(`Failed to determine if issue has Totango ID: ${error}`);
 }
+};
 
 // Add HTML comment to GitHub issue body
 async function add_html_comment({issue, type, id}) {
