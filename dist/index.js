@@ -47661,9 +47661,9 @@ async function labeled({ issue, label }) {
       body_array[2] = DEFAULT_DUE_DATE;
     }
     // check if task is already created for this issue (shouldn't be)
-    let check_task_id = await issue_has_task_id({issue: issue}, 'task').then((id) => { return id; });
-    if (check_task_id) {
-      console.log('Task already exists for this issue.');
+    let check_totango_id = await issue_has_task_id({issue: issue}, 'task').then((id) => { return id; });
+    if (check_totango_id) {
+      console.log(`Task already exists for this issue ${check_totango_id}`);
       return;
     }
     // create task
@@ -47684,7 +47684,7 @@ async function labeled({ issue, label }) {
     let check_touchpoint_id = await issue_has_task_id({issue: issue}, 'touchpoint').then((id) => { return id; });
     console.log(check_touchpoint_id)
     if (check_touchpoint_id) {
-      console.log('Touchpoint already exists for this issue.');
+      console.log(`Touchpoint already exists for this issue ${check_totango_id}`);
       return;
     }
 
