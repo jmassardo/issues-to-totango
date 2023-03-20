@@ -81,12 +81,14 @@ async function get_task_by_id({id}) {
   });
 }
 
-// Function to determine if an issue has a Totango Task or Touchpoint ID from the issue body text
+// Function to determine if an issue has a Totango Task or Touchpoint ID from the issue body text and return the ID
 function issue_has_totango_id({body}) {
   let regex = /<!-- (task|touchpoint)_ID: (\d+) -->/g;
   let matches = body.match(regex);
   if (matches) {
-    return true;
+    let match = matches[0];
+    let id = match.match(/\d+/g)[0];
+    return {id};
   } else {
     return false;
   }
