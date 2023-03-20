@@ -47442,7 +47442,7 @@ async function issue_has_task_id({issue, type}) {
         let body = response['data']['body'];
         let id = body.match(new RegExp(`<!-- ${type}_ID: (.*?) -->`));
         if (id) {
-          resolve(id[1]);
+          resolve(id[0]);
         } else {
           resolve(false);
         }
