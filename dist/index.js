@@ -47429,7 +47429,7 @@ async function get_task_by_id({id}) {
 
 // Function to determine if an issue has a Totango Task or Touchpoint ID from the issue body text
 function issue_has_totango_id({body}) {
-  let regex = /<!-- (task|touchpoint)_id: (\d+) -->/g;
+  let regex = /<!-- (task|touchpoint)_ID: (\d+) -->/g;
   let matches = body.match(regex);
   if (matches) {
     return true;
