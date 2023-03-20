@@ -338,7 +338,7 @@ async function labeled({ issue, label }) {
     let check_touchpoint_id = await issue_has_task_id({issue: issue}, 'touchpoint').then((id) => { return id; });
     console.log(check_touchpoint_id)
     if (check_touchpoint_id) {
-      console.log('Touchpoint already exists for this issue.');
+      console.log(`Touchpoint already exists for this issue ${check_totango_id}`);
       return;
     }
 
