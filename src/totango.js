@@ -94,6 +94,7 @@ function issue_has_totango_id({body}) {
       console.log(error);
       core.setFailed(`Failed to determine if issue has Totango ID: ${error}`);
 }
+};
 
 // Add HTML comment to GitHub issue body
 async function add_html_comment({issue, type, id}) {
