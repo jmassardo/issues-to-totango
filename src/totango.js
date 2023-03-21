@@ -375,7 +375,7 @@ async function labeled({ issue, label }) {
     console.log(`Touchpoint body is: ${body}`);
     // check if touchpoint is already created for this issue (shouldn't be)
     let check_touchpoint_id = issue_has_totango_id({body});
-    console.log(`Touchpoint id is: ${check_touchpoint_id}`)
+    console.log(`Touchpoint id is: ${check_touchpoint_id}`);
     if (check_touchpoint_id) {
       console.log(`Touchpoint already exists for this issue ${check_touchpoint_id}`);
       return;
@@ -419,6 +419,7 @@ async function edited({ issue }){
 
 async function closed({ issue }) {
   console.log('Issue was closed');
+  let body = issue['body']
   // Check to see if the issue has a task associated with it
   // If it does, and the task is not already closed, close the task
   let task_id = issue_has_totango_id({body});
