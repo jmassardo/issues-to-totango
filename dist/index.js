@@ -47765,7 +47765,7 @@ async function edited({ issue }){
 
 async function closed({ issue }) {
   console.log('Issue was closed');
-  let body = issue['body']
+  let body = issue['body'];
   // Check to see if the issue has a task associated with it
   // If it does, and the task is not already closed, close the task
   let task_id = issue_has_totango_id({body});
