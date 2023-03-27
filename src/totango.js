@@ -82,26 +82,18 @@ async function get_task_by_id({id}) {
   });
 }
 
-// Function to determine if an issue has a Totango Task ID
-async function issue_has_task_id({issue}) {
-  try {
-    // call get_issue_body to get the issue body
-    let body = await get_issue_body({issue: issue});
-
-    // Use regex to find the Totango Task ID
-    let task_id = body.match(/<!-- task_ID: (\d+) -->/);
-    if (task_id) {
-      console.log(`Found task_id: ${task_id[1]}`);
-      return task_id[1];
-    } else {
-      console.log('No task_id found');
-      return false;
-    }
-  } catch (error) {
-    console.log(error);
-    throw error;
+// Function to determine if an issue has a Totango Task or Touchpoint ID from the issue body text and return the ID
+function issue_has_totango_id({body}) {
+  let regex = /<!-- (task|touchpoint)_ID: (\d+) -->/g;
+  let matches = body.match(regex);
+  if (matches) {
+    let match = matches[0];
+    let id = match.match(/\d+/g)[0];
+    return {id};
+  } else {
+    return false;
   }
-}
+};
 
 // Add HTML comment to GitHub issue body
 async function add_html_comment({issue, type, id}) {
@@ -344,7 +336,6 @@ function format_body(eventPayload, link, state, issue_number) {
 async function labeled({ issue, label }) {
   let subject = 'Issue #: ' + issue['title'] + ' was labeled';
   let body = `${issue['user']['login']} labeled an issue. ${issue['body']}. More info here: ${issue['html_url']}`;
-
   if (label['name'] === 'task') {
     let regex = /### Description\n\n(.*)|### Priority\n\n[1-3]|### Due Date\n\n([0-9]+(-[0-9]+)+)/g;
     //  Example of what a matching body should look like in request from Issue Form
@@ -362,9 +353,14 @@ async function labeled({ issue, label }) {
       body_array[1] = DEFAULT_PRIORITY;
       body_array[2] = DEFAULT_DUE_DATE;
     }
-
+    // check if task is already created for this issue (shouldn't be)
+    let check_task_id = issue_has_totango_id({body});
+    if (check_task_id) {
+      console.log(`Task already exists for this issue ${check_task_id}`);
+      return;
+    }
+    // create task
     let task_id = await create_task(subject, body_array);
-
     console.log('Commenting on github issue for task with id: ' + task_id);
     // sleep for 1s
     await new Promise(r => setTimeout(r, 1000));
@@ -377,6 +373,14 @@ async function labeled({ issue, label }) {
     // output the payload to the console so the user can see it
     console.log(`Touchpoint subject is: ${subject}`);
     console.log(`Touchpoint body is: ${body}`);
+    // check if touchpoint is already created for this issue (shouldn't be)
+    let check_touchpoint_id = issue_has_totango_id({body});
+    console.log(`Touchpoint id is: ${check_touchpoint_id}`);
+    if (check_touchpoint_id) {
+      console.log(`Touchpoint already exists for this issue ${check_touchpoint_id}`);
+      return;
+    }
+
     let touchpoint_id = await create_touchpoint(subject, body);
 
     console.log('Commenting on github issue for touchpoint');
@@ -415,9 +419,10 @@ async function edited({ issue }){
 
 async function closed({ issue }) {
   console.log('Issue was closed');
+  let body = issue['body'];
   // Check to see if the issue has a task associated with it
   // If it does, and the task is not already closed, close the task
-  let task_id = await issue_has_task_id({issue: issue});
+  let task_id = issue_has_totango_id({body});
   console.log(`Task id before task status is: ${task_id}`);
   let task_status = await get_task_by_id({id: task_id}).then((task) => { return task['status']; });
 
@@ -441,7 +446,7 @@ const totangoPrivate = {
   parse_to_array,
   add_html_comment,
   get_task_by_id,
-  issue_has_task_id,
+  issue_has_totango_id,
   create_touchpoint,
   edit_touchpoint,
   get_event,
