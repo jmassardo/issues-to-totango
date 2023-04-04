@@ -47717,7 +47717,7 @@ function format_body(eventPayload, link, state, issue_number) {
 }
 
 async function labeled({ issue, label }) {
-  let subject = 'Issue #: ' + issue['title'] + ' was labeled';
+  let subject = issue['title'];
   let body = `${issue['user']['login']} labeled an issue. ${issue['body']}. More info here: ${issue['html_url']}`;
   if (label['name'] === 'task') {
     let regex = /### Description\n\n(.*)|### Priority\n\n[1-3]|### Due Date\n\n([0-9]+(-[0-9]+)+)/g;
@@ -47804,7 +47804,9 @@ async function edited({ issue }){
       //call edit task function
       update_task(task_id, subject, body);
     }
+    else {
     core.setFailed(`Failed to find touchpoint ID in body: ${body}`);
+    }
   }
     
 }
