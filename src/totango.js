@@ -458,7 +458,7 @@ async function edited({ issue }){
       console.log('Extracted body:' + body);
       console.log('Extracted Matching Task ID:' + task_id);
       //call edit task function
-      edit_task(task_id, subject, body);
+      update_task(task_id, subject, body);
     }
     core.setFailed(`Failed to find touchpoint ID in body: ${body}`);
   }
@@ -497,7 +497,7 @@ const totangoPrivate = {
   issue_has_totango_id,
   create_touchpoint,
   edit_touchpoint,
-  edit_task,
+  update_task,
   get_event,
   create_task,
   close_task,
