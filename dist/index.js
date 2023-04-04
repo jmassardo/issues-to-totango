@@ -47803,7 +47803,7 @@ async function edited({ issue }){
     tp_id = body_no_format.match(/task_ID: (\d+)/);
     if (tp_id != null) {
       var task_id = tp_id[1];
-      let regex = /### Description\s*(.*)|### Priority\s*([1-3])|### Due Date\s*([0-9]+(-[0-9]+)+)/g;
+      let regex = /###\s*Description\s*(.*)|###\s*Priority\s*([1-3])|###\s*Due\s*Date\s*([0-9]+(-[0-9]+)+)/g;
       console.log(regex.test(body_no_format));
       let body_array = [];
       let [_, description, priority, due_date] = regex.exec(body_no_format);
