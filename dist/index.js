@@ -47803,21 +47803,26 @@ async function edited({ issue }){
     tp_id = body_no_format.match(/task_ID: (\d+)/);
     if (tp_id != null) {
       var task_id = tp_id[1];
-      let regex = /### Description\s*(.*)|### Priority\s*[1-3]|### Due Date\s*([0-9]+(-[0-9]+)+)/g;
+      let regex = /### Description\s*(.*)|### Priority\s*([1-3])|### Due Date\s*([0-9]+(-[0-9]+)+)/g;
       console.log(regex.test(body_no_format));
+      //let body_array = [];
+      let [_, description, priority, due_date] = regex.exec(string);
       let temp_array = body_no_format.match(regex);
-      let body_array = [];
+      
       console.log(body_no_format)
       console.log(temp_array.length)
       console.log(temp_array);
       if(temp_array != null){
         if (temp_array.length === 3) { // regex should match 3 params w/ current issue form
-          for (let match of temp_array) {
-            let piece = match.split('\n\n');
-            body_array.push(piece[1]);
-          }
+          // for (let match of temp_array) {
+          //   let piece = match.split('\n\n');
+          //   body_array.push(piece[1]);
+          // }
+          body_array[0] = description;
+          body_array[1] = priority;
+          body_array[2] = due_date;
         } else { // set up default values
-          body_array[0] = body;
+          body_array[0] = body_no_format;
           body_array[1] = DEFAULT_PRIORITY;
           body_array[2] = DEFAULT_DUE_DATE;
         }
