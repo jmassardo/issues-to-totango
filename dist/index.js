@@ -47801,6 +47801,8 @@ async function edited({ issue }){
   else {
     let body_no_format = issue['body'];
     tp_id = body_no_format.match(/task_ID: (\d+)/);
+    //replace /r/n in body_no_format with /n
+    body_no_format = body_no_format.replace(/(\r\n|\n|\r)/gm, " ");
     if (tp_id != null) {
       var task_id = tp_id[1];
       let regex = /###(\s*)Description\s*(.*)|###\s*Priority\s*([1-3])|###\s*Due\s*Date\s*([0-9]+(-[0-9]+)+)/g;
