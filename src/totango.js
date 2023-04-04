@@ -460,15 +460,17 @@ async function edited({ issue }){
       let regex = /### Description\n\n(.*)|### Priority\n\n[1-3]|### Due Date\n\n([0-9]+(-[0-9]+)+)/g;
       let temp_array = body.match(regex);
       let body_array = [];
-      if ((temp_array.length === 3) && (temp_array != null)) { // regex should match 3 params w/ current issue form
-        for (let match of temp_array) {
-          let piece = match.split('\n\n');
-          body_array.push(piece[1]);
+      if(temp_array != null){
+        if (temp_array.length === 3) { // regex should match 3 params w/ current issue form
+          for (let match of temp_array) {
+            let piece = match.split('\n\n');
+            body_array.push(piece[1]);
+          }
+        } else { // set up default values
+          body_array[0] = body;
+          body_array[1] = DEFAULT_PRIORITY;
+          body_array[2] = DEFAULT_DUE_DATE;
         }
-      } else { // set up default values
-        body_array[0] = body;
-        body_array[1] = DEFAULT_PRIORITY;
-        body_array[2] = DEFAULT_DUE_DATE;
       }
       console.log('Extracted body:' + body);
       console.log('Extracted Matching Task ID:' + task_id);
