@@ -47610,10 +47610,13 @@ async function update_task(task_id, subject, body_array) {
           'app-token': APP_TOKEN,
         },
         form: {
-          id: task_id,
-          title: subject,
+          account_id: ACCOUNT_ID,
+          assignee: TASK_ASSIGNEE,
           description: body_array[0],
+          activity_type_id: DEFAULT_TASK_ACTIVITY,
           priority: body_array[1],
+          title: subject,
+          status: 'open',
           due_date: body_array[2],
         },
       }, (error, response, _body) => {
