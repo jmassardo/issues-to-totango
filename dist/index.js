@@ -47799,13 +47799,14 @@ async function edited({ issue }){
     
   }
   else {
+    let body = `${issue['body']}`;
     tp_id = body.match(/task_ID: (\d+)/);
     if (tp_id != null) {
       var task_id = tp_id[1];
       let regex = /### Description\n\n(.*)|### Priority\n\n[1-3]|### Due Date\n\n([0-9]+(-[0-9]+)+)/g;
       let temp_array = body.match(regex);
       let body_array = [];
-      if (temp_array.length === 3) { // regex should match 3 params w/ current issue form
+      if ((temp_array.length === 3) && (temp_array != null)) { // regex should match 3 params w/ current issue form
         for (let match of temp_array) {
           let piece = match.split('\n\n');
           body_array.push(piece[1]);
