@@ -47803,11 +47803,16 @@ async function edited({ issue }){
     tp_id = body_no_format.match(/task_ID: (\d+)/);
     if (tp_id != null) {
       var task_id = tp_id[1];
-      let regex = /###(\s*)|((\\r\\n)*)Description\s*(.*)|###\s*Priority\s*([1-3])|###\s*Due\s*Date\s*([0-9]+(-[0-9]+)+)/g;
+      let regex = /###Description(.*)|###Priority([1-3])|###DueDate([0-9]+(-[0-9]+)+)/g;
+      //remove whitespace from body_no_format
+      body_no_format = body_no_format.replace(/\s/g, '');
       console.log(regex.test(body_no_format));
       let body_array = [];
       let [_, description, priority, due_date] = regex.exec(body_no_format);
       let temp_array = body_no_format.match(regex);
+      body_array[0] = description;
+      body_array[1] = priority;
+      body_array[2] = due_date;
       console.log(body_no_format)
       console.log(temp_array.length)
       console.log(temp_array);
@@ -47817,9 +47822,7 @@ async function edited({ issue }){
           //   let piece = match.split('\n\n');
           //   body_array.push(piece[1]);
           // }
-          body_array[0] = description;
-          body_array[1] = priority;
-          body_array[2] = due_date;
+
         } else { // set up default values
           body_array[0] = body_no_format;
           body_array[1] = DEFAULT_PRIORITY;
