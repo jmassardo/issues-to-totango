@@ -47802,7 +47802,7 @@ async function edited({ issue }){
     let body_no_format = issue['body'];
     tp_id = body_no_format.match(/task_ID: (\d+)/);
     //replace /r/n in body_no_format with /n
-    body_no_format = body_no_format.replace(/(\r\n|\n|\r)/gm, " ");
+    body_no_format = body_no_format.replace(/(\r\n)/gm, " ");
     console.log(body_no_format);
     if (tp_id != null) {
       var task_id = tp_id[1];
