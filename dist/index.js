@@ -47799,7 +47799,7 @@ async function edited({ issue }){
     
   }
   else {
-    let body_no_format = issue['body'];
+    let body_no_format = `${issue['user']['login']} edited an issue. ${issue['body']}. More info here: ${issue['html_url']}`;
     tp_id = body_no_format.match(/task_ID: (\d+)/);
     if (tp_id != null) {
       var task_id = tp_id[1];
