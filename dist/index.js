@@ -47601,7 +47601,7 @@ async function create_task(subject, body_array) {
 }
 
 // Function to update a task in Totango
-async function update_task(task_id, subject, body_array) {
+async function update_task(task_id, subject, body_array, issue) {
   console.log('Updating task...');
   return new Promise((resolve, reject) => {
     try {
@@ -47799,7 +47799,7 @@ async function edited({ issue }){
     
   }
   else {
-    let body = `${issue['body']}`;
+    body = `${issue['body']}`;
     tp_id = body.match(/task_ID: (\d+)/);
     if (tp_id != null) {
       var task_id = tp_id[1];
@@ -47823,7 +47823,7 @@ async function edited({ issue }){
       console.log('Extracted body:' + body);
       console.log('Extracted Matching Task ID:' + task_id);
       //call edit task function
-      update_task(task_id, subject, body_array);
+      update_task(task_id, subject, body_array, issue);
     }
     else {
     core.setFailed(`Failed to find touchpoint ID in body: ${body}`);
