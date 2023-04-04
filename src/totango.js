@@ -460,9 +460,8 @@ async function edited({ issue }){
       let regex = /### Description\s*(.*)|### Priority\s*([1-3])|### Due Date\s*([0-9]+(-[0-9]+)+)/g;
       console.log(regex.test(body_no_format));
       //let body_array = [];
-      let [_, description, priority, due_date] = regex.exec(string);
+      let [_, description, priority, due_date] = regex.exec(body_no_format);
       let temp_array = body_no_format.match(regex);
-      
       console.log(body_no_format)
       console.log(temp_array.length)
       console.log(temp_array);
