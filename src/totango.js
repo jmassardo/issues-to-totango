@@ -489,11 +489,12 @@ async function edited({ issue }){
       console.log('Extracted Matching Task ID:' + task_id);
       //call edit task function
       update_task(task_id, subject, body_array, issue);
-      return new Promise((resolve, _reject) => { resolve(); });
+      
     }
     else {
     core.setFailed(`Failed to find touchpoint ID in body: ${body}`);
     }
+    return new Promise((resolve, _reject) => { resolve(); });
   }
     
 }
