@@ -254,7 +254,7 @@ async function create_task(subject, body_array) {
   });
 }
 
-//Function to update a task in Totango
+// Function to update a task in Totango
 async function update_task(task_id, subject, body_array) {
   console.log('Updating task...');
   return new Promise((resolve, reject) => {
@@ -290,7 +290,6 @@ async function update_task(task_id, subject, body_array) {
     }
   });
 }
-
 
 
 // Function to close a task in Totango
@@ -436,10 +435,9 @@ async function edited({ issue }){
   let body = format_body(issue, issue['html_url'], 'edited');
   let subject = issue['title'];
   let tp_id = body.match(/touchpoint_ID: (\d+)/); // Fetches the first touchpoint ID from the body
-  //If touchpoint_ID is not found in the body, search for task_ID instead
+  // If touchpoint_ID is not found in the body, search for task_ID instead
   let array = [];
   if (tp_id != null) {
-    
     var touchpoint_id = tp_id[1];
     console.log('Extracted body:' + body);
     console.log('Extracted Matching Touchpoint ID:' + touchpoint_id);
