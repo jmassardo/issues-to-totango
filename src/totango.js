@@ -192,7 +192,6 @@ async function edit_touchpoint(touchpoint_id, subject, body, event_id) {
         {
           headers: { 'app-token': APP_TOKEN }, form: {account_id: ACCOUNT_ID, note_id: touchpoint_id,
             event_id: event_id,
-            // service_id: 200495,
             content: body, activity_type_id: ACTIVITY_TYPE, subject: subject, touchpointType: TOUCHPOINT_TYPE, touchpoint_tags: TOUCHPOINT_TAGS,
           },
         }, (error, response, _body) => {
@@ -254,6 +253,45 @@ async function create_task(subject, body_array) {
     }
   });
 }
+
+//Function to update a task in Totango
+async function update_task(task_id, subject, body_array) {
+  console.log('Updating task...');
+  return new Promise((resolve, reject) => {
+    try {
+      request.put(`${TOTANGO_TASK_URL}`, {
+        headers: {
+          'app-token': APP_TOKEN,
+        },
+        form: {
+          id: task_id,
+          title: subject,
+          description: body_array[0],
+          priority: body_array[1],
+          due_date: body_array[2],
+        },
+      }, (error, response, _body) => {
+        if (error) {
+          core.setFailed(`Failed to update task: ${error}`);
+          reject(error);
+        } else if (response.statusCode < 200 || response.statusCode >= 300) {
+          core.setFailed(`Failed to update task: ${response.statusCode}`);
+          reject(`Failed to update task: ${response.statusCode}`);
+        }
+
+        // Output a message to the console and an Action output
+        console.log(`Successfully updated task: ${task_id}`);
+        core.setOutput('task_id', task_id);
+        resolve(task_id);
+      });
+    } catch (error) {
+      console.log(error);
+      reject(error);
+    }
+  });
+}
+
+
 
 // Function to close a task in Totango
 async function close_task(task_id) {
@@ -396,25 +434,35 @@ async function labeled({ issue, label }) {
 async function edited({ issue }){
   // let tp_id = 27741634;
   let body = format_body(issue, issue['html_url'], 'edited');
-  let subject = 'Issue #: ' + issue['title'] + ' was edited';
+  let subject = issue['title'];
   let tp_id = body.match(/touchpoint_ID: (\d+)/); // Fetches the first touchpoint ID from the body
+  //If touchpoint_ID is not found in the body, search for task_ID instead
   let array = [];
-  var touchpoint_id = tp_id[1];
-  console.log('Extracted body:' + body);
-  console.log('Extracted Matching Touchpoint ID:' + tp_id);
   if (tp_id != null) {
-    console.log('Extracted Touchpoint ID:' + tp_id[1]);
-    console.log('Touchpoint ID: ' + touchpoint_id);
-    // Calling get touchpoint function
+    
+    var touchpoint_id = tp_id[1];
+    console.log('Extracted body:' + body);
+    console.log('Extracted Matching Touchpoint ID:' + touchpoint_id);
     await get_event(parseInt(touchpoint_id)).then(value => array.push(value));
     console.log('Extracted Event ID:' + array[0]);
-
     // Calling edit touchpoint function
     let event_id = array[0];
     edit_touchpoint(touchpoint_id, subject, body, event_id);
     return new Promise((resolve, _reject) => { resolve(); });
-  } else
+    
+  }
+  else {
+    tp_id = body.match(/task_ID: (\d+)/);
+    if (tp_id != null) {
+      var task_id = tp_id[1];
+      console.log('Extracted body:' + body);
+      console.log('Extracted Matching Task ID:' + task_id);
+      //call edit task function
+      edit_task(task_id, subject, body);
+    }
     core.setFailed(`Failed to find touchpoint ID in body: ${body}`);
+  }
+    
 }
 
 async function closed({ issue }) {
@@ -449,6 +497,7 @@ const totangoPrivate = {
   issue_has_totango_id,
   create_touchpoint,
   edit_touchpoint,
+  edit_task,
   get_event,
   create_task,
   close_task,
