@@ -47804,6 +47804,7 @@ async function edited({ issue }){
     if (tp_id != null) {
       var task_id = tp_id[1];
       let regex = /### Description\n\n(.*)|### Priority\n\n[1-3]|### Due Date\n\n([0-9]+(-[0-9]+)+)/g;
+      console.log(regex.test(body_no_format));
       let temp_array = body_no_format.match(regex);
       let body_array = [];
       console.log(body_no_format)
