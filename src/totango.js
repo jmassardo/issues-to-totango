@@ -271,6 +271,7 @@ async function update_task(task_id, subject, body_array) {
           priority: body_array[1],
           title: subject,
           status: 'open',
+          id: task_id,
           due_date: body_array[2],
         },
       }, (error, response, _body) => {
