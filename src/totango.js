@@ -462,6 +462,7 @@ async function edited({ issue }){
       let temp_array = body_no_format.match(regex);
       let body_array = [];
       console.log(body_no_format)
+      console.log(temp_array.length)
       console.log(temp_array);
       if(temp_array != null){
         if (temp_array.length === 3) { // regex should match 3 params w/ current issue form
@@ -475,6 +476,7 @@ async function edited({ issue }){
           body_array[2] = DEFAULT_DUE_DATE;
         }
       }
+      console.log(body_array);
       console.log('Extracted body:' + body);
       console.log('Extracted Matching Task ID:' + task_id);
       //call edit task function
