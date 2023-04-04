@@ -270,7 +270,7 @@ async function update_task(task_id, subject, body_array) {
           activity_type_id: DEFAULT_TASK_ACTIVITY,
           priority: body_array[1],
           title: subject,
-          status: 'open',
+          status: issue['state'].toLowerCase(),
           id: task_id,
           due_date: body_array[2],
         },
@@ -435,7 +435,6 @@ async function labeled({ issue, label }) {
 
 // Function to edit a touchpoint in Totango
 async function edited({ issue }){
-  // let tp_id = 27741634;
   let body = format_body(issue, issue['html_url'], 'edited');
   let subject = issue['title'];
   let tp_id = body.match(/touchpoint_ID: (\d+)/); // Fetches the first touchpoint ID from the body
@@ -461,6 +460,8 @@ async function edited({ issue }){
       let regex = /### Description\n\n(.*)|### Priority\n\n[1-3]|### Due Date\n\n([0-9]+(-[0-9]+)+)/g;
       let temp_array = body.match(regex);
       let body_array = [];
+      console.log(body)
+      console.log(temp_array);
       if(temp_array != null){
         if (temp_array.length === 3) { // regex should match 3 params w/ current issue form
           for (let match of temp_array) {
