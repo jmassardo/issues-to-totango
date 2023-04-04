@@ -47799,13 +47799,11 @@ async function edited({ issue }){
     
   }
   else {
-    let body_no_format = `${issue['user']['login']} edited an issue. ${issue['body']}. More info here: ${issue['html_url']}`;
+    let body_no_format = issue['body'];
     tp_id = body_no_format.match(/task_ID: (\d+)/);
     if (tp_id != null) {
       var task_id = tp_id[1];
-      let regex = /###Description(.*)|###Priority([1-3])|###DueDate([0-9]+(-[0-9]+)+)/g;
-      //remove whitespace from body_no_format
-      body_no_format = body_no_format.replace(/\s/g, '');
+      let regex = /###(\s*)Description\s*(.*)|###\s*Priority\s*([1-3])|###\s*Due\s*Date\s*([0-9]+(-[0-9]+)+)/g;
       console.log(regex.test(body_no_format));
       let body_array = [];
       let [_, description, priority, due_date] = regex.exec(body_no_format);
