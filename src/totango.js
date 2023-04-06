@@ -36,9 +36,9 @@ const TASK_ASSIGNEE = core.getInput('TASK_ASSIGNEE');
 if (!validator.isEmail(TASK_ASSIGNEE)) {
   core.setFailed('TASK_ASSIGNEE must be a valid email address');
 }
-const GITHUB_TOKEN = core.getInput('REPO_TOKEN') || core.getInput('GITHUB_TOKEN'); // setting default to GITHUB_TOKEN for backwards compatibility
-if (typeof GITHUB_TOKEN !== 'string' || GITHUB_TOKEN === '') {
-  core.setFailed('GITHUB_TOKEN is required and must be a string');
+const GITHUB_TOKEN = core.getInput('REPO_TOKEN');
+if (typeof GITHUB_TOKEN === 'undefined') {
+  core.setFailed('GITHUB_TOKEN is required but not present.');
 }
 
 // TODO: add support for using GitHub Action Variables in the below constants with documentation
