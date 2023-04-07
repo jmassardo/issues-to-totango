@@ -257,7 +257,9 @@ async function create_task(subject, body_array) {
 // Function to update a task in Totango
 async function update_task(task_id, subject, body_array, issue) {
   console.log('Updating task...');
-  console.log(body_array)
+  console.log('Description: ' + body_array[0]);
+  console.log('Priority: ' + body_array[1]);
+  console.log('Due Date: ' + body_array[2]);
   return new Promise((resolve, reject) => {
     try {
       request.put(`${TOTANGO_TASK_URL}`, {
@@ -436,22 +438,23 @@ async function labeled({ issue, label }) {
 
 // Function to edit a touchpoint in Totango
 async function edited({ issue }){
+  // check issue label for touchpoint or task
+  let label = issue['labels'][0]['name'];
   let body = format_body(issue, issue['html_url'], 'edited');
   let subject = issue['title'];
-  let tp_id = body.match(/touchpoint_ID: (\d+)/); // Fetches the first touchpoint ID from the body
-  // If touchpoint_ID is not found in the body, search for task_ID instead
-  let array = [];
-  if (tp_id != null) {
-    var touchpoint_id = tp_id[1];
-    console.log('Extracted body:' + body);
-    console.log('Extracted Matching Touchpoint ID:' + touchpoint_id);
-    await get_event(parseInt(touchpoint_id)).then(value => array.push(value));
-    console.log('Extracted Event ID:' + array[0]);
-    // Calling edit touchpoint function
-    let event_id = array[0];
-    edit_touchpoint(touchpoint_id, subject, body, event_id);
-    return new Promise((resolve, _reject) => { resolve(); });
-    
+  if (label === 'touchpoint') {
+    let tp_id = body.match(/touchpoint_ID: (\d+)/); // Fetches the first touchpoint ID from the body
+    if (tp_id != null) {
+      let array = [];
+      var touchpoint_id = tp_id[1];
+      console.log('Extracted body:' + body);
+      console.log('Extracted Matching Touchpoint ID:' + touchpoint_id);
+      await get_event(parseInt(touchpoint_id)).then(value => array.push(value));
+      console.log('Extracted Event ID:' + array[0]);
+      // Calling edit touchpoint function
+      let event_id = array[0];
+      edit_touchpoint(touchpoint_id, subject, body, event_id);
+      return new Promise((resolve, _reject) => { resolve(); });
   }
   else {
     tp_id = body.match(/task_ID: (\d+)/);
@@ -468,12 +471,11 @@ async function edited({ issue }){
 
       console.log('Extracted body:' + body);
       console.log('Extracted Matching Task ID:' + task_id);
-      //call edit task function
-      update_task(task_id, subject, body_array, issue);
+      await update_task(task_id, subject, body_array, issue);
       
     }
     else {
-    core.setFailed(`Failed to find touchpoint ID in body: ${body}`);
+      core.setFailed(`Failed to find touchpoint ID in body: ${body}`);
     }
     return new Promise((resolve, _reject) => { resolve(); });
   }
