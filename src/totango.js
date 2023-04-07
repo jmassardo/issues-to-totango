@@ -453,20 +453,10 @@ async function edited({ issue }){
     
   }
   else {
-    let body_no_format = issue['body'];
     tp_id = body_no_format.match(/task_ID: (\d+)/);
-    console.log(body_no_format);
     if (tp_id != null) {
       var task_id = tp_id[1];
-      let regex = /(### Description\s*).*|(### Priority\s*)[1-3]|(### Due Date\s*)[0-9]+-[0-9]+-[0-9]+/g;
-      while ((temp_array = regex.exec(body_no_format)) !== null) {
-        console.log(`Found ${temp_array[1]}. Next starts at ${regex.lastIndex}.`);
-        let body_array = [];
-        body_array.push(temp_array[1]);
-        // Expected output: "Found foo. Next starts at 9."
-        // Expected output: "Found foo. Next starts at 19."
-      }
-      console.log(body_array);
+      let body_array = get_task_form_data({body});
       
       if(body_array == null){
         body_array[0] = body_no_format;
@@ -486,6 +476,28 @@ async function edited({ issue }){
     return new Promise((resolve, _reject) => { resolve(); });
   }
     
+}
+async function get_task_form_data({ body }){
+  let description_regex = /<h3 id="description">Description<\/h3>\\n<div>(.*)<\/div>/g;
+  let priority_regex = /<h3 id="priority">Priority<\/h3>\\n<div>(.*)<\/div>/g;
+  let duedate_regex = /<h3 id="duedate">Due Date<\/h3>\\n<div>(.*)<\/div>/g;
+  let regex_array = [description_regex, priority_regex, duedate_regex];
+  let temp_array;
+  let body_array = [];
+  regex_array.forEach((regex) => {
+    while ((temp_array = regex.exec(body)) !== null) {
+        // This is necessary to avoid infinite loops with zero-width matches
+        if (temp_array.index === description_regex.lastIndex) {
+          description_regex.lastIndex++;
+        }
+        if( temp_array !== null ) {
+        let piece = temp_array[1].split('<\/div>');
+        body_array.push(piece[0]);
+        }
+    }
+  });
+  console.log(body_array)
+  return body_array;
 }
 
 async function closed({ issue }) {
@@ -522,6 +534,7 @@ const totangoPrivate = {
   edit_touchpoint,
   update_task,
   get_event,
+  get_task_form_data,
   create_task,
   close_task,
   format_body,
