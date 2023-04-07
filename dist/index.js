@@ -47803,9 +47803,10 @@ async function edited({ issue }){
     if (tp_id != null) {
       var task_id = tp_id[1];
       let body_array = get_task_form_data({body});
-      
-      if(body_array == null){
-        body_array[0] = body_no_format;
+
+      if(body_array == []){
+
+        body_array[0] = body;
         body_array[1] = DEFAULT_PRIORITY;
         body_array[2] = DEFAULT_DUE_DATE;
       }
