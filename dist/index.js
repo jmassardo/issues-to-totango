@@ -47603,6 +47603,7 @@ async function create_task(subject, body_array) {
 // Function to update a task in Totango
 async function update_task(task_id, subject, body_array, issue) {
   console.log('Updating task...');
+  console.log(body_array)
   return new Promise((resolve, reject) => {
     try {
       request.put(`${TOTANGO_TASK_URL}`, {
@@ -47802,7 +47803,7 @@ async function edited({ issue }){
     tp_id = body.match(/task_ID: (\d+)/);
     if (tp_id != null) {
       var task_id = tp_id[1];
-      let body_array = get_task_form_data({body});
+      let body_array = await get_task_form_data({body});
 
       if(body_array == []){
 
