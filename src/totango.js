@@ -479,9 +479,9 @@ async function edited({ issue }){
     
 }
 async function get_task_form_data({ body }){
-  let description_regex = /<h3 id="description">Description<\/h3><div>(.*)<\/div>/g;
-  let priority_regex = /<h3 id="priority">Priority<\/h3><div>(.*)<\/div>/g;
-  let duedate_regex = /<h3 id="duedate">Due Date<\/h3><div>(.*)<\/div>/g;
+  let description_regex = /<h3 id="description">Description<\/h3>\s*<div>(.*)<\/div>/g;
+  let priority_regex = /<h3 id="priority">Priority<\/h3>\s*<div>(.*)<\/div>/g;
+  let duedate_regex = /<h3 id="duedate">Due Date<\/h3>\s*<div>(.*)<\/div>/g;
   let regex_array = [description_regex, priority_regex, duedate_regex];
   let temp_array;
   let body_array = [];
