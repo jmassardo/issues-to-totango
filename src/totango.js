@@ -453,7 +453,7 @@ async function edited({ issue }){
     
   }
   else {
-    tp_id = body_no_format.match(/task_ID: (\d+)/);
+    tp_id = body.match(/task_ID: (\d+)/);
     if (tp_id != null) {
       var task_id = tp_id[1];
       let body_array = get_task_form_data({body});
