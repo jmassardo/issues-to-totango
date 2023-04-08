@@ -47802,8 +47802,7 @@ async function edited({ issue }){
       edit_touchpoint(touchpoint_id, subject, body, event_id);
       return new Promise((resolve, _reject) => { resolve(); });
     }
-  }
-  else {
+  } else {
     let tp_id = body.match(/task_ID: (\d+)/);
     if (tp_id != null) {
       var task_id = tp_id[1];
@@ -47819,13 +47818,11 @@ async function edited({ issue }){
       console.log('Extracted body:' + body);
       console.log('Extracted Matching Task ID:' + task_id);
       await update_task(task_id, subject, body_array, issue);
-    }
-    else {
+    } else {
       core.setFailed(`Failed to find touchpoint ID in body: ${body}`);
     }
     return new Promise((resolve, _reject) => { resolve(); });
   }
-    
 }
 async function get_task_form_data({ body }){
   let description_regex = /<h3 id="description">Description<\/h3>\s*<div>(.*)<\/div>/g;
@@ -47837,14 +47834,15 @@ async function get_task_form_data({ body }){
   regex_array.forEach((regex) => {
     while ((temp_array = regex.exec(body)) !== null) {
         // This is necessary to avoid infinite loops with zero-width matches
-        if (temp_array.index === description_regex.lastIndex) {
+      if (temp_array.index === description_regex.lastIndex) {
           description_regex.lastIndex++;
-        }
-        if( temp_array !== null ) {
+      }
+      if ( temp_array !== null ) {
         let piece = temp_array[1].split('<\/div>');
         body_array.push(piece[0]);
-        }
+      }
     }
+    
   });
   console.log(body_array)
   return body_array;
