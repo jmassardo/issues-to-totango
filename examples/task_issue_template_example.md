@@ -42,7 +42,7 @@ body:
     attributes:
       label: Due Date
       description: Please enter a due date for task completion in the form YYYY-MM-DD
-      value: "2024-01-31"
+      value: "YYYY-MM-DD"
     validations:
       required: true
 ```
