@@ -379,7 +379,6 @@ async function format_body(eventPayload, link, state, issue_number) {
 async function labeled({ issue, label }) {
   let subject = issue['title'];
   let body = await format_body(issue, issue['html_url'], 'labeled', issue['number']);
-  console.log(body)
   if (label['name'] === 'task') {
     let body_array = await get_task_form_data({body});
     // check if task is already created for this issue (shouldn't be)
@@ -439,8 +438,7 @@ async function edited({ issue }){
       // Calling edit touchpoint function
       let event_id = array[0];
       edit_touchpoint(touchpoint_id, subject, body, event_id);
-    }
-    else{
+    } else {
       core.setFailed(`Failed to find touchpoint ID in body: ${body}`);
     }
   } else {
