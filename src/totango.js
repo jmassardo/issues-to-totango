@@ -382,7 +382,7 @@ async function labeled({ issue, label }) {
   let body = format_body(issue, issue['html_url'], 'labeled', issue['number']);
   console.log(body)
   if (label['name'] === 'task') {
-    let body_array = get_task_form_data({body});
+    let body_array = await get_task_form_data({body});
     console.log(body_array)
     // check if task is already created for this issue (shouldn't be)
     let check_task_id = issue_has_totango_id({body});
