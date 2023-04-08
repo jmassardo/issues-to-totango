@@ -23,7 +23,8 @@
     "@actions/github": "^5.1.1",
     "request": "^2.88.2",
     "showdown": "^2.1.0",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "validator": "^13.9.0"
   },
   "directories": {
     "example": "examples"

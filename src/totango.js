@@ -1,15 +1,45 @@
 const { core, github } = require('./github.js');
 const request = require('request');
 const showdown = require('showdown');
+const validator = require('validator');
 
 // Fetch variables from the actions inputs
 const ACCOUNT_ID = core.getInput('ACCOUNT_ID');
+if (typeof ACCOUNT_ID !== 'string' || ACCOUNT_ID === '') {
+  core.setFailed('ACCOUNT_ID is required and must be a string');
+}
 const APP_TOKEN = core.getInput('APP_TOKEN');
+if (typeof APP_TOKEN !== 'string' || APP_TOKEN === '') {
+  core.setFailed('APP_TOKEN is required and must be a string');
+}
 const ACTIVITY_TYPE = core.getInput('ACTIVITY_TYPE');
+if (typeof ACTIVITY_TYPE !== 'string' || ACTIVITY_TYPE === '') {
+  core.setFailed('ACTIVITY_TYPE is required and must be a string');
+}
 const TOUCHPOINT_TAGS = core.getInput('TOUCHPOINT_TAGS');
+if (!validator.isUUID(TOUCHPOINT_TAGS)) {
+  // We may have received a comma separated list of GUIDs so we need to check each one
+  console.log('TOUCHPOINT_TAGS is not a valid GUID, checking for a comma separated list of GUIDs...');
+  let tags = TOUCHPOINT_TAGS.split(',');
+  for (let i = 0; i < tags.length; i++) {
+    if (!validator.isUUID(tags[i])) {
+      console.log(`TOUCHPOINT_TAGS is not a valid GUID: ${tags[i]}`);
+      core.setFailed('TOUCHPOINT_TAGS must be a valid GUID or a comma separated list of valid GUIDs');
+    }
+  }
+}
 const TOUCHPOINT_TYPE = core.getInput('TOUCHPOINT_TYPE');
+if (!validator.isUUID(TOUCHPOINT_TYPE)) {
+  core.setFailed('TOUCHPOINT_TYPE must be a valid GUID');
+}
 const TASK_ASSIGNEE = core.getInput('TASK_ASSIGNEE');
+if (!validator.isEmail(TASK_ASSIGNEE)) {
+  core.setFailed('TASK_ASSIGNEE must be a valid email address');
+}
 const GITHUB_TOKEN = core.getInput('REPO_TOKEN');
+if (typeof GITHUB_TOKEN === 'undefined') {
+  core.setFailed('GITHUB_TOKEN is required but not present.');
+}
 
 // TODO: add support for using GitHub Action Variables in the below constants with documentation
 const DEFAULT_PRIORITY = 2; // Indicates "Normal" priority for tasks;
