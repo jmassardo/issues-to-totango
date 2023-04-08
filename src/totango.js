@@ -487,18 +487,16 @@ async function get_task_form_data({ body }){
   let body_array = [];
   regex_array.forEach((regex) => {
     while ((temp_array = regex.exec(body)) !== null) {
-        // This is necessary to avoid infinite loops with zero-width matches
+      // This is necessary to avoid infinite loops with zero-width matches
       if (temp_array.index === description_regex.lastIndex) {
-          description_regex.lastIndex++;
+        description_regex.lastIndex++;
       }
-      if ( temp_array !== null ) {
+      if (temp_array !== null) {
         let piece = temp_array[1].split('<\/div>');
         body_array.push(piece[0]);
       }
     }
-    
   });
-  console.log(body_array)
   return body_array;
 }
 
