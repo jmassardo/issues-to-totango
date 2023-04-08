@@ -479,12 +479,12 @@ async function get_task_form_data({ body }){
     body_array[1] = DEFAULT_PRIORITY;
     body_array[2] = DEFAULT_DUE_DATE;
   }
-  //find "Created by" and add to body_array
+  // find "Created by" and add to body_array
   let created_by_regex = /(<div>Created By:.*\s*.*)/g;
   let created_by = created_by_regex.exec(body);
   if (created_by !== null) {
     body_array[0] = body_array[0] + created_by[1];
-  } 
+  }
   return body_array;
 }
 
