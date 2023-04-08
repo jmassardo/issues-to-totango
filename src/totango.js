@@ -449,21 +449,21 @@ async function edited({ issue }){
       var touchpoint_id = tp_id[1];
       console.log('Extracted body:' + body);
       console.log('Extracted Matching Touchpoint ID:' + touchpoint_id);
-      await get_event(parseInt(touchpoint_id)).then(value => array.push(value));
+      await get_event(parseInt(touchpoint_id, 10)).then(value => array.push(value));
       console.log('Extracted Event ID:' + array[0]);
       // Calling edit touchpoint function
       let event_id = array[0];
       edit_touchpoint(touchpoint_id, subject, body, event_id);
       return new Promise((resolve, _reject) => { resolve(); });
+    }
   }
-}
   else {
-    tp_id = body.match(/task_ID: (\d+)/);
+    let tp_id = body.match(/task_ID: (\d+)/);
     if (tp_id != null) {
       var task_id = tp_id[1];
       let body_array = await get_task_form_data({body});
 
-      if(body_array == []){
+      if (body_array === []){
 
         body_array[0] = body;
         body_array[1] = DEFAULT_PRIORITY;
@@ -473,7 +473,6 @@ async function edited({ issue }){
       console.log('Extracted body:' + body);
       console.log('Extracted Matching Task ID:' + task_id);
       await update_task(task_id, subject, body_array, issue);
-      
     }
     else {
       core.setFailed(`Failed to find touchpoint ID in body: ${body}`);
