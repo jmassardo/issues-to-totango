@@ -462,15 +462,15 @@ async function edited({ issue }){
 async function get_task_form_data({ body }){
   let description_regex = /<h3 id="description">Description<\/h3>\s*<div>(.*)<\/div>/g;
   let priority_regex = /<h3 id="priority">Priority<\/h3>\s*<div>(.*)<\/div>/g;
-  let duedate_regex = /<(?>div|h2 id="\d{8}")>(\d{4}-\d{2}-\d{2})<\/div|h2>/g;
+  let duedate_regex = /<h3 id="duedate">Due Date<\/h3>\s*<(?:div|h2 id="\d{8}")>(\d{4}-\d{2}-\d{2})<\/(?:div|h2)>/g;
   let regex_array = [description_regex, priority_regex, duedate_regex];
   let temp_array;
   let body_array = [];
   regex_array.forEach((regex) => {
     while ((temp_array = regex.exec(body)) !== null) {
       // This is necessary to avoid infinite loops with zero-width matches
-      if (temp_array.index === description_regex.lastIndex) {
-        description_regex.lastIndex++;
+      if (temp_array.index === regex.lastIndex) {
+        regex.lastIndex++;
       }
       if (temp_array !== null) {
         let piece = temp_array[1].split('<\/');
