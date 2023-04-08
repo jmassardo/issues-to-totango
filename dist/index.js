@@ -47585,13 +47585,13 @@ async function create_task(subject, body_array) {
         } else if (response.statusCode < 200 || response.statusCode >= 300) {
           core.setFailed(`Failed to create task: ${response.statusCode}`);
         }
-
-        // Output a message to the console and an Action output
+        else{
+          // Output a message to the console and an Action output
         let task_id = (JSON.parse(response.body))['id'];
-
         console.log(`Successfully created task: ${task_id}`);
         core.setOutput('task_id', task_id);
         resolve(task_id);
+        }
       });
     } catch (error) {
       console.log(error);
@@ -47726,8 +47726,9 @@ function format_body(eventPayload, link, state, issue_number) {
 async function labeled({ issue, label }) {
   let subject = issue['title'];
   let body = format_body(issue, issue['html_url'], 'labeled', issue['number']);
+  console.log(body)
   if (label['name'] === 'task') {
-    let body_array = get_task_form_data(body);
+    let body_array = get_task_form_data({body});
     // check if task is already created for this issue (shouldn't be)
     let check_task_id = issue_has_totango_id({body});
     if (check_task_id) {
@@ -47785,7 +47786,9 @@ async function edited({ issue }){
       // Calling edit touchpoint function
       let event_id = array[0];
       edit_touchpoint(touchpoint_id, subject, body, event_id);
-      return new Promise((resolve, _reject) => { resolve(); });
+    }
+    else{
+      core.setFailed(`Failed to find touchpoint ID in body: ${body}`);
     }
   } else {
     let tp_id = body.match(/task_ID: (\d+)/);
@@ -47796,10 +47799,10 @@ async function edited({ issue }){
       console.log('Extracted Matching Task ID:' + task_id);
       await update_task(task_id, subject, body_array, issue);
     } else {
-      core.setFailed(`Failed to find touchpoint ID in body: ${body}`);
+      core.setFailed(`Failed to find task ID in body: ${body}`);
     }
-    return new Promise((resolve, _reject) => { resolve(); });
   }
+  return new Promise((resolve, _reject) => { resolve(); });
 }
 async function get_task_form_data({ body }){
   let description_regex = /<h3 id="description">Description<\/h3>\s*<div>(.*)<\/div>/g;
