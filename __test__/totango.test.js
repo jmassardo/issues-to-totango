@@ -81,6 +81,16 @@ describe('labeled', () => {
   });
 });
 
+// write test for edited
+describe('edited', () => {
+  it('should call edited', async () => {
+    const { edited, } = require('../src/totango');
+    await edited({ issue: github.context.payload.issue, });
+    expect(edited).toHaveBeenCalled();
+    expect(edited).toHaveBeenCalledWith({ issue: github.context.payload.issue, });
+  });
+});
+
 // Test parse_to_array function from src/totango.js
 // Expect that when passed a string or a comma separated list of strings,
 //   it will return an array of strings
@@ -89,5 +99,27 @@ describe('parse_to_array', () => {
     let { parse_to_array, } = jest.requireActual('../src/totango').totangoPrivate;
     expect(parse_to_array('Test String')).toEqual(['Test String']);
     expect(parse_to_array('Test String, Test String 2')).toEqual(['Test String', 'Test String 2']);
+  });
+});
+
+// Test update_task function from src/totango.js
+// Expect that when passed a string or a comma separated list of strings,
+//   it will return an array of strings
+describe('update_task', () => {
+  it('should return an array of strings', () => {
+    let { update_task, } = jest.requireActual('../src/totango').totangoPrivate;
+    expect(update_task('Test String')).toEqual(['Test String']);
+    expect(update_task('Test String, Test String 2')).toEqual(['Test String', 'Test String 2']);
+  });
+});
+
+// Test get_task_form_data function from src/totango.js
+// Expect that when passed a string or a comma separated list of strings,
+//   it will return an array of strings
+describe('get_task_form_data', () => {
+  it('should return an array of strings', () => {
+    let { get_task_form_data, } = jest.requireActual('../src/totango').totangoPrivate;
+    expect(get_task_form_data('Test String')).toEqual(['Test String']);
+    expect(get_task_form_data('Test String, Test String 2')).toEqual(['Test String', 'Test String 2']);
   });
 });
