@@ -47677,9 +47677,8 @@ async function close_task(task_id) {
     }
   });
 }
-
-// Function to convert markdown to text for cleaner visibility in Totango
-function format_body(eventPayload, link, state, issue_number) {
+//function to convert markdown to html for cleaner visibility in Totango
+async function format_body(eventPayload, link, state, issue_number) {
   let converter = new showdown.Converter({
     ghMentions: true,
     strikethrough: true,
@@ -47708,24 +47707,72 @@ function format_body(eventPayload, link, state, issue_number) {
     case 'closed':
       signature = `Closed By: @${user}`;
       break;
-    case 'labeled':
-      signature = `${user} labeled an issue #${issue_number}`;
+    case 'reopened':
+      signature = `Reopened By: @${user}`;
       break;
     default:
-      signature = `Created By: @${user}`;
+      signature = `Updated By: @${user}`;
+      break;
   }
 
-  response = `${body}\n----\n${signature}\nMore info here: ${link}`;
-  header = '<div class="html-parser-container">';
-  content = converter.makeHtml(response).replace(/(<p)/igm, '<div').replace(/<\/p>/igm, '</div><br />');
-  footer = '</div>';
+  header = `<h3>${signature}</h3>`;
+  content = converter.makeHtml(body);
+  footer = `<p><a href="${link}">View on GitHub</a></p>`;
+  response = header + content + footer;
 
-  return header + content + footer;
+  return response;
 }
+
+
+
+// Function to convert markdown to text for cleaner visibility in Totango
+// async function format_body(eventPayload, link, state, issue_number) {
+//   let converter = new showdown.Converter({
+//     ghMentions: true,
+//     strikethrough: true,
+//     underline: true,
+//     tables: true,
+//     literalMidWordUnderscores: true,
+//     simplifiedAutoLink: true,
+//     excludeTrailingPunctuationFromURLs: true,
+//     omitExtraWLInCodeBlocks: true,
+//     simpleLineBreaks: true,
+//   });
+
+//   console.log('Formatting body...');
+//   let user = eventPayload['user']['login'];
+//   let body = eventPayload['body'];
+
+//   let signature, response, header, content, footer;
+
+//   switch (state) {
+//     case 'commented':
+//       signature = `${user} commented on issue #${issue_number}`;
+//       break;
+//     case 'opened':
+//       signature = `Created By: @${user}`;
+//       break;
+//     case 'closed':
+//       signature = `Closed By: @${user}`;
+//       break;
+//     case 'labeled':
+//       signature = `${user} labeled an issue #${issue_number}`;
+//       break;
+//     default:
+//       signature = `Created By: @${user}`;
+//   }
+
+//   response = `${body}\n----\n${signature}\nMore info here: ${link}`;
+//   header = '<div class="html-parser-container">';
+//   content = converter.makeHtml(response).replace(/(<p)/igm, '<div').replace(/<\/p>/igm, '</div><br />');
+//   footer = '</div>';
+
+//   return header + content + footer;
+// }
 
 async function labeled({ issue, label }) {
   let subject = issue['title'];
-  let body = format_body(issue, issue['html_url'], 'labeled', issue['number']);
+  let body = await format_body(issue, issue['html_url'], 'labeled', issue['number']);
   console.log(body)
   if (label['name'] === 'task') {
     let body_array = await get_task_form_data({body});
@@ -47773,7 +47820,7 @@ async function labeled({ issue, label }) {
 async function edited({ issue }){
   // check issue label for touchpoint or task
   let label = issue['labels'][0]['name'];
-  let body = format_body(issue, issue['html_url'], 'edited');
+  let body = await format_body(issue, issue['html_url'], 'edited');
   let subject = issue['title'];
   if (label === 'touchpoint') {
     let tp_id = body.match(/touchpoint_ID: (\d+)/); // Fetches the first touchpoint ID from the body
