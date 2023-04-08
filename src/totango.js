@@ -456,6 +456,7 @@ async function edited({ issue }){
       edit_touchpoint(touchpoint_id, subject, body, event_id);
       return new Promise((resolve, _reject) => { resolve(); });
   }
+}
   else {
     tp_id = body.match(/task_ID: (\d+)/);
     if (tp_id != null) {
