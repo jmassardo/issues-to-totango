@@ -331,7 +331,8 @@ async function close_task(task_id) {
     }
   });
 }
-//function to convert markdown to html for cleaner visibility in Totango
+
+// Function to convert markdown to text for cleaner visibility in Totango
 async function format_body(eventPayload, link, state, issue_number) {
   let converter = new showdown.Converter({
     ghMentions: true,
@@ -361,68 +362,20 @@ async function format_body(eventPayload, link, state, issue_number) {
     case 'closed':
       signature = `Closed By: @${user}`;
       break;
-    case 'reopened':
-      signature = `Reopened By: @${user}`;
+    case 'labeled':
+      signature = `${user} labeled an issue #${issue_number}`;
       break;
     default:
-      signature = `Updated By: @${user}`;
-      break;
+      signature = `Created By: @${user}`;
   }
 
-  header = `<h3>${signature}</h3>`;
-  content = converter.makeHtml(body);
-  footer = `<p><a href="${link}">View on GitHub</a></p>`;
-  response = header + content + footer;
+  response = `${body}\n----\n${signature}\nMore info here: ${link}`;
+  header = '<div class="html-parser-container">';
+  content = converter.makeHtml(response).replace(/(<p)/igm, '<div').replace(/<\/p>/igm, '</div><br />');
+  footer = '</div>';
 
-  return response;
+  return header + content + footer;
 }
-
-
-
-// Function to convert markdown to text for cleaner visibility in Totango
-// async function format_body(eventPayload, link, state, issue_number) {
-//   let converter = new showdown.Converter({
-//     ghMentions: true,
-//     strikethrough: true,
-//     underline: true,
-//     tables: true,
-//     literalMidWordUnderscores: true,
-//     simplifiedAutoLink: true,
-//     excludeTrailingPunctuationFromURLs: true,
-//     omitExtraWLInCodeBlocks: true,
-//     simpleLineBreaks: true,
-//   });
-
-//   console.log('Formatting body...');
-//   let user = eventPayload['user']['login'];
-//   let body = eventPayload['body'];
-
-//   let signature, response, header, content, footer;
-
-//   switch (state) {
-//     case 'commented':
-//       signature = `${user} commented on issue #${issue_number}`;
-//       break;
-//     case 'opened':
-//       signature = `Created By: @${user}`;
-//       break;
-//     case 'closed':
-//       signature = `Closed By: @${user}`;
-//       break;
-//     case 'labeled':
-//       signature = `${user} labeled an issue #${issue_number}`;
-//       break;
-//     default:
-//       signature = `Created By: @${user}`;
-//   }
-
-//   response = `${body}\n----\n${signature}\nMore info here: ${link}`;
-//   header = '<div class="html-parser-container">';
-//   content = converter.makeHtml(response).replace(/(<p)/igm, '<div').replace(/<\/p>/igm, '</div><br />');
-//   footer = '</div>';
-
-//   return header + content + footer;
-// }
 
 async function labeled({ issue, label }) {
   let subject = issue['title'];
@@ -509,7 +462,7 @@ async function edited({ issue }){
 async function get_task_form_data({ body }){
   let description_regex = /<h3 id="description">Description<\/h3>\s*<div>(.*)<\/div>/g;
   let priority_regex = /<h3 id="priority">Priority<\/h3>\s*<div>(.*)<\/div>/g;
-  let duedate_regex = /<h3 id="duedate">Due Date<\/h3>\s*<h2 id="\d{8}">(\d{4}-\d{2}-\d{2})<\/h2>/g;
+  let duedate_regex = /<(?>div|h2 id="\d{8}")>(\d{4}-\d{2}-\d{2})<\/div|h2>/g;
   let regex_array = [description_regex, priority_regex, duedate_regex];
   let temp_array;
   let body_array = [];
@@ -520,7 +473,7 @@ async function get_task_form_data({ body }){
         description_regex.lastIndex++;
       }
       if (temp_array !== null) {
-        let piece = temp_array[1].split('<\/div>');
+        let piece = temp_array[1].split('<\/');
         body_array.push(piece[0]);
       }
     }
