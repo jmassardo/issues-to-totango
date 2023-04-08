@@ -238,13 +238,12 @@ async function create_task(subject, body_array) {
           reject(error);
         } else if (response.statusCode < 200 || response.statusCode >= 300) {
           core.setFailed(`Failed to create task: ${response.statusCode}`);
-        }
-        else{
+        } else {
           // Output a message to the console and an Action output
-        let task_id = (JSON.parse(response.body))['id'];
-        console.log(`Successfully created task: ${task_id}`);
-        core.setOutput('task_id', task_id);
-        resolve(task_id);
+          let task_id = (JSON.parse(response.body))['id'];
+          console.log(`Successfully created task: ${task_id}`);
+          core.setOutput('task_id', task_id);
+          resolve(task_id);
         }
       });
     } catch (error) {
@@ -383,7 +382,6 @@ async function labeled({ issue, label }) {
   console.log(body)
   if (label['name'] === 'task') {
     let body_array = await get_task_form_data({body});
-    console.log(body_array)
     // check if task is already created for this issue (shouldn't be)
     let check_task_id = issue_has_totango_id({body});
     if (check_task_id) {
