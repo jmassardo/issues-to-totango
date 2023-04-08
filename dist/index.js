@@ -55395,7 +55395,6 @@ async function edit_touchpoint(touchpoint_id, subject, body, event_id) {
         {
           headers: { 'app-token': APP_TOKEN }, form: {account_id: ACCOUNT_ID, note_id: touchpoint_id,
             event_id: event_id,
-            // service_id: 200495,
             content: body, activity_type_id: ACTIVITY_TYPE, subject: subject, touchpointType: TOUCHPOINT_TYPE, touchpoint_tags: TOUCHPOINT_TAGS,
           },
         }, (error, response, _body) => {
@@ -55442,12 +55441,55 @@ async function create_task(subject, body_array) {
           reject(error);
         } else if (response.statusCode < 200 || response.statusCode >= 300) {
           core.setFailed(`Failed to create task: ${response.statusCode}`);
+        } else {
+          // Output a message to the console and an Action output
+          let task_id = (JSON.parse(response.body))['id'];
+          console.log(`Successfully created task: ${task_id}`);
+          core.setOutput('task_id', task_id);
+          resolve(task_id);
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      reject(error);
+    }
+  });
+}
+
+// Function to update a task in Totango
+async function update_task(task_id, subject, body_array, issue) {
+  console.log('Updating task...');
+  console.log('Description: ' + body_array[0]);
+  console.log('Priority: ' + body_array[1]);
+  console.log('Due Date: ' + body_array[2]);
+  return new Promise((resolve, reject) => {
+    try {
+      request.put(`${TOTANGO_TASK_URL}`, {
+        headers: {
+          'app-token': APP_TOKEN,
+        },
+        form: {
+          account_id: ACCOUNT_ID,
+          assignee: TASK_ASSIGNEE,
+          description: body_array[0],
+          activity_type_id: DEFAULT_TASK_ACTIVITY,
+          priority: body_array[1],
+          title: subject,
+          status: issue['state'].toLowerCase(),
+          id: task_id,
+          due_date: body_array[2],
+        },
+      }, (error, response, _body) => {
+        if (error) {
+          core.setFailed(`Failed to update task: ${error}`);
+          reject(error);
+        } else if (response.statusCode < 200 || response.statusCode >= 300) {
+          core.setFailed(`Failed to update task: ${response.statusCode}`);
+          reject(`Failed to update task: ${response.statusCode}`);
         }
 
         // Output a message to the console and an Action output
-        let task_id = (JSON.parse(response.body))['id'];
-
-        console.log(`Successfully created task: ${task_id}`);
+        console.log(`Successfully updated task: ${task_id}`);
         core.setOutput('task_id', task_id);
         resolve(task_id);
       });
@@ -55457,6 +55499,7 @@ async function create_task(subject, body_array) {
     }
   });
 }
+
 
 // Function to close a task in Totango
 async function close_task(task_id) {
@@ -55492,7 +55535,7 @@ async function close_task(task_id) {
 }
 
 // Function to convert markdown to text for cleaner visibility in Totango
-function format_body(eventPayload, link, state, issue_number) {
+async function format_body(eventPayload, link, state, issue_number) {
   let converter = new showdown.Converter({
     ghMentions: true,
     strikethrough: true,
@@ -55537,25 +55580,10 @@ function format_body(eventPayload, link, state, issue_number) {
 }
 
 async function labeled({ issue, label }) {
-  let subject = 'Issue #: ' + issue['title'] + ' was labeled';
-  let body = `${issue['user']['login']} labeled an issue. ${issue['body']}. More info here: ${issue['html_url']}`;
+  let subject = issue['title'];
+  let body = await format_body(issue, issue['html_url'], 'labeled', issue['number']);
   if (label['name'] === 'task') {
-    let regex = /### Description\n\n(.*)|### Priority\n\n[1-3]|### Due Date\n\n([0-9]+(-[0-9]+)+)/g;
-    //  Example of what a matching body should look like in request from Issue Form
-    //  body = "### Description\n\nstuff stuff stuff\n\n### Priority\n\n1 (Low)\n\n### Due Date\n\n2024-01-01"
-    let temp_array = body.match(regex);
-    let body_array = [];
-
-    if (temp_array.length === 3) { // regex should match 3 params w/ current issue form
-      for (let match of temp_array) {
-        let piece = match.split('\n\n');
-        body_array.push(piece[1]);
-      }
-    } else { // set up default values
-      body_array[0] = body;
-      body_array[1] = DEFAULT_PRIORITY;
-      body_array[2] = DEFAULT_DUE_DATE;
-    }
+    let body_array = await get_task_form_data({body});
     // check if task is already created for this issue (shouldn't be)
     let check_task_id = issue_has_totango_id({body});
     if (check_task_id) {
@@ -55597,27 +55625,70 @@ async function labeled({ issue, label }) {
 
 // Function to edit a touchpoint in Totango
 async function edited({ issue }){
-  // let tp_id = 27741634;
-  let body = format_body(issue, issue['html_url'], 'edited');
-  let subject = 'Issue #: ' + issue['title'] + ' was edited';
-  let tp_id = body.match(/touchpoint_ID: (\d+)/); // Fetches the first touchpoint ID from the body
-  let array = [];
-  var touchpoint_id = tp_id[1];
-  console.log('Extracted body:' + body);
-  console.log('Extracted Matching Touchpoint ID:' + tp_id);
-  if (tp_id != null) {
-    console.log('Extracted Touchpoint ID:' + tp_id[1]);
-    console.log('Touchpoint ID: ' + touchpoint_id);
-    // Calling get touchpoint function
-    await get_event(parseInt(touchpoint_id)).then(value => array.push(value));
-    console.log('Extracted Event ID:' + array[0]);
-
-    // Calling edit touchpoint function
-    let event_id = array[0];
-    edit_touchpoint(touchpoint_id, subject, body, event_id);
-    return new Promise((resolve, _reject) => { resolve(); });
-  } else
-    core.setFailed(`Failed to find touchpoint ID in body: ${body}`);
+  // check issue label for touchpoint or task
+  let label = issue['labels'][0]['name'];
+  let body = await format_body(issue, issue['html_url'], 'edited');
+  let subject = issue['title'];
+  if (label === 'touchpoint') {
+    let tp_id = body.match(/touchpoint_ID: (\d+)/); // Fetches the first touchpoint ID from the body
+    if (tp_id != null) {
+      let array = [];
+      var touchpoint_id = tp_id[1];
+      console.log('Extracted body:' + body);
+      console.log('Extracted Matching Touchpoint ID:' + touchpoint_id);
+      await get_event(parseInt(touchpoint_id, 10)).then(value => array.push(value));
+      console.log('Extracted Event ID:' + array[0]);
+      // Calling edit touchpoint function
+      let event_id = array[0];
+      edit_touchpoint(touchpoint_id, subject, body, event_id);
+    } else {
+      core.setFailed(`Failed to find touchpoint ID in body: ${body}`);
+    }
+  } else {
+    let tp_id = body.match(/task_ID: (\d+)/);
+    if (tp_id != null) {
+      var task_id = tp_id[1];
+      let body_array = await get_task_form_data({body});
+      console.log('Extracted body:' + body);
+      console.log('Extracted Matching Task ID:' + task_id);
+      await update_task(task_id, subject, body_array, issue);
+    } else {
+      core.setFailed(`Failed to find task ID in body: ${body}`);
+    }
+  }
+  return new Promise((resolve, _reject) => { resolve(); });
+}
+async function get_task_form_data({ body }){
+  let description_regex = /<h3 id="description">Description<\/h3>\s*<div>(.*)<\/div>/g;
+  let priority_regex = /<h3 id="priority">Priority<\/h3>\s*<div>(.*)<\/div>/g;
+  let duedate_regex = /<h3 id="duedate">Due Date<\/h3>\s*<(?:div|h2 id="\d{8}")>(\d{4}-\d{2}-\d{2})<\/(?:div|h2)>/g;
+  let regex_array = [description_regex, priority_regex, duedate_regex];
+  let temp_array;
+  let body_array = [];
+  regex_array.forEach((regex) => {
+    while ((temp_array = regex.exec(body)) !== null) {
+      // This is necessary to avoid infinite loops with zero-width matches
+      if (temp_array.index === regex.lastIndex) {
+        regex.lastIndex++;
+      }
+      if (temp_array !== null) {
+        let piece = temp_array[1].split('<\/');
+        body_array.push(piece[0]);
+      }
+    }
+  });
+  if (body_array === []){
+    body_array[0] = body;
+    body_array[1] = DEFAULT_PRIORITY;
+    body_array[2] = DEFAULT_DUE_DATE;
+  }
+  // find "Created by" and add to body_array
+  let created_by_regex = /(<div>Created By:.*\s*.*)/g;
+  let created_by = created_by_regex.exec(body);
+  if (created_by !== null) {
+    body_array[0] = body_array[0] + created_by[1];
+  }
+  return body_array;
 }
 
 async function closed({ issue }) {
@@ -55652,7 +55723,9 @@ const totangoPrivate = {
   issue_has_totango_id,
   create_touchpoint,
   edit_touchpoint,
+  update_task,
   get_event,
+  get_task_form_data,
   create_task,
   close_task,
   format_body,
