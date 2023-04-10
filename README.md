@@ -6,8 +6,6 @@ This action takes issues in GitHub that have been labeled either 'task' or 'touc
 
 * See Issues for current bugs (labeled [bug])
 * Logic for handling comments on issues has not been implemented
-* Logic for closing issues and tasks has not been implemented
-* Logic for editing issues has not been implemented
 
 Feature requests are welcome. Please log an issue in this repo for new requests.
 
