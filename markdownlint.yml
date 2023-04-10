@@ -1,0 +1,8 @@
+---
+# MarkdownLint configuration
+
+default: true
+MD041: false
+MD033: false
+MD013: false
+MD026: false
