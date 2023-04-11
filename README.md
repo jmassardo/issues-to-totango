@@ -1,6 +1,6 @@
 # GitHub Issues to Totango
 
-This repository contains a GitHub Action which can be used with a repository to automatically create and `task` and `touchpoint` data types in Totango with GitHub Issues.
+This repository contains a GitHub Action which can be used with a repository to automatically create `task` and `touchpoint` data types in Totango with GitHub Issues.
 
 The contents of this repository are community-maintained and are not a direct contribution from GitHub as an organization.  References to `GitHub Actions` in terminology in this repository are for reference only to GitHub technologies and in no way associated with official branding or supportability.
 
@@ -17,7 +17,7 @@ This action should be used in a repository in combination with Issues, triggerin
 
 ### Action Inputs
 
-The following `inputs` are used by this Action.  These values should be available as secrets to the repository which runs this Action.
+The following `inputs` are used by this Action.  These values should be available as secrets or variables to the repository which runs this Action.
 
 * `ACCOUNT_ID`: **Required**, `string`
 
