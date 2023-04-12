@@ -19,11 +19,11 @@ This action should be used in a repository in combination with Issues, triggerin
 
 If currently using v1.2 (or below), you will need to take the following steps to use v2.0:
 
-* Create the labels `task` and `touchpoint` in the repo where the action will be run. See [manging labels](https://docs.github.com/en/issues/using-labels-and-milestones-to-track-work/managing-labels#creating-a-label) for more information.
+* Create the labels `task` and `touchpoint` in the repo where the action will be run. See [managing labels](https://docs.github.com/en/issues/using-labels-and-milestones-to-track-work/managing-labels#creating-a-label) for more information.
 * (Optional) Remove the `totango-sync` label from the repo. See [deleting a label](https://docs.github.com/en/issues/using-labels-and-milestones-to-track-work/managing-labels#deleting-a-label) for help.
 * Edit the original workflow file to match [this workflow](https://github.com/jmassardo/issues-to-totango/blob/version2.0/examples/workflow_example.yml) and change the VERSION to v2.0 in the workflow steps. Commit it to the repo.
 * Add the following [task template](https://github.com/jmassardo/issues-to-totango/blob/version2.0/examples/task_issue_template_example.md)  to the ISSUE_TEMPLATES folder in the repo and commit
-* Add a configuration variable to the repo for the TASK_ASIGNEE input. This should be the email in Totango of the user who will be assigned tasks. For help, see [Creating configuration variables for a repository](https://docs.github.com/en/enterprise-cloud@latest/actions/learn-github-actions/variables#creating-configuration-variables-for-a-repository)
+* Add a configuration variable to the repo for the TASK_ASSIGNEE input. This should be the email in Totango of the user who will be assigned tasks. For help, see [Creating configuration variables for a repository](https://docs.github.com/en/enterprise-cloud@latest/actions/learn-github-actions/variables#creating-configuration-variables-for-a-repository)
 * (Optional) Change the following repo secrets to configuration variables:
   * ACTIVITY_TYPE
   * TOUCHPOINT_TAGS
