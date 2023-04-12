@@ -567,6 +567,9 @@ async function commented({ issue, comment }) {
 // Function to create_follow_up in Totango
 async function create_follow_up(subject, content, parent_id) {
   console.log('Creating Follow Up in Totango...');
+  console.log('Subject: ' + subject);
+  console.log('Content: ' + content);
+  console.log('Parent ID: ' + parent_id);
   return new Promise((resolve, reject) => {
     try {
       request.post(`${TOTANGO_TOUCHPOINTS_URL}`, {
@@ -592,7 +595,7 @@ async function create_follow_up(subject, content, parent_id) {
         let follow_up_id = (JSON.parse(response.body))['id'];
         // Output a message to the console and an Action output
         console.log(`Successfully created follow up: ${follow_up_id}`);
-        core.setOutput('task_id', follow_up_id);
+        core.setOutput('follow_up_id', follow_up_id);
         resolve(follow_up_id);
       });
     } catch (error) {
