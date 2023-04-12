@@ -55232,7 +55232,7 @@ const TASK_ASSIGNEE = core.getInput('TASK_ASSIGNEE');
 if (!validator.isEmail(TASK_ASSIGNEE)) {
   core.setFailed('TASK_ASSIGNEE must be a valid email address');
 }
-const GITHUB_TOKEN = core.getInput('REPO_TOKEN');
+const GITHUB_TOKEN = core.getInput('GITHUB_TOKEN');
 if (typeof GITHUB_TOKEN === 'undefined') {
   core.setFailed('GITHUB_TOKEN is required but not present.');
 }
