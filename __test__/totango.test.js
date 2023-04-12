@@ -12,9 +12,11 @@ jest.mock('../src/totango', () => ({
     format_body: jest.fn(),
     update_task: jest.fn(),
     get_task_form_data: jest.fn(),
+    create_follow_up: jest.fn()
   },
   labeled: jest.fn(),
   edited: jest.fn(),
+  commented: jest.fn(),
 }));
 
 // Mock the github context
@@ -64,6 +66,17 @@ describe('create_task', () => {
   });
 });
 
+// write test for create_follow_up
+describe('create_follow_up', () => {
+  it('should call create_follow_up', async () => {
+    const { create_follow_up, } = totangoPrivate;
+    await create_follow_up('Test subject', 'Test content', '12345');
+    expect(create_follow_up).toHaveBeenCalled();
+    expect(create_follow_up).toHaveBeenCalledWith('Test subject', 'Test content', '12345');
+  });
+});
+
+
 // write test for format_body
 describe('format_body', () => {
   it('should call format_body', async () => {
@@ -91,6 +104,16 @@ describe('edited', () => {
     await edited({ issue: github.context.payload.issue, });
     expect(edited).toHaveBeenCalled();
     expect(edited).toHaveBeenCalledWith({ issue: github.context.payload.issue, });
+  });
+});
+
+//write test for commented
+describe('commented', () => {
+  it('should call commented', async () => {
+    const { commented, } = require('../src/totango');
+    await commented({ issue: github.context.payload.issue, comment: github.context.payload.comment, });
+    expect(commented).toHaveBeenCalled();
+    expect(commented).toHaveBeenCalledWith({ issue: github.context.payload.issue, comment: github.context.payload.comment, });
   });
 });
 

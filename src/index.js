@@ -51,15 +51,16 @@ if (github.context.eventName === 'issues') {
     console.log(action);
   }
 } else if (github.context.eventName === 'issue_comment') {
+  if (event_action === 'created') {
 
-  let comment = github.context.payload.comment;
+    let comment = github.context.payload.comment;
 
-  let action = totango.commented({
-    issue: issue,
-    comment: comment,
-  });
-
-  console.log(action);
+    let action = totango.commented({
+      issue: issue,
+      comment: comment,
+    });
+    console.log(action);
+  }
 } else {
 
   core.setFailed('Unsupported event type. Please use the  `issues` or `issue_comment` event type.');

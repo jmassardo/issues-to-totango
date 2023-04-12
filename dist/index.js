@@ -55327,18 +55327,31 @@ async function add_html_comment({issue, type, id}) {
       // Create an authenticated GitHub client
       let octokit = github.getOctokit(GITHUB_TOKEN);
 
-      // call get_issue_body to get the issue body
-      get_issue_body({issue}).then((body) => {
-
-        octokit.rest.issues.update({
+      // If the type is a follow_up, update the comment with the follow_up_id
+      if (type === 'follow_up') {
+        let comment_id = issue['id'];
+        octokit.rest.issues.updateComment({
           owner: github.context.repo.owner,
           repo: github.context.repo.repo,
-          issue_number: issue['number'],
-          body: `${body}\n\n<!-- ${type}_ID: ${id} -->`,
+          comment_id: comment_id,
+          body: `${issue['body']}\n\n<!-- ${type}_ID: ${id} -->`,
         });
-        console.log(`Updated issue ${issue['number']} with ${type}_ID: ${id}`);
+        console.log(`Updated comment ${comment_id} with ${type}_ID: ${id}`);
         resolve();
-      });
+      } else {
+        // call get_issue_body to get the issue body
+        get_issue_body({issue}).then((body) => {
+
+          octokit.rest.issues.update({
+            owner: github.context.repo.owner,
+            repo: github.context.repo.repo,
+            issue_number: issue['number'],
+            body: `${body}\n\n<!-- ${type}_ID: ${id} -->`,
+          });
+          console.log(`Updated issue ${issue['number']} with ${type}_ID: ${id}`);
+          resolve();
+        });
+      }
     } catch (error) {
       console.log(error);
       reject(error);
@@ -55713,6 +55726,80 @@ async function get_task_form_data({ body }){
   return body_array;
 }
 
+// Function to create a follow up in Totango from an issue comment
+async function commented({ issue, comment }) {
+  // Check to see if the comment is from a bot
+  if (comment['user']['login'] === 'github-actions[bot]') {
+    return new Promise((resolve, _reject) => {
+      resolve();
+    });
+  }
+  // Check to see if the comment is from a user
+  if (comment['user']['type'] === 'User') {
+    let issue_body = issue['body'];
+    let subject = issue['title'] + ' was commented on';
+    let comment_body = await format_body(comment, issue['html_url'], 'commented', issue['number']);
+    let tp_id = issue_body.match(/touchpoint_ID: (\d+)/); // Fetches the first touchpoint ID from the issue body
+    if (tp_id != null) {
+      var parent_id = tp_id[1];
+      console.log(`Parent id is: ${parent_id}`);
+
+      let follow_up_id = await create_follow_up(subject, comment_body, parent_id);
+      console.log('Commenting on github issue for follow up id');
+      await add_html_comment({
+        issue: comment,
+        type: 'follow_up',
+        id: follow_up_id,
+      });
+    } else {
+      core.setFailed(`Failed to find touchpoint ID in body: ${issue_body}`);
+    }
+    return new Promise((resolve, _reject) => {
+      resolve();
+    });
+  }
+}
+
+// Function to create_follow_up in Totango
+async function create_follow_up(subject, content, parent_id) {
+  console.log('Creating Follow Up in Totango...');
+  console.log('Subject: ' + subject);
+  console.log('Content: ' + content);
+  return new Promise((resolve, reject) => {
+    try {
+      request.post(`${TOTANGO_TOUCHPOINTS_URL}`, {
+        headers: {
+          'app-token': APP_TOKEN,
+        },
+        form: {
+          account_id: ACCOUNT_ID,
+          subject: subject,
+          content: content,
+          title: subject,
+          parentId: parent_id,
+          followUp: parent_id,
+        },
+      }, (error, response, _body) => {
+        if (error) {
+          core.setFailed(`Failed to create Follow Up: ${error}`);
+          reject(error);
+        } else if (response.statusCode < 200 || response.statusCode >= 300) {
+          core.setFailed(`Failed to create Follow Up: ${response.statusCode}`);
+          reject(`Failed to create Follow Up: ${response.statusCode}`);
+        }
+        let follow_up_id = (JSON.parse(response.body))['note']['id'];
+        // Output a message to the console and an Action output
+        console.log(`Successfully created follow up: ${follow_up_id}`);
+        core.setOutput('follow_up_id', follow_up_id);
+        resolve(follow_up_id);
+      });
+    } catch (error) {
+      console.log(error);
+      reject(error);
+    }
+  });
+}
+
 async function closed({ issue }) {
   console.log('Issue was closed');
   let body = issue['body'];
@@ -55727,16 +55814,6 @@ async function closed({ issue }) {
   }
 }
 
-async function commented({ _issue, _comment }) {
-  // This function is not currently performing any actions
-  // let subject = 'Issue #: ' + issue['title'] + ' was commented on';
-  // let body = format_body(comment, issue['html_url'], 'commented', issue['number']);
-  console.log('Issue was commented on');
-  return new Promise((resolve, _reject) => {
-    resolve();
-  });
-}
-
 // Exports for testing
 const totangoPrivate = {
   parse_to_array,
@@ -55744,6 +55821,7 @@ const totangoPrivate = {
   get_task_by_id,
   issue_has_totango_id,
   create_touchpoint,
+  create_follow_up,
   edit_touchpoint,
   update_task,
   get_event,
@@ -56195,15 +56273,16 @@ if (github.context.eventName === 'issues') {
     console.log(action);
   }
 } else if (github.context.eventName === 'issue_comment') {
+  if (event_action === 'created') {
 
-  let comment = github.context.payload.comment;
+    let comment = github.context.payload.comment;
 
-  let action = totango.commented({
-    issue: issue,
-    comment: comment,
-  });
-
-  console.log(action);
+    let action = totango.commented({
+      issue: issue,
+      comment: comment,
+    });
+    console.log(action);
+  }
 } else {
 
   core.setFailed('Unsupported event type. Please use the  `issues` or `issue_comment` event type.');
