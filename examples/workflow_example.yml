@@ -21,4 +21,4 @@ jobs:
           TOUCHPOINT_TAGS: ${{ vars.TOUCHPOINT_TAGS }}
           TOUCHPOINT_TYPE: ${{ vars.TOUCHPOINT_TYPE }}
           TASK_ASSIGNEE: ${{ vars.TASK_ASSIGNEE }}
-          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

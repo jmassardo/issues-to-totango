@@ -9,7 +9,7 @@ If the below is not copied **exactly** as written, the regex used for parsing is
 See this repo at .github/ISSUE_TEMPLATE/task.yml for an example of what this should look like in the repo where the action is being run
 
 ```yaml
-name: Issue Template
+name: Task Template
 description: Submit an issue
 title: "ISSUE TITLE - CHANGE ME"
 labels: ["task"]
