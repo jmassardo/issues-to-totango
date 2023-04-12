@@ -7,13 +7,13 @@ The contents of this repository are community-maintained and are not a direct co
 ## Limitations and Known Issues
 
 * See [Issues](https://github.com/jmassardo/issues-to-totango/issues) for current bugs (labeled `[bug]`)
-* Logic for handling comments on issues has not been implemented
+* Logic for editing comments on issues has not been handled
 
 Feature requests are welcome. Please log an issue in this repo for new requests.
 
 ## Usage
 
-This action should be used in a repository in combination with Issues, triggering from `issues` event types.
+This action should be used in a repository in combination with Issues, triggering from `issues` and `issue_comment` event types.
 
 ### Migrating from v1.2 to v2.0
 
@@ -106,6 +106,7 @@ This action supports the following triggers:
   * edited
   * labeled
 * issue_comments
+  * created
 
 ### Interacting with Issues
 
@@ -118,6 +119,7 @@ on:
   issues:
     types: [closed, labeled, edited]
   issue_comment:
+    types: [created]
 
 jobs:
   totango-integration:
@@ -135,7 +137,7 @@ jobs:
           TOUCHPOINT_TAGS: ${{ vars.TOUCHPOINT_TAGS }}
           TOUCHPOINT_TYPE: ${{ vars.TOUCHPOINT_TYPE }}
           TASK_ASSIGNEE: ${{ vars.TASK_ASSIGNEE }}
-          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 ```
 
