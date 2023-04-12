@@ -55814,16 +55814,6 @@ async function closed({ issue }) {
   }
 }
 
-// async function commented({ _issue, _comment }) {
-//   // This function is not currently performing any actions
-//   // let subject = 'Issue #: ' + issue['title'] + ' was commented on';
-//   // let body = format_body(comment, issue['html_url'], 'commented', issue['number']);
-//   console.log('Issue was commented on');
-//   return new Promise((resolve, _reject) => {
-//     resolve();
-//   });
-// }
-
 // Exports for testing
 const totangoPrivate = {
   parse_to_array,
