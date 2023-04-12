@@ -542,7 +542,7 @@ async function commented({ issue, comment }) {
   if (comment['user']['type'] === 'User') {
     let issue_body = issue['body'];
     let subject = issue['title'] + ' was commented on';
-    let comment_body = format_body(comment, issue['html_url'], 'commented', issue['number']);
+    let comment_body = await format_body(comment, issue['html_url'], 'commented', issue['number']);
     let tp_id = issue_body.match(/touchpoint_ID: (\d+)/); // Fetches the first touchpoint ID from the issue body
     if (tp_id != null) {
       var parent_id = tp_id[1];
