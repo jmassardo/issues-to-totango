@@ -17,7 +17,7 @@ This action should be used in a repository in combination with Issues, triggerin
 
 ### Migrating from v1.2 to v2.0
 
-If currently using v1.2 (or below ), you will need to take the following steps to use v2.0:
+If currently using v1.2 (or below), you will need to take the following steps to use v2.0:
 
 * Create the labels `task` and `touchpoint` in the repo where the action will be run. See [manging labels](https://docs.github.com/en/issues/using-labels-and-milestones-to-track-work/managing-labels#creating-a-label) for more information.
 * (Optional) Remove the `totango-sync` label from the repo. See [deleting a label](https://docs.github.com/en/issues/using-labels-and-milestones-to-track-work/managing-labels#deleting-a-label) for help.
