@@ -66,7 +66,7 @@ async function get_issue_body({issue}) {
     try {
       // Create an authenticated GitHub client
       let octokit = github.getOctokit(GITHUB_TOKEN);
-
+      
       octokit.rest.issues.get({
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
