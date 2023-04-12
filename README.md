@@ -74,7 +74,7 @@ The following `inputs` are used by this Action.  These values should be availabl
 
   When a task is created in Totango, this value will be the assignee for the task. Must be the email associated with Totango sign up (Totango user name). This value is also used as the submitter for a touchpoint.
 
-* `REPO_TOKEN`: **Required**, `string`
+* `GITHUB_TOKEN`: **Required**, `string`
 
   The Auto Generated GitHub Auth token for actions
 
