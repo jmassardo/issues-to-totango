@@ -30,7 +30,7 @@ If currently using v1.2 (or below ), you will need to take the following steps t
   * TOUCHPOINT_TYPE
   
   **NOTE**:  If you decide --not-- to change these from repo secrets to configuration variables, you will need to edit the workflow file to use the secrets context rather than the vars context, as in the original v1.0-v1.2 workflow file.
-* If using an ISSUE_TEMPLATE for touchpoints, edit the template to use the `touchpoints` label rather than the `totango-sync` label
+* If using an ISSUE_TEMPLATE for touchpoints, edit the template to use the `touchpoint` label rather than the `totango-sync` label
 
 ### Action Inputs
 
