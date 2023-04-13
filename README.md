@@ -32,6 +32,27 @@ If currently using v1.2 (or below), you will need to take the following steps to
   **NOTE**:  If you decide --not-- to change these from repo secrets to configuration variables, you will need to edit the workflow file to use the secrets context rather than the vars context, as in the original v1.0-v1.2 workflow file.
 * If using an ISSUE_TEMPLATE for touchpoints, edit the template to use the `touchpoint` label rather than the `totango-sync` label
 
+## First-time Use Setup process
+
+### v2.0.0
+
+* Create the labels `task` and `touchpoint` in the repo where the action will run. See [managing labels](https://docs.github.com/en/issues/using-labels-and-milestones-to-track-work/managing-labels#creating-a-label) for more information.
+* Add the [workflow file](https://github.com/jmassardo/issues-to-totango/blob/version2.0/examples/workflow_example.yml) to the repo, change VERSION in the steps to v2.0.0, and commit.
+* Add the [touchpoint issue template](https://github.com/jmassardo/issues-to-totango/blob/version2.0/examples/touchpoint_issue_example.md) to the repo and commit
+* Add the [task template](https://github.com/jmassardo/issues-to-totango/blob/version2.0/examples/task_issue_template_example.md) to the repo and commit
+* Create the following repo secrets and use the **Actions Inputs** section below for guidance: 
+  * TOTANGO_ACCOUNT_ID
+  * TOTANGO_APP_TOKEN
+  
+  See [How to create repo secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets) for help
+* Create the following configuration variables and use the **Actions Inputs** section below for guidance:
+  * TOTANGO_ACTIVITY_TYPE
+  * TOTANGO_TOUCHPOINT_TYPE
+  * TOTANGO_TOUCHPOINT_TAGS
+  * TOTANGO_TASK_ASSIGNEE
+   
+  See [Creating configuration variables for a repository](https://docs.github.com/en/enterprise-cloud@latest/actions/learn-github-actions/variables#creating-configuration-variables-for-a-repository) for help.
+
 ### Action Inputs
 
 The following `inputs` are used by this Action.  These values should be available as secrets or variables to the repository which runs this Action. **Note**: The workflow example prepends TOTANGO_ to the beginning of the names of the inputs for secrets and variables.
