@@ -15,6 +15,10 @@ Feature requests are welcome. Please log an issue in this repo for new requests.
 
 This action should be used in a repository in combination with Issues, triggering from `issues` and `issue_comment` event types.
 
+### Initial Setup
+
+If you are adding this action to a repository for the first time, please follow this documentation to set up your repository. [Initial Setup](https://github.com/github/Totango/blob/main/How-to-Totango/Integrations%20%26%20Data/Issues%20to%20Totango%20Action.md)
+
 ### Migrating from v1.2 to v2.0
 
 If currently using v1.2 (or below), you will need to take the following steps to use v2.0:
@@ -28,7 +32,7 @@ If currently using v1.2 (or below), you will need to take the following steps to
   * ACTIVITY_TYPE
   * TOUCHPOINT_TAGS
   * TOUCHPOINT_TYPE
-  
+
   **NOTE**:  If you decide --not-- to change these from repo secrets to configuration variables, you will need to edit the workflow file to use the secrets context rather than the vars context, as in the original v1.0-v1.2 workflow file.
 * If using an ISSUE_TEMPLATE for touchpoints, edit the template to use the `touchpoint` label rather than the `totango-sync` label
 
