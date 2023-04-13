@@ -28,7 +28,7 @@ If currently using v1.2 (or below), you will need to take the following steps to
   * ACTIVITY_TYPE
   * TOUCHPOINT_TAGS
   * TOUCHPOINT_TYPE
-  
+
   **NOTE**:  If you decide --not-- to change these from repo secrets to configuration variables, you will need to edit the workflow file to use the secrets context rather than the vars context, as in the original v1.0-v1.2 workflow file.
 * If using an ISSUE_TEMPLATE for touchpoints, edit the template to use the `touchpoint` label rather than the `totango-sync` label
 
@@ -131,12 +131,12 @@ jobs:
       - name: Main run
         uses: jmassardo/issues-to-totango@VERSION
         with:
-          ACCOUNT_ID: ${{ secrets.ACCOUNT_ID }}
-          APP_TOKEN: ${{ secrets.APP_TOKEN }}
-          ACTIVITY_TYPE: ${{ vars.ACTIVITY_TYPE }}
-          TOUCHPOINT_TAGS: ${{ vars.TOUCHPOINT_TAGS }}
-          TOUCHPOINT_TYPE: ${{ vars.TOUCHPOINT_TYPE }}
-          TASK_ASSIGNEE: ${{ vars.TASK_ASSIGNEE }}
+          ACCOUNT_ID: ${{ secrets.TOTANGO_ACCOUNT_ID }}
+          APP_TOKEN: ${{ secrets.TOTANGO_APP_TOKEN }}
+          ACTIVITY_TYPE: ${{ vars.TOTANGO_ACTIVITY_TYPE }}
+          TOUCHPOINT_TAGS: ${{ vars.TOTANGO_TOUCHPOINT_TAGS }}
+          TOUCHPOINT_TYPE: ${{ vars.TOTANGO_TOUCHPOINT_TYPE }}
+          TASK_ASSIGNEE: ${{ vars.TOTANGO_TASK_ASSIGNEE }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 ```
