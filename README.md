@@ -23,18 +23,39 @@ If currently using v1.2 (or below), you will need to take the following steps to
 * (Optional) Remove the `totango-sync` label from the repo. See [deleting a label](https://docs.github.com/en/issues/using-labels-and-milestones-to-track-work/managing-labels#deleting-a-label) for help.
 * Edit the original workflow file to match [this workflow](https://github.com/jmassardo/issues-to-totango/blob/version2.0/examples/workflow_example.yml) and change the VERSION to v2.0 in the workflow steps. Commit it to the repo.
 * Add the following [task template](https://github.com/jmassardo/issues-to-totango/blob/version2.0/examples/task_issue_template_example.md)  to the ISSUE_TEMPLATES folder in the repo and commit
-* Add a configuration variable to the repo for the TASK_ASSIGNEE input. This should be the email in Totango of the user who will be assigned tasks. For help, see [Creating configuration variables for a repository](https://docs.github.com/en/enterprise-cloud@latest/actions/learn-github-actions/variables#creating-configuration-variables-for-a-repository)
+* Add a configuration variable to the repo for the TOTANGO_TASK_ASSIGNEE input. This should be the email in Totango of the user who will be assigned tasks. For help, see [Creating configuration variables for a repository](https://docs.github.com/en/enterprise-cloud@latest/actions/learn-github-actions/variables#creating-configuration-variables-for-a-repository)
 * (Optional) Change the following repo secrets to configuration variables:
-  * ACTIVITY_TYPE
-  * TOUCHPOINT_TAGS
-  * TOUCHPOINT_TYPE
-  
+  * TOTANGO_ACTIVITY_TYPE
+  * TOTANGO_TOUCHPOINT_TAGS
+  * TOTANGO_TOUCHPOINT_TYPE
+
   **NOTE**:  If you decide --not-- to change these from repo secrets to configuration variables, you will need to edit the workflow file to use the secrets context rather than the vars context, as in the original v1.0-v1.2 workflow file.
 * If using an ISSUE_TEMPLATE for touchpoints, edit the template to use the `touchpoint` label rather than the `totango-sync` label
 
+## First-time Use Setup Process
+
+### v2.0.0
+
+* Create the labels `task` and `touchpoint` in the repo where the action will run. See [managing labels](https://docs.github.com/en/issues/using-labels-and-milestones-to-track-work/managing-labels#creating-a-label) for more information.
+* Add the [workflow file](https://github.com/jmassardo/issues-to-totango/blob/version2.0/examples/workflow_example.yml) to the repo, change VERSION in the steps to v2.0.0, and commit.
+* Add the [touchpoint issue template](https://github.com/jmassardo/issues-to-totango/blob/version2.0/examples/touchpoint_issue_example.md) to the repo and commit
+* Add the [task template](https://github.com/jmassardo/issues-to-totango/blob/version2.0/examples/task_issue_template_example.md) to the repo and commit
+* Create the following repo secrets and use the **Actions Inputs** section below for guidance: 
+  * TOTANGO_ACCOUNT_ID
+  * TOTANGO_APP_TOKEN
+  
+  See [How to create repo secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets) for help
+* Create the following configuration variables and use the **Actions Inputs** section below for guidance:
+  * TOTANGO_ACTIVITY_TYPE
+  * TOTANGO_TOUCHPOINT_TYPE
+  * TOTANGO_TOUCHPOINT_TAGS
+  * TOTANGO_TASK_ASSIGNEE
+   
+  See [Creating configuration variables for a repository](https://docs.github.com/en/enterprise-cloud@latest/actions/learn-github-actions/variables#creating-configuration-variables-for-a-repository) for help.
+
 ### Action Inputs
 
-The following `inputs` are used by this Action.  These values should be available as secrets or variables to the repository which runs this Action.
+The following `inputs` are used by this Action.  These values should be available as secrets or variables to the repository which runs this Action. **Note**: The workflow example prepends TOTANGO_ to the beginning of the names of the inputs for secrets and variables.
 
 * `ACCOUNT_ID`: **Required**, `string`
 
@@ -131,12 +152,12 @@ jobs:
       - name: Main run
         uses: jmassardo/issues-to-totango@VERSION
         with:
-          ACCOUNT_ID: ${{ secrets.ACCOUNT_ID }}
-          APP_TOKEN: ${{ secrets.APP_TOKEN }}
-          ACTIVITY_TYPE: ${{ vars.ACTIVITY_TYPE }}
-          TOUCHPOINT_TAGS: ${{ vars.TOUCHPOINT_TAGS }}
-          TOUCHPOINT_TYPE: ${{ vars.TOUCHPOINT_TYPE }}
-          TASK_ASSIGNEE: ${{ vars.TASK_ASSIGNEE }}
+          ACCOUNT_ID: ${{ secrets.TOTANGO_ACCOUNT_ID }}
+          APP_TOKEN: ${{ secrets.TOTANGO_APP_TOKEN }}
+          ACTIVITY_TYPE: ${{ vars.TOTANGO_ACTIVITY_TYPE }}
+          TOUCHPOINT_TAGS: ${{ vars.TOTANGO_TOUCHPOINT_TAGS }}
+          TOUCHPOINT_TYPE: ${{ vars.TOTANGO_TOUCHPOINT_TYPE }}
+          TASK_ASSIGNEE: ${{ vars.TOTANGO_TASK_ASSIGNEE }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 ```
