@@ -67,7 +67,8 @@ The following `inputs` are used by this Action.  These values should be availabl
 
   This is your API token.
 
-  > In Totango, click your picture > Edit Profile > Integrations > Copy your API Token Key
+  > - In Totango, click your picture > Edit Profile > Integrations > Copy your API Token Key
+  > - The examples below assume that you've set your token as an environment i.e. `export TOTANGO_TOKEN=MySuperSecretToken!`
 
 * `ACTIVITY_TYPE`: **Required**, `string`
 
@@ -79,7 +80,7 @@ The following `inputs` are used by this Action.  These values should be availabl
 
   ```sh
   curl --location --request GET 'https://api.totango.com/api/v3/activity-types/' \
-  --header 'app-token: TOTANGO_TOKEN'
+  --header "app-token: $[TOTANGO_TOKEN}"
   ```
 
 * `TOUCHPOINT_TAGS`: **Required**, `string` or comma-separated list of `string` values
@@ -92,7 +93,7 @@ The following `inputs` are used by this Action.  These values should be availabl
 
   ```sh
   curl --location --request GET 'https://api.totango.com/api/v3/touchpoint-tags/' \
-  --header 'app-token: TOTANGO_TOKEN'
+  --header "app-token: $[TOTANGO_TOKEN}"
   ```
 
 * `TOUCHPOINT_TYPE`: **Required**, `string`
@@ -105,7 +106,7 @@ The following `inputs` are used by this Action.  These values should be availabl
 
   ```sh
   curl --location --request GET 'https://api.totango.com/api/v3/touchpoint-types/' \
-  --header 'app-token: TOTANGO_TOKEN'
+  --header "app-token: $[TOTANGO_TOKEN}"
   ```
 
 * `TASK_ASSIGNEE`: **Required**, `string`
