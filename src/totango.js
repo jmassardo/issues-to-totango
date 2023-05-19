@@ -464,39 +464,49 @@ async function labeled({ issue, label }) {
 
 // Function to edit a touchpoint in Totango
 async function edited({ issue }){
-  // check issue label for touchpoint or task
-  let label = issue['labels'][0]['name'];
-  let body = await format_body(issue, issue['html_url'], 'edited');
-  let subject = issue['title'];
-  if (label === 'touchpoint') {
-    let tp_id = body.match(/touchpoint_ID: (\d+)/); // Fetches the first touchpoint ID from the body
-    if (tp_id != null) {
-      let array = [];
-      var touchpoint_id = tp_id[1];
-      console.log('Extracted body:' + body);
-      console.log('Extracted Matching Touchpoint ID:' + touchpoint_id);
-      await get_event(parseInt(touchpoint_id, 10)).then(value => array.push(value));
-      console.log('Extracted Event ID:' + array[0]);
-      // Calling edit touchpoint function
-      let event_id = array[0];
-      edit_touchpoint(touchpoint_id, subject, body, event_id);
-    } else {
-      core.setFailed(`Failed to find touchpoint ID in body: ${body}`);
+  return new Promise(async(resolve, reject) => {
+    try {
+      // check issue label for touchpoint or task
+      let labels = issue['labels'].map(label => label['name']);
+      let body = await format_body(issue, issue['html_url'], 'edited');
+      let subject = issue['title'];
+
+      if (labels.includes('touchpoint')) {
+        let tp_id = body.match(/touchpoint_ID: (\d+)/); // Fetches the first touchpoint ID from the body
+        if (tp_id != null) {
+          let array = [];
+          var touchpoint_id = tp_id[1];
+          console.log('Extracted body:' + body);
+          console.log('Extracted Matching Touchpoint ID:' + touchpoint_id);
+          await get_event(parseInt(touchpoint_id, 10)).then(value => array.push(value));
+          console.log('Extracted Event ID:' + array[0]);
+          // Calling edit touchpoint function
+          let event_id = array[0];
+          edit_touchpoint(touchpoint_id, subject, body, event_id);
+        } else {
+          core.setFailed(`Failed to find touchpoint ID in body: ${body}`);
+        }
+      } else if (labels.includes('task')) {
+        let tp_id = body.match(/task_ID: (\d+)/);
+        if (tp_id != null) {
+          var task_id = tp_id[1];
+          let body_array = await get_task_form_data({body});
+          console.log('Extracted body:' + body);
+          console.log('Extracted Matching Task ID:' + task_id);
+          await update_task(task_id, subject, body_array, issue);
+        } else {
+          core.setFailed(`Failed to find task ID in body: ${body}`);
+        }
+      }
+
+      resolve();
+    } catch (error) {
+      core.setFailed(error.message);
+      reject(error);
     }
-  } else {
-    let tp_id = body.match(/task_ID: (\d+)/);
-    if (tp_id != null) {
-      var task_id = tp_id[1];
-      let body_array = await get_task_form_data({body});
-      console.log('Extracted body:' + body);
-      console.log('Extracted Matching Task ID:' + task_id);
-      await update_task(task_id, subject, body_array, issue);
-    } else {
-      core.setFailed(`Failed to find task ID in body: ${body}`);
-    }
-  }
-  return new Promise((resolve, _reject) => { resolve(); });
+  });
 }
+
 async function get_task_form_data({ body }){
   let description_regex = /<h3 id="description">Description<\/h3>\s*<div>(.*)<\/div>/g;
   let priority_regex = /<h3 id="priority">Priority<\/h3>\s*<div>(.*)<\/div>/g;
