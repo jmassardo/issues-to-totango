@@ -16,9 +16,14 @@ inputs:
   TOUCHPOINT_TAGS:
     description: 'The id value of the touchpoint reason.'
     required: true
+  TASK_ASSIGNEE:
+    description: 'The email value used for testing - will be changed later after testing'
+  GITHUB_TOKEN:
+    description: 'GitHub Repo Token for auth'
+    required: true
 outputs:
   touchpoint_id:
     description: 'The id of the newly created touchpoint'
 runs:
-  using: 'node12'
-  main: 'index.js'
+  using: 'node16'
+  main: 'dist/index.js'

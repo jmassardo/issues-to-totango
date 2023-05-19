@@ -2,19 +2,24 @@ name: totango
 
 on:
   issues:
-    types: [opened, closed]
+    types: [closed, labeled, edited]
   issue_comment:
+    types: [created]
 
 jobs:
-  process-issue:
-    # Prevent action from trying to parse issues that don't have the right label
-    if: contains(github.event.issue.labels.*.name, 'totango-sync')
+  totango-integration:
+    # Prevent action from trying to parse issues that don't have a label which this action supports
+    if: contains(github.event.issue.labels.*.name, 'task') ||
+        contains(github.event.issue.labels.*.name, 'touchpoint')
     runs-on: ubuntu-latest
     steps:
-    - uses: jmassardo/issues-to-totango@main
-      with:
-        ACCOUNT_ID: ${{ secrets.ACCOUNT_ID }}
-        APP_TOKEN: ${{ secrets.APP_TOKEN }}
-        ACTIVITY_TYPE: ${{ secrets.ACTIVITY_TYPE }}
-        TOUCHPOINT_TAGS: ${{ secrets.TOUCHPOINT_TAGS }}
-        TOUCHPOINT_TYPE: ${{ secrets.TOUCHPOINT_TYPE }}
+      - name: Main run
+        uses: jmassardo/issues-to-totango@VERSION
+        with:
+          ACCOUNT_ID: ${{ secrets.TOTANGO_ACCOUNT_ID }}
+          APP_TOKEN: ${{ secrets.TOTANGO_APP_TOKEN }}
+          ACTIVITY_TYPE: ${{ vars.TOTANGO_ACTIVITY_TYPE }}
+          TOUCHPOINT_TAGS: ${{ vars.TOTANGO_TOUCHPOINT_TAGS }}
+          TOUCHPOINT_TYPE: ${{ vars.TOTANGO_TOUCHPOINT_TYPE }}
+          TASK_ASSIGNEE: ${{ vars.TOTANGO_TASK_ASSIGNEE }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
